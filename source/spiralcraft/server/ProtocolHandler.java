@@ -3,7 +3,7 @@ package spiralcraft.server;
 import spiralcraft.net.Connection;
 
 /**
- * Runs a server protocol for a single connection
+ * Runs a server protocol for a single connection.
  */
 public interface ProtocolHandler
 {

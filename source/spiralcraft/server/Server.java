@@ -19,6 +19,7 @@ import spiralcraft.registry.Registrant;
 import spiralcraft.net.Connection;
 import spiralcraft.net.ConnectionQueue;
 import spiralcraft.net.Endpoint;
+import spiralcraft.net.StandardChannelDispatcher;
 
 import spiralcraft.pool.ThreadPool;
 import spiralcraft.pool.Pool;
@@ -50,7 +51,9 @@ public class Server
   private URI _traceUri;
   private int _traceCount;
   private int _readTimeoutMillis;
-
+  private StandardChannelDispatcher _channelDispatcher;
+  private RegistryNode _registryNode;
+  
   private long _bytesRead;
   private long _bytesWritten;
 
@@ -60,6 +63,7 @@ public class Server
 
   public void register(RegistryNode node)
   { 
+    _registryNode=node;
     _logger=(Logger) node.findInstance(Logger.class);
     _threadPool.register(node.createChild("threadPool"));
     _protocolHandlerPool.register(node.createChild("protocolHandlerPool"));
@@ -102,9 +106,13 @@ public class Server
       _threadPool.init();
       _protocolHandlerPool.setResourceFactory(this);
       _protocolHandlerPool.init();
+      _channelDispatcher=new StandardChannelDispatcher();
+      _channelDispatcher.register(_registryNode.createChild("channelDispatcher"));
+      
 
       bind();
       start();
+      _channelDispatcher.start();
       if (_logger!=null && _logger.isLoggable(Level.INFO))
       { _logger.info("Started");
       }
@@ -121,6 +129,7 @@ public class Server
   public void destroy()
   { 
     release();
+    _channelDispatcher.stop();
     _threadPool.stop();
     _protocolHandlerPool.stop();
   }
@@ -166,8 +175,15 @@ public class Server
       { 
         try
         { 
+          _endpoints[i].init();
           _endpoints[i].addConnectionListener(_queue);
-          _endpoints[i].bind();
+
+          if (_endpoints[i].supportsNonBlockingIO())
+          { _endpoints[i].bind(_channelDispatcher);
+          }
+          else
+          { _endpoints[i].bind();
+          }
         }
         catch (IOException x)
         {
@@ -203,7 +219,7 @@ public class Server
 
   /**
    * Remove connections from the incoming Queue and
-   *   assign a Thread from a pool to handle the 
+   *   assign a ProtocolHandler from a pool to handle the 
    *   connection.
    */
   private void handleConnections()
@@ -225,6 +241,13 @@ public class Server
     }
   }
 
+  /**
+   * Wrap the Connection with a ServerConnection to provide
+   *   instrumentation (for monitoring, accounting, debugging) 
+   *   and control (flow, quota, security) on a server-wide basis.
+   *
+   * Pass the wrapped connection off to a ProtocolHandler.
+   */
   private void handleConnection(Connection connection)
   {
     _connectionCount++;
