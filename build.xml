@@ -1,8 +1,9 @@
 <project name="spiralcraft-net" default="build" basedir=".">
 
+  <property name="classpath" value="${spiralcraft-core.jar}"/>
 
   <target name="build">
-    <javac srcdir="source" classpath="${spiralcraft-core.jar}" debug="true"/>
+    <javac srcdir="source" classpath="${classpath}" debug="true"/>
   </target>
 
   <target name="jar" depends="build">
@@ -17,4 +18,25 @@
     </jar>
   </target>
 
+  <target name="doc" depends="build">
+		<javadoc 
+      classpath="source:${classpath}"
+			sourcepath="source"
+      packagenames="spiralcraft.**.**"
+        
+			header="spiralcraft-net API"
+			destdir="docs/api"
+			author="Spiralcraft, Inc."
+			version="v1.0-dev0"
+			use="true"
+			windowtitle="spiralcraft-net API"
+			doctitle="&lt;h1&gt;spiralcraft-net API&lt;/h1&gt;"
+			maxmemory="90M"
+			failonerror="true"
+      >
+			<bottom>Copyright 2000,2004 Michael Toth and Spiralcraft, Inc.</bottom>
+      <link offline="true" href="../../spiralcraft-core/api"  packagelistLoc="${spiralcraft-core}/docs/api"/>
+		</javadoc>
+  </target>
+  
 </project>
