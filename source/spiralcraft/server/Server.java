@@ -1,16 +1,20 @@
 package spiralcraft.server;
 
+
+import java.io.IOException;
+import java.io.OutputStream;
+
+import java.net.URI;
+
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 import spiralcraft.service.Service;
 import spiralcraft.service.ServiceResolver;
 import spiralcraft.service.ServiceException;
 
 import spiralcraft.registry.RegistryNode;
 import spiralcraft.registry.Registrant;
-
-import java.io.IOException;
-
-import java.util.logging.Logger;
-import java.util.logging.Level;
 
 import spiralcraft.net.Connection;
 import spiralcraft.net.ConnectionQueue;
@@ -19,6 +23,11 @@ import spiralcraft.net.Endpoint;
 import spiralcraft.pool.ThreadPool;
 import spiralcraft.pool.Pool;
 import spiralcraft.pool.ResourceFactory;
+
+import spiralcraft.stream.Resolver;
+import spiralcraft.stream.Resource;
+import spiralcraft.stream.UnresolvableURIException;
+
 
 /**
  * Generic Server framework. Accepts connections into a Queue,
@@ -35,12 +44,29 @@ public class Server
   private ThreadPool _threadPool=new ThreadPool();
   private Pool _protocolHandlerPool=new Pool();
   private ProtocolHandlerFactory _protocolHandlerFactory;
+  private int _connectionCount;
+  private int _activeConnectionCount;
+  private int _uncaughtIOExceptionCount;
+  private URI _traceUri;
+  private int _traceCount;
+  private int _readTimeoutMillis;
+
+  private long _bytesRead;
+  private long _bytesWritten;
+
+  public void setTraceURI(URI uri)
+  { _traceUri=uri;
+  }
 
   public void register(RegistryNode node)
   { 
     _logger=(Logger) node.findInstance(Logger.class);
     _threadPool.register(node.createChild("threadPool"));
     _protocolHandlerPool.register(node.createChild("protocolHandlerPool"));
+  }
+
+  public Logger getLogger()
+  { return _logger;
   }
 
   /**
@@ -108,6 +134,10 @@ public class Server
 
   public void setProtocolHandlerFactory(ProtocolHandlerFactory factory)
   { _protocolHandlerFactory=factory;
+  }
+
+  public void setReadTimeoutMillis(int millis)
+  { _readTimeoutMillis=millis;
   }
 
   /**
@@ -197,11 +227,29 @@ public class Server
 
   private void handleConnection(Connection connection)
   {
+    _connectionCount++;
+    _activeConnectionCount++;
+
+    if (_readTimeoutMillis>0)
+    { 
+      try
+      { connection.setReadTimeoutMillis(_readTimeoutMillis);
+      }
+      catch (IOException x)
+      { 
+        if (_logger!=null)
+        { _logger.warning("Could not set read timeout to "+_readTimeoutMillis);
+        }
+      }
+    }
+
+    Connection serverConnection=new ServerConnection(this,connection);
+
     ProtocolHandler handler=(ProtocolHandler) _protocolHandlerPool.checkout();
     if (_logger!=null && _logger.isLoggable(Level.FINE))
-    { _logger.fine("Dispatching connection "+connection.toString());
+    { _logger.fine("Dispatching connection "+serverConnection.toString());
     }
-    handler.handleConnection(this,connection); 
+    handler.handleConnection(this,serverConnection); 
   }
 
   /**
@@ -209,6 +257,7 @@ public class Server
    */
   public void protocolFinished(ProtocolHandler handler)
   { 
+    _activeConnectionCount--;
     if (_logger!=null && _logger.isLoggable(Level.FINE))
     { _logger.fine("Protocol finished "+handler.toString());
     }
@@ -216,10 +265,86 @@ public class Server
   }
 
   /**
-   * ProtocolHandlerSupport.runBlockingOperation(Runnable runnable)
+   * ProtocolHandlerSupport.runBlockingOperation(Runnable)
    */
   public void runBlockingOperation(Runnable runnable)
   { _threadPool.run(runnable);
+  }
+
+  /**
+   * Create a new trace stream
+   */
+  public OutputStream createTraceStream()
+  { 
+    if (_traceUri!=null)
+    { 
+      Resource resource=null;
+      try
+      {
+        resource
+          =Resolver.getInstance().resolve
+            (_traceUri.resolve("spiralcraft.server.trace-"+Integer.toString(_traceCount++))
+            );
+        
+        OutputStream out=resource.getOutputStream();
+        if (out!=null)
+        { return out;
+        }
+        else
+        {
+          if (_logger!=null)
+          { _logger.warning("Cannot write to "+resource.toString());
+          }
+          return null;
+        }
+      }
+      catch (UnresolvableURIException x)
+      { 
+        if (_logger!=null)
+        { _logger.warning(_traceUri.toString()+" could not be resolved");
+        }
+      }
+      catch (IOException x)
+      {
+        if (_logger!=null)
+        { _logger.warning("Error writing to "+resource.toString()+":"+x.toString());
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Indicate that the traceStream is finished
+   */
+  public void traceStreamFinished(OutputStream traceStream)
+  {
+    if (traceStream!=null)
+    { 
+      try
+      { traceStream.close();
+      }
+      catch (IOException x)
+      { }
+    }
+  }
+
+  public void uncaughtIOException()
+  { _uncaughtIOExceptionCount++;
+  }
+
+  /**
+   * Called by the ServerInputStream when data is read
+   */
+  public synchronized void countBytesRead(long bytes)
+  { _bytesRead+=bytes;
+  }
+
+  /**
+   * Called by the ServerInputStream when data is written
+   */
+  public synchronized void countBytesWritten(long bytes)
+  { _bytesWritten+=bytes;
   }
 
   /**
@@ -234,4 +359,5 @@ public class Server
       }
     }
   }
+
 }

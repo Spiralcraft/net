@@ -213,7 +213,7 @@ public class ServerSocketEndpoint
     }
 
     if (_logger!=null && _logger.isLoggable(Level.INFO))
-    { _logger.info("Bound to "+(_address!=null?_address.toString():"*")+":"+_port);
+    { _logger.info("Bound to "+(_address!=null?_address.toString():_serverSocket.getInetAddress().getHostAddress().toString())+":"+_port);
     }
   }
 

@@ -7,10 +7,12 @@
     <EchoServer>
       <endpoints>
         <net:ServerSocketEndpoint>
+          <interfaceName>127.0.0.1</interfaceName>
           <port>8007</port>
         </net:ServerSocketEndpoint>
       </endpoints>
       
+      <traceURI>file:/c:/temp/</traceURI>
     </EchoServer>
 
   </services>

@@ -1,5 +1,7 @@
 package spiralcraft.server;
 
+import java.io.OutputStream;
+
 /**
  * Provides support for ProtocolHandlers
  */
@@ -17,4 +19,5 @@ public interface ProtocolHandlerSupport
    * Run an potentially blocking operation in its own Thread.
    */
   void runBlockingOperation(Runnable runnable);
+
 }

@@ -27,7 +27,8 @@ public class StandardServerSocketFactory
 
   public ServerSocket createServerSocket(int port,int backlog)
     throws IOException
-  { return createServerSocketChannel(port,backlog).socket();
+  { 
+    return createServerSocketChannel(port,backlog).socket();
   }
 
   public ServerSocketChannel createServerSocketChannel(int port,int backlog)
@@ -41,7 +42,7 @@ public class StandardServerSocketFactory
 
   public ServerSocket createServerSocket(int port,int backlog,InetAddress address)
     throws IOException
-  { return createServerSocketChannel(port,backlog,address).socket();
+  { return new ServerSocket(port,backlog,address);    
   }
 
   public ServerSocketChannel createServerSocketChannel

@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import java.net.Socket;
+import java.net.URI;
 
 /**
  * A Connection based on a Socket.
@@ -13,9 +14,20 @@ public class SocketConnection
   implements Connection
 {
   private final Socket _socket;
-
+  private URI _localAddress;
+  private URI _remoteAddress;
+  
   public SocketConnection(Socket socket)
   { _socket=socket;
+  }
+
+  public boolean isSecure()
+  { return false;
+  }
+
+  public void setReadTimeoutMillis(int millis)
+    throws IOException
+  { _socket.setSoTimeout(millis);
   }
 
   public void addConnectionListener(ConnectionListener listener)
@@ -24,6 +36,34 @@ public class SocketConnection
   
   public void removeConnectionListener(ConnectionListener listener)
   {
+  }
+
+  public URI getLocalAddress()
+  {
+    if (_localAddress==null)
+    { 
+      _localAddress
+        =URI.create
+          ("socket://"
+          +_socket.getLocalAddress().getHostAddress()
+          +":"+Integer.toString(_socket.getLocalPort())
+          );
+    }
+    return _localAddress;
+  }
+
+  public URI getRemoteAddress()
+  {
+    if (_remoteAddress==null)
+    { 
+      _remoteAddress
+        =URI.create
+          ("socket://"
+          +_socket.getInetAddress().getHostAddress()
+          +":"+Integer.toString(_socket.getPort())
+          );
+    }
+    return _remoteAddress;
   }
 
   public void close()
@@ -43,11 +83,17 @@ public class SocketConnection
 
   public String toString()
   { 
-    return "SocketConnection["
-      +_socket.getInetAddress().getHostAddress()
-      +"->"
-      +_socket.getLocalAddress().getHostAddress()
-      +"]"
-      ;
+    if (_socket.isConnected())
+    {
+      return "SocketConnection["
+        +_socket.getInetAddress().getHostAddress()
+        +"->"
+        +_socket.getLocalAddress().getHostAddress()
+        +"]"
+        ;
+    }
+    else
+    { return "SocketConnection[unconnected]";
+    }
   }
 }
