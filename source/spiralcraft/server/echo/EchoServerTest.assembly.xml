@@ -1,0 +1,17 @@
+<service:Daemon
+  xmlns:service="java:/spiralcraft/service"
+  xmlns:net="java:/spiralcraft/net"
+  >
+  <services>
+
+    <EchoServer>
+      <endpoints>
+        <net:ServerSocketEndpoint>
+          <port>8007</port>
+        </net:ServerSocketEndpoint>
+      </endpoints>
+      
+    </EchoServer>
+
+  </services>
+</service:Daemon>
