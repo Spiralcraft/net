@@ -27,6 +27,7 @@ public class EchoProtocolHandler
     {
       _support=support;
       _connection=connection;
+      
       _in=connection.getInputStream();
       _out=connection.getOutputStream();
       _support.runBlockingOperation(this);
