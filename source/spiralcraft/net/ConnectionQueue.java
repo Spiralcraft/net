@@ -13,9 +13,9 @@ public class ConnectionQueue
 {
 
   /**
-   * ConnectionListener.connectionEstablished
+   * ConnectionListener.connectionAccepted
    */
-  public void connectionEstablished(ConnectionEvent event)
+  public void connectionAccepted(ConnectionEvent event)
   { 
     Connection connection=event.getConnection();
     try
@@ -33,6 +33,13 @@ public class ConnectionQueue
       catch (IOException y)
       { }
     }
+  }
+
+  /**
+   * ConnectionListener.connectionEstablished
+   */
+  public void connectionEstablished(ConnectionEvent event)
+  {
   }
 
   /**

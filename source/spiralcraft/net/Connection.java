@@ -12,9 +12,15 @@ import java.net.URI;
 public interface Connection
 {
 
-  
+  /**
+   * Add a ConnectionListener to be notified when this Connection
+   *   is closed.
+   */
   void addConnectionListener(ConnectionListener listener);
   
+  /**
+   * Remove a ConnectionListener
+   */
   void removeConnectionListener(ConnectionListener listener);
 
   /**

@@ -4,6 +4,10 @@ import java.net.ServerSocket;
 import java.net.InetAddress;
 import java.io.IOException;
 
+/**
+ * Interface from which components obtain blocking ServerSockets without
+ *   regard to socket implementation.
+ */
 public interface ServerSocketFactory
 {
   ServerSocket createServerSocket(int port)
