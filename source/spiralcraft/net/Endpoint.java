@@ -18,6 +18,7 @@ public interface Endpoint
   
   /**
    * Signal the Endpoint that it should start accepting Connections
+   *   and notifying listeners.
    */
   void bind()
     throws IOException;
