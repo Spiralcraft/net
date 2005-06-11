@@ -1,6 +1,7 @@
 <project name="spiralcraft-net" default="build" basedir=".">
 
   <property name="classpath" value="${spiralcraft-core.jar}"/>
+  <property name="module" value="net"/>
 
   <target name="build">
     <javac srcdir="source" classpath="${classpath}" debug="true"/>
@@ -37,6 +38,16 @@
 			<bottom>Copyright 2000,2004 Michael Toth and Spiralcraft, Inc.</bottom>
       <link offline="true" href="../../spiralcraft-core/api"  packagelistLoc="${spiralcraft-core}/docs/api"/>
 		</javadoc>
+  </target>
+
+  <target name="source" depends="build">
+    <jar 
+      destfile="../../distrib/spiralcraft-${module}-source.jar" 
+      basedir="../../.."
+      includes="spiralcraft/modules/${module}/*.xml,spiralcraft/modules/${module}/source/spiralcraft/**/*.java,spiralcraft/modules/${module}/source/spiralcraft/**/*.xml"
+      >
+    </jar>
+
   </target>
   
 </project>
