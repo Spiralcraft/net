@@ -17,7 +17,6 @@ package spiralcraft.http;
 import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import java.net.URI;
 
