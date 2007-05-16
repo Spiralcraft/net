@@ -14,15 +14,16 @@
 //
 package spiralcraft.http;
 
-import spiralcraft.util.ArrayMap;
+import spiralcraft.util.ListMap;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * Encodes and decodes urlencoded form and query variables
  */
 public class VariableMap
-  extends ArrayMap
+  extends ListMap<String,String>
 {
 
   public static final VariableMap fromUrlEncodedString(String encodedForm)
@@ -33,7 +34,7 @@ public class VariableMap
   }
 
   public VariableMap()
-  { super(new LinkedHashMap(),String.class);
+  { super(new LinkedHashMap<String,List<String>>());
   }
 
   public void parseEncodedForm(String encodedForm)
