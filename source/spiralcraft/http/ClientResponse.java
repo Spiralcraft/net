@@ -35,7 +35,7 @@ import java.util.LinkedList;
 
 import spiralcraft.util.ByteBuffer;
 
-import spiralcraft.stream.StreamUtil;
+import spiralcraft.vfs.StreamUtil;
 
 /**
  * Encapsulates an HTTP response at the client side

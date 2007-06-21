@@ -39,9 +39,9 @@ import spiralcraft.pool.ThreadPool;
 import spiralcraft.pool.Pool;
 import spiralcraft.pool.ResourceFactory;
 
-import spiralcraft.stream.Resolver;
-import spiralcraft.stream.Resource;
-import spiralcraft.stream.UnresolvableURIException;
+import spiralcraft.vfs.Resolver;
+import spiralcraft.vfs.Resource;
+import spiralcraft.vfs.UnresolvableURIException;
 
 
 /**

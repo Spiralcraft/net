@@ -26,8 +26,8 @@ import java.util.Iterator;
 
 import spiralcraft.codec.base64.Base64Encoder;
 
-import spiralcraft.stream.Resolver;
-import spiralcraft.stream.StreamUtil;
+import spiralcraft.vfs.Resolver;
+import spiralcraft.vfs.StreamUtil;
 
 
 /**

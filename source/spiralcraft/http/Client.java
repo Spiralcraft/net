@@ -17,7 +17,7 @@ package spiralcraft.http;
 import spiralcraft.exec.Executable;
 import spiralcraft.exec.ExecutionContext;
 
-import spiralcraft.stream.Resolver;
+import spiralcraft.vfs.Resolver;
 
 import java.net.URI;
 
