@@ -22,7 +22,7 @@ import java.io.IOException;
  * A SynchronizedQueue which handles Connections
  */ 
 public class ConnectionQueue
-  extends SynchronizedQueue
+  extends SynchronizedQueue<Connection>
   implements ConnectionListener
 {
 

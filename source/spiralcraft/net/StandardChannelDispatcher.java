@@ -84,12 +84,12 @@ public class StandardChannelDispatcher
         { continue;
         }
 
-        Set readyKeys = _selector.selectedKeys();
-        Iterator it = readyKeys.iterator();
+        Set<SelectionKey> readyKeys = _selector.selectedKeys();
+        Iterator<SelectionKey> it = readyKeys.iterator();
   
         while (it.hasNext()) 
         {
-          SelectionKey key = (SelectionKey) it.next();
+          SelectionKey key = it.next();
           it.remove();
   
           if (!key.isValid())

@@ -21,7 +21,10 @@ import java.nio.channels.SelectableChannel;
 public class ChannelEvent
   extends EventObject
 {
-  
+
+  private static final long serialVersionUID = 1L;
+
+
   public ChannelEvent(SelectableChannel channel)
   { super(channel);
   }

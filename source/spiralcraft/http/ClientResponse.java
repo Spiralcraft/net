@@ -21,17 +21,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.LinkedList;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.BufferedInputStream;
 import java.io.OutputStream;
 
-import java.util.StringTokenizer;
-
 import java.util.HashMap;
-import java.util.LinkedList;
 
 import spiralcraft.util.ByteBuffer;
 
@@ -44,15 +38,15 @@ public final class ClientResponse
 {
 	private ByteArrayOutputStream _rawData;
   private ByteBuffer _buf=new ByteBuffer();
-	private boolean _parsed=false;
-	private List _cookies;
+	// private boolean _parsed=false;
+	private List<Cookie> _cookies;
 	private int _resultCode=0;
 	private String _resultMessage;
 	private String _protocol;
 	private int _readPos=0;
   private InputStream _in;
-  private HashMap _headerMap=new HashMap();
-  private LinkedList _headerList=new LinkedList();
+  private HashMap<String,String> _headerMap=new HashMap<String,String>();
+  private LinkedList<String> _headerList=new LinkedList<String>();
   private boolean _parseAllHeaders;
   private byte[] _content;
 	
@@ -81,12 +75,12 @@ public final class ClientResponse
 	{ return _rawData.toByteArray(); 
 	}
 	
-  public List getHeaderNames()
+  public List<String> getHeaderNames()
   { return _headerList;
   }
 
   public String getHeader(String name)
-  { return (String) _headerMap.get(name);
+  { return _headerMap.get(name);
   }
 
   public static String toString(byte[] bytes,int len)
@@ -137,6 +131,7 @@ public final class ClientResponse
    * Special mode to relay all data to an output stream.
    * Experimental for now.
    */
+  @SuppressWarnings("unused") // XXX Use or delete
   private void pump(OutputStream out)
     throws IOException
   { 
@@ -155,7 +150,7 @@ public final class ClientResponse
       else
       { 
         int readSize=Math.min(_in.available(),buf.length);
-        int count=_in.read(buf,0,readSize);
+        // int count=_in.read(buf,0,readSize);
         out.write(buf,0,readSize);
       }
     }
@@ -253,7 +248,7 @@ public final class ClientResponse
 	private final void readHeaders()
     throws IOException
 	{
-		_cookies=new LinkedList();
+		_cookies=new LinkedList<Cookie>();
     readStatus();
     // Deal with 100, 101 result codes- no headers.
     while (readHeader());
@@ -333,7 +328,7 @@ public final class ClientResponse
 		_cookies.add(cookie);
 	}
 			
-	public List getCookies()
+	public List<Cookie> getCookies()
 	{	return _cookies;
 	}
 }

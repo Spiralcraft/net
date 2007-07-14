@@ -97,14 +97,14 @@ public class Server
   /**
    * Service.providesInterface
    */
-  public boolean providesInterface(Class serviceInterface)
+  public boolean providesInterface(Class<?> serviceInterface)
   { return false;
   }
 
   /**
    * Service.getInterface
    */
-  public Object getInterface(Class serviceInterface)
+  public Object getInterface(Class<?> serviceInterface)
   { return null;
   }
 

@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.net.URI;
 
 import java.util.List;
-import java.util.LinkedList;
 import java.util.Iterator;
 
 import spiralcraft.codec.base64.Base64Encoder;
@@ -41,17 +40,17 @@ public class ClientRequest
   private byte[] _authorization;
   private byte[] _protocol="HTTP/1.0".getBytes();
   private byte[] _accept;
-  private String _acceptLanguage="en-us";
-  private String _acceptEncoding="gzip, deflate";
-  private String _userAgent="Mozilla/4.0 (compatible; Spiralcraft HttpClient 0.1; "+System.getProperty("os.name");
+  //private String _acceptLanguage="en-us";
+  //private String _acceptEncoding="gzip, deflate";
+  //private String _userAgent="Mozilla/4.0 (compatible; Spiralcraft HttpClient 0.1; "+System.getProperty("os.name");
   private byte[] _host;
   private byte[] _connection;
-  private String _referer=null;
-  private String _ifModifiedSince=null;
-  private String _ifNoneMatch=null;
+  //private String _referer=null;
+  //private String _ifModifiedSince=null;
+  //private String _ifNoneMatch=null;
   private byte[] _contentType=null;
   private byte[] _contentLength=null;
-  private List _vars=new LinkedList();
+  // private List _vars=new LinkedList();
  
   private byte[] _cookies=new byte[0];
   private byte[] _otherHeaders=new byte[0];
@@ -117,7 +116,7 @@ public class ClientRequest
   { _host=host.getBytes();
   }
 
-  public final void setCookies(List cookies)
+  public final void setCookies(List<Cookie> cookies)
   {
   	ByteArrayOutputStream out=new ByteArrayOutputStream();
 
@@ -125,10 +124,10 @@ public class ClientRequest
 		{
 			try
 			{
-				Iterator it=cookies.iterator();
+				Iterator<Cookie> it=cookies.iterator();
 				while (it.hasNext())
 				{
-					Cookie cookie=(Cookie) it.next();
+					Cookie cookie=it.next();
 					out.write("Cookie: ".getBytes());
 					out.write(cookie.getClientRequestHeader());
 					out.write(_eol);
@@ -144,17 +143,17 @@ public class ClientRequest
   	_headerVersion++;
   }
   
-  public final void setHeaders(List headers)
+  public final void setHeaders(List<String> headers)
   {
   	ByteArrayOutputStream out=new ByteArrayOutputStream();
 		if (headers.size()>0)
 		{
 			try
 			{
-				Iterator it=headers.iterator();
+				Iterator<String> it=headers.iterator();
 				while (it.hasNext())
 				{
-					out.write(((String) it.next()).getBytes());
+					out.write(it.next().getBytes());
 					out.write(_eol);
 						
 				}

@@ -14,7 +14,6 @@
 //
 package spiralcraft.server;
 
-import java.io.OutputStream;
 
 /**
  * Provides support for ProtocolHandlers
