@@ -12,15 +12,32 @@
 // Unless otherwise agreed to in writing, this software is distributed on an
 // "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
 //
-package spiralcraft.server;
+package spiralcraft.net.http;
+
+import spiralcraft.util.ListMap;
+
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
- * Creates and discards ProtocolHandlers
+ * Encodes and decodes urlencoded form and query variables
  */
-public interface ProtocolHandlerFactory
+public class VariableMap
+  extends ListMap<String,String>
 {
-  public ProtocolHandler createProtocolHandler();
 
-  public void discardProtocolHandler(ProtocolHandler handler);
+  public static final VariableMap fromUrlEncodedString(String encodedForm)
+  {
+    VariableMap map=new VariableMap();
+    map.parseEncodedForm(encodedForm);
+    return map;
+  }
 
+  public VariableMap()
+  { super(new LinkedHashMap<String,List<String>>());
+  }
+
+  public void parseEncodedForm(String encodedForm)
+  {
+  }
 }

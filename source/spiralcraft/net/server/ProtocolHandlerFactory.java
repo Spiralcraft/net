@@ -12,22 +12,15 @@
 // Unless otherwise agreed to in writing, this software is distributed on an
 // "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
 //
-package spiralcraft.server;
-
-import spiralcraft.net.Connection;
+package spiralcraft.net.server;
 
 /**
- * Runs a server protocol for a single connection.
+ * Creates and discards ProtocolHandlers
  */
-public interface ProtocolHandler
+public interface ProtocolHandlerFactory
 {
+  public ProtocolHandler createProtocolHandler();
 
-  /**
-   * Handle a connection. 
-   *
-   * The implementation should call ProtocolHandlerSupport.protocolFinished()
-   *   when the protocol is complete so the ProtocolHandler can be re-used.
-   */
-  void handleConnection(ProtocolHandlerSupport support,Connection connection);
+  public void discardProtocolHandler(ProtocolHandler handler);
 
 }

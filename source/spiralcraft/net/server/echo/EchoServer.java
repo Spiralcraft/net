@@ -12,11 +12,11 @@
 // Unless otherwise agreed to in writing, this software is distributed on an
 // "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
 //
-package spiralcraft.server.echo;
+package spiralcraft.net.server.echo;
 
-import spiralcraft.server.Server;
-import spiralcraft.server.ProtocolHandler;
-import spiralcraft.server.ProtocolHandlerFactory;
+import spiralcraft.net.server.ProtocolHandler;
+import spiralcraft.net.server.ProtocolHandlerFactory;
+import spiralcraft.net.server.Server;
 
 import spiralcraft.service.ServiceResolver;
 import spiralcraft.service.ServiceException;
