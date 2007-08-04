@@ -38,6 +38,21 @@ public class VariableMap
   }
 
   public void parseEncodedForm(String encodedForm)
-  {
+  { 
+    String[] pairs=encodedForm.split("&");
+    for (String pair: pairs)
+    {
+      int eqpos=pair.indexOf('=');
+      if (eqpos>0 && eqpos<pair.length()-1)
+      {
+        String name=URLCodec.decode(pair.substring(0,eqpos));
+        String[] values=pair.substring(eqpos+1).split(",");
+        for (String value: values)
+        { add(name,URLCodec.decode(value));
+        }
+      }
+
+    }
+    
   }
 }
