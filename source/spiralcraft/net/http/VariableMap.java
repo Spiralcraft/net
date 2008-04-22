@@ -51,8 +51,47 @@ public class VariableMap
         { add(name,URLCodec.decode(value));
         }
       }
-
     }
     
+  }
+  
+  public String generateEncodedForm()
+  { 
+    StringBuilder buf=new StringBuilder();
+    boolean first=true;
+    for (Entry<String,List<String>> entry: entrySet())
+    {
+      if (first)
+      { first=false;
+      }
+      else
+      { buf.append("&");
+      }
+      buf.append(URLCodec.encode(entry.getKey()));
+      buf.append("=");
+      
+      boolean first2=true;
+      for (String string:entry.getValue())
+      {
+        if (first2)
+        { first2=false;
+        }
+        else
+        { buf.append(",");
+        }
+        buf.append(URLCodec.encode(string));
+      }
+    }
+    if (buf.length()==0)
+    { return null;
+    }
+    else
+    { return buf.toString();
+    }
+      
+  }
+  
+  public String toString()
+  { return super.toString()+":"+generateEncodedForm();
   }
 }
