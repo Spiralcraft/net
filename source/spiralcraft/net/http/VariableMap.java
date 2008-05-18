@@ -20,7 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
- * Encodes and decodes urlencoded form and query variables
+ * Encodes and decodes application/x-www-form-urlencoded urlencoded form and 
+ *   query variables
  */
 public class VariableMap
   extends ListMap<String,String>
