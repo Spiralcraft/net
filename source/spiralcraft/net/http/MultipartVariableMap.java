@@ -11,11 +11,18 @@ import spiralcraft.vfs.StreamUtil;
 
 import java.util.LinkedList;
 
+import spiralcraft.log.ClassLogger;
+import spiralcraft.io.NullOutputStream;
 import spiralcraft.net.mime.MultipartParser;
 
 public class MultipartVariableMap
   extends VariableMap
 {
+  private static final boolean DEBUG=false;
+  
+  private static final ClassLogger log
+    =ClassLogger.getInstance(MultipartVariableMap.class);
+  
   
   private LinkedList<URI> tempFiles=new LinkedList<URI>();
 
@@ -23,26 +30,48 @@ public class MultipartVariableMap
     throws IOException
   {
     MultipartParser parser=new MultipartParser(in,contentType,contentLength);
+    parser.setQuotableChars("\\\"");
     int partNum=0;
     while (parser.nextPart())
     {
       String name=parser.getPartName();      
       InputStream contentIn=parser.getInputStream();
-
-      if (parser.getPartFilename()!=null)
+      
+      String partFilename=parser.getPartFilename();
+      if (partFilename!=null)
       { 
-        add(name+".filename",parser.getPartFilename());
-        add(contentType+".contentType",parser.getPartContentType());
+        if (partFilename.length()>0)
+        {
+          // Fix IE mishegas- sends full windows specific path
+          int slashPos=partFilename.lastIndexOf('\\');
+          if (slashPos>-1)
+          { partFilename=partFilename.substring(slashPos+1);
+          }
+          if (DEBUG)
+          { log.fine("Filename: "+partFilename);
+          }
         
-        File tempFile=File.createTempFile("upload",null);
-        tempFiles.add(tempFile.toURI());
-        OutputStream out=new FileOutputStream(tempFile);
-        StreamUtil.copyRaw(contentIn, out, 8192);
-        add(name+".temporaryURI",tempFile.toURI().toString());
+          add(name+".filename",partFilename);
+          add(name+".contentType",parser.getPartContentType());
         
+          File tempFile=File.createTempFile("upload",null);
+          tempFiles.add(tempFile.toURI());
+          OutputStream out=new FileOutputStream(tempFile);
+          StreamUtil.copyRaw(contentIn, out, 8192);
+          add(name+".temporaryURI",tempFile.toURI().toString());
+          if (DEBUG)
+          { log.fine("File: "+name+"="+partFilename+":"+tempFile.toURI());
+          }
+        }
+        else
+        { StreamUtil.copyRaw(contentIn,new NullOutputStream(),8192);
+        }
       }
       else
-      { add(name,StreamUtil.readAsciiString(contentIn,-1));
+      { 
+        String content=StreamUtil.readAsciiString(contentIn,-1);
+//        log.fine(name+"="+content);
+        add(name,content);
       }
 
       partNum++;

@@ -26,14 +26,14 @@ public class ContentDispositionHeader
   private LinkedHashMap<String,String> parameters
     =new LinkedHashMap<String,String>();
   
-  public ContentDispositionHeader(String name,String value)
+  public ContentDispositionHeader(String name,String value,String quotableChars)
     throws IOException
   {
     super(name, value);
-    parse();
+    parse(quotableChars);
   }
   
-  public void parse()
+  public void parse(String quotableChars)
     throws IOException
   {
     PushbackReader in=startParse();
@@ -42,7 +42,9 @@ public class ContentDispositionHeader
     
     int c=in.read();
     if (c==';')
-    { parameters=extractParameters(in);
+    { 
+      in.unread(c);
+      parameters=extractParameters(in,quotableChars);
     }
     else
     { throw new IOException("Found '"+c+"' in an unexpected place");

@@ -45,12 +45,14 @@ public class ContentTypeHeader
     }
     subtype=extractTokenTo(in,';');
     
-    
+    c=in.read();
     if (c==';')
-    { parameters=extractParameters(in);
+    { 
+      in.unread(c);
+      parameters=extractParameters(in,null);
     }
-    else
-    { throw new IOException("Found '"+c+"' in an unexpected place");
+    else if (c!=-1)
+    { throw new IOException("Found '"+(char) c+"' ("+c+") in an unexpected place");
     }
   }
   

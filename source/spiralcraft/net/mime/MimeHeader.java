@@ -60,7 +60,7 @@ public abstract class MimeHeader
   {
     StringBuilder val=new StringBuilder();
     int c;
-    while ((c = in.read()) > -1 && c != ';')
+    while ((c = in.read()) > -1 && c != token)
     { 
       if (c=='(')
       { skipComment(in);
@@ -69,7 +69,7 @@ public abstract class MimeHeader
       { val.append((char) c);
       }
     }
-    if (c==';')
+    if (c==token)
     { in.unread(c);
     }
     
@@ -106,7 +106,10 @@ public abstract class MimeHeader
    * @return
    * @throws IOException
    */
-  protected LinkedHashMap<String,String> extractParameters(PushbackReader in)
+  protected LinkedHashMap<String,String> extractParameters
+    (PushbackReader in
+    ,String quotableChars
+    )
     throws IOException
   {
     LinkedHashMap<String,String> parameters=new LinkedHashMap<String,String>();
@@ -124,7 +127,13 @@ public abstract class MimeHeader
           {
             c = in.read();
             if (c == '"')
-            { parameters.put(name, parseQuotedString(in));
+            { 
+              if (quotableChars!=null)
+              { parameters.put(name, parseQuotedString(in, quotableChars));
+              }
+              else
+              { parameters.put(name, parseQuotedString(in));
+              }
             }
             else
             {
@@ -174,6 +183,48 @@ public abstract class MimeHeader
     return qstr.toString();
   }
   
+  /**
+   * Parses an RFC822 quoted-string. Assumes leading '"' has been consumed
+   * from the InputStream.
+   *
+   * @return    the parsed quoted string - without the quotes and with
+   *            escapes properly substituted
+   */
+  protected String parseQuotedString(PushbackReader in,String quotableChars)
+    throws IOException
+  {
+    StringBuilder qstr = new StringBuilder(20);
+    int c;
+
+    while ((c = in.read()) > -1)
+    {
+      switch (c)
+      {
+        case '\\':
+          if (quotableChars!=null)
+          { 
+            char quoted=(char) in.read();
+            if (quotableChars.indexOf(quoted)>=0)
+            { qstr.append(quoted);
+            }
+            else
+            { 
+              // Pass through backslash if not in quotable chars
+              qstr.append("\\").append(quoted);
+            }
+          }
+          else
+          { qstr.append((char) in.read());
+          }
+          break;
+        case '"':
+          return qstr.toString();
+        default:
+          qstr.append((char) c);
+      }
+    }
+    return qstr.toString();
+  }  
   protected String parseToken(PushbackReader in)
     throws IOException
   {
@@ -193,6 +244,9 @@ public abstract class MimeHeader
           break;
         }
       }
+//      else if (c == '\\')
+//      { c = in.read();
+//      }
       else if (isControl(c) || isSpecial(c))
       {
         in.unread(c);

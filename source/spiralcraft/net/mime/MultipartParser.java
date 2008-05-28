@@ -16,12 +16,14 @@ package spiralcraft.net.mime;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import spiralcraft.vfs.StreamUtil;
 
 import spiralcraft.io.NullOutputStream;
 
 import spiralcraft.io.WindowInputStream;
+import spiralcraft.log.ClassLogger;
 
 import spiralcraft.util.StringUtil;
 
@@ -32,16 +34,21 @@ public class MultipartParser
 {
 
   private static final boolean DEBUG=false;
+  private static final ClassLogger log
+    =ClassLogger.getInstance(MultipartParser.class);
+  
   private MimeHeaderMap _headers;
+  private String quotableChars=null;
 
 
+  
   public MultipartParser(InputStream in,String contentType,int contentLength)
     throws IOException
   {
     _contentType=contentType;
     _contentLength=contentLength;
     if (DEBUG)
-    { System.err.println("Content Length= "+contentLength);
+    { log.fine("Content Length= "+contentLength);
     }
 
     if (_contentType==null)
@@ -71,11 +78,21 @@ public class MultipartParser
       (_in,new NullOutputStream(),8192,_contentLength-_count);
     
     if (DEBUG)
-    { System.err.println("Separator ("+_count+")");
+    { log.fine("Separator ("+_count+")");
     }
 
   }
 
+  /**
+   * Restrict the set of quotable chars at critical points. The sole purpose
+   *   is to work around IE sending unqoted backslashes.
+   * 
+   * @param quotableChars
+   */
+  public void setQuotableChars(String quotableChars)
+  { this.quotableChars=quotableChars;
+  }
+  
   public void resolveContentType()
   { _separator=_contentType.substring(_contentType.indexOf("boundary=")+9);
   }
@@ -89,13 +106,13 @@ public class MultipartParser
     throws IOException
   {
     if (DEBUG)
-    { System.err.println("nextPart()");
+    { log.fine("nextPart()");
     }
 
     if (_done)
     { 
       if (DEBUG)
-      { System.err.println("nextPart(): _done=true");
+      { log.fine("nextPart(): _done=true");
       }
       return false;
     }
@@ -112,7 +129,18 @@ public class MultipartParser
     if (_count<_contentLength)
     { 
 
-      readHeaders();
+      try
+      { readHeaders();
+      }
+      catch (IOException x)
+      {
+        if (DEBUG)
+        { log.log(Level.FINE,"Error reading headers",x);
+        }
+        x.printStackTrace();
+        throw x;
+      }
+      
       if (!_done)
       {
         _partInputStream=new PartInputStream(_in,_separator.length());
@@ -121,14 +149,14 @@ public class MultipartParser
       else
       { 
         if (DEBUG)
-        { System.err.println("nextPart(): done after readHeaders()");
+        { log.fine("nextPart(): done after readHeaders()");
         }
       }
     }
     else
     { 
       if (DEBUG)
-      { System.err.println("nextPart(): reached content length");
+      { log.fine("nextPart(): reached content length");
       }
     }
     return false;
@@ -188,6 +216,7 @@ public class MultipartParser
     throws IOException
   {
     _headers=new MimeHeaderMap();
+    _headers.setQuotableChars(quotableChars);
     
     boolean first=true; 
     // Read Headers
@@ -197,7 +226,7 @@ public class MultipartParser
       String line=StreamUtil.readAsciiLine(_in,null,_contentLength-_count);
       
       if (DEBUG)
-      { System.err.println("line ("+(line.length()+2)+"): "+line);
+      { log.fine("line ("+(line.length()+2)+"): "+line);
       }
       _count+=line.length()+2;
       if (line.equals("--"))
@@ -215,7 +244,9 @@ public class MultipartParser
         else
         { 
           // Last header
-          _headers.parseHeader(header.toString());
+          if (header.length()>0)
+          { _headers.parseHeader(header.toString());
+          }
           break;
         }
       }
@@ -224,11 +255,13 @@ public class MultipartParser
         if (line.startsWith(" ")
             || line.startsWith("\t")
            )
-        { header.append(line);
+        { header.append(line.substring(1));
         }
         else
         {
-          _headers.parseHeader(header.toString());
+          if (header.length()>0)
+          { _headers.parseHeader(header.toString());
+          }
           header.setLength(0);
           header.append(line);
         }

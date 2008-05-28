@@ -26,6 +26,7 @@ public class MimeHeaderMap
   public static final String HDR_CONTENT_TYPE="Content-Type";
   public static final String HDR_CONTENT_DISPOSITION="Content-Disposition";
   
+  private String quotableChars;
   
   public ContentDispositionHeader getContentDisposition()
   { return (ContentDispositionHeader) get("Content-Disposition");
@@ -33,6 +34,10 @@ public class MimeHeaderMap
 
   public ContentTypeHeader getContentType()
   { return (ContentTypeHeader) get("Content-Type");
+  }
+  
+  public void setQuotableChars(String quotableChars)
+  { this.quotableChars=quotableChars;
   }
   
   public void parseHeader(String header)
@@ -50,7 +55,11 @@ public class MimeHeaderMap
     { put(HDR_CONTENT_TYPE,new ContentTypeHeader(name,value));
     }
     else if (name.equals(HDR_CONTENT_DISPOSITION))
-    { put(HDR_CONTENT_DISPOSITION,new ContentDispositionHeader(name,value));
+    { 
+      put
+        (HDR_CONTENT_DISPOSITION
+        ,new ContentDispositionHeader(name,value,quotableChars)
+        );
     }
     else
     { 
