@@ -30,24 +30,29 @@ public class ServerInputStream
 
   }
 
+  @Override
   public final int available()
     throws IOException
   { return _in.available();
   }
 
+  @Override
   public final void close()
     throws IOException
   { _in.close();
   }
 
+  @Override
   public final void mark(int readlimit)
   { _in.mark(readlimit);
   }
 
+  @Override
   public final boolean markSupported()
   { return _in.markSupported();
   }
 
+  @Override
   public final int read()
     throws IOException
   {
@@ -58,6 +63,7 @@ public class ServerInputStream
     return val;
   }
 
+  @Override
   public final int read(byte[] buffer)
     throws IOException
   { 
@@ -68,6 +74,7 @@ public class ServerInputStream
     return count;
   }
 
+  @Override
   public final int read(byte[] buffer,int start,int len)
     throws IOException
   { 
@@ -78,11 +85,13 @@ public class ServerInputStream
     return count;
   }
 
+  @Override
   public final void reset()
     throws IOException
   { _in.reset();
   }  
 
+  @Override
   public final long skip(long n)
     throws IOException
   {

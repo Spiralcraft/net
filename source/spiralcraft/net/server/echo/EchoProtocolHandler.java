@@ -95,6 +95,7 @@ public class EchoProtocolHandler
     }
   }
 
+  @Override
   public String toString()
   { return "spiralcraft.server.echo.EchoProtocolHandler-"+_id;
   }

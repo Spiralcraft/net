@@ -29,6 +29,7 @@ public class EchoServer
   implements ProtocolHandlerFactory
 {
   
+  @Override
   public void init(ServiceResolver resolver)
     throws ServiceException
   { 

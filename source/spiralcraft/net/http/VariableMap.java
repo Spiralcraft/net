@@ -18,6 +18,7 @@ import spiralcraft.util.ListMap;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Encodes and decodes application/x-www-form-urlencoded urlencoded form and 
@@ -27,6 +28,13 @@ public class VariableMap
   extends ListMap<String,String>
 {
 
+  /**
+   * <p>Construct a Variable map from a URL encoded string of the 
+   *   application/x-form-urlencoded content type.
+   * </p>
+   * 
+   * @param map
+   */
   public static final VariableMap fromUrlEncodedString(String encodedForm)
   {
     VariableMap map=new VariableMap();
@@ -34,10 +42,43 @@ public class VariableMap
     return map;
   }
 
+  /**
+   * <p>Construct a Variable map using a standard Map from String keys to
+   *  String arrays of values.
+   * </p>
+   * 
+   * @param map
+   */
+  public VariableMap(Map<String,String[]> map)
+  { 
+    super(new LinkedHashMap<String,List<String>>());
+    for (Map.Entry<String,String[]> entry: map.entrySet())
+    {
+      for (String value:entry.getValue())
+      { add(entry.getKey(),value);
+      }
+    }
+    
+  }
+  
+  
+  /**
+   * <p>Construct an empty VariableMap
+   * </p>
+   * 
+   * @param map
+   */
   public VariableMap()
   { super(new LinkedHashMap<String,List<String>>());
   }
 
+  /**
+   * <p>Add values to the map from a URL encoded string of the 
+   *   application/x-form-urlencoded content type.
+   * </p>
+   * 
+   * @param encodedForm
+   */
   public void parseEncodedForm(String encodedForm)
   { 
     String[] pairs=encodedForm.split("&");
@@ -56,6 +97,13 @@ public class VariableMap
     
   }
   
+  /**
+   * <p>Create a URL encoded string in the form of the 
+   *   application/x-form-urlencoded content type from the values in the map
+   * </p>
+   * 
+   * @param encodedForm
+   */
   public String generateEncodedForm()
   { 
     StringBuilder buf=new StringBuilder();
@@ -92,6 +140,7 @@ public class VariableMap
       
   }
   
+  @Override
   public String toString()
   { return super.toString()+":"+generateEncodedForm();
   }

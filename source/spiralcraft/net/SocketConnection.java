@@ -225,6 +225,7 @@ public class SocketConnection
     }
   }
 
+  @Override
   public String toString()
   { 
     if (_socket.isConnected())
@@ -260,6 +261,7 @@ public class SocketConnection
   {
     private boolean _eof=false;
     
+    @Override
     public int read()
       throws IOException
     {
@@ -273,11 +275,13 @@ public class SocketConnection
       }
     }
 
+    @Override
     public int read(byte[] buff)
       throws IOException
     { return read(buff,0,buff.length);
     }
     
+    @Override
     public int read(byte[] buff,int start,int len)
       throws IOException
     { 
@@ -337,6 +341,7 @@ public class SocketConnection
   class BlockingOutputStream
     extends OutputStream
   {
+    @Override
     public void write(int val)
       throws IOException
     {
@@ -344,11 +349,13 @@ public class SocketConnection
       write(buff,0,1);
     }
 
+    @Override
     public void write(byte[] buff)
       throws IOException
     { write(buff,0,buff.length);
     }
     
+    @Override
     public void write(byte[] buff,int start,int len)
       throws IOException
     { 

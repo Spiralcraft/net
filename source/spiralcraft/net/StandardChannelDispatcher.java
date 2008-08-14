@@ -54,7 +54,7 @@ public class StandardChannelDispatcher
    * The registry is used to find a Logger instance.
    */
   public void register(RegistryNode node)
-  { _logger=(Logger) node.findInstance(Logger.class);
+  { _logger=node.findInstance(Logger.class);
   }
     
   public void wakeup()

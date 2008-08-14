@@ -29,6 +29,7 @@ public class ServerOutputStream
     _out=out;
   }
 
+  @Override
   public void write(int val)
     throws IOException
   { 
@@ -36,6 +37,7 @@ public class ServerOutputStream
     _connection.bytesWritten((byte) val);
   }
   
+  @Override
   public void write(byte[] bytes)
     throws IOException
   { 
@@ -43,6 +45,7 @@ public class ServerOutputStream
     _connection.bytesWritten(bytes);
   }
 
+  @Override
   public void write(byte[] bytes,int start,int len)
     throws IOException
   {
@@ -50,11 +53,13 @@ public class ServerOutputStream
     _connection.bytesWritten(bytes,start,len);;
   }
 
+  @Override
   public void flush()
     throws IOException
   { _out.flush();
   }
 
+  @Override
   public void close()
     throws IOException
   { _out.close();

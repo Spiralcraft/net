@@ -283,6 +283,7 @@ public class MultipartParser
       _drained=false;
     }
 
+    @Override
     public int read()
       throws IOException
     { 
@@ -306,11 +307,13 @@ public class MultipartParser
       return val;
     }
 
+    @Override
     public int read(byte[] b)
       throws IOException
     { return read(b,0,b.length);
     }
 
+    @Override
     public int read(byte[] b,int start,int len)
       throws IOException
     {

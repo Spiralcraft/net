@@ -66,7 +66,7 @@ public class ConnectionQueue
   public Connection nextConnection()
     throws InterruptedException
   {
-    Connection connection=(Connection) next();
+    Connection connection=next();
     connection.removeConnectionListener(this);
     return connection;
   }

@@ -100,6 +100,7 @@ public class ServerConnection
   { return _connection.getLocalAddress();
   }
 
+  @Override
   public String toString()
   { return _connection.toString();
   }

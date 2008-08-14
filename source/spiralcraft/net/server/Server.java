@@ -78,7 +78,7 @@ public class Server
   public void register(RegistryNode node)
   { 
     _registryNode=node;
-    _logger=(Logger) node.findInstance(Logger.class);
+    _logger=node.findInstance(Logger.class);
     _threadPool.register(node.createChild("threadPool"));
     _protocolHandlerPool.register(node.createChild("protocolHandlerPool"));
   }
