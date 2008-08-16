@@ -141,6 +141,15 @@ public class VariableMap
   }
   
   @Override
+  public void add(String name,String value)
+  {
+    if (value==null)
+    { throw new IllegalArgumentException("Value cannot be null");
+    }
+    super.add(name, value);
+  }
+  
+  @Override
   public String toString()
   { return super.toString()+":"+generateEncodedForm();
   }
