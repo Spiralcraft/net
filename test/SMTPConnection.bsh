@@ -1,0 +1,5 @@
+import spiralcraft.net.smtp.SMTPConnection;
+
+c=new SMTPConnection();
+
+c.test("mike.toth@spiralcraft.com","mail.spiralcraft.com");

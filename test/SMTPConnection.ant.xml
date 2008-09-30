@@ -1,0 +1,21 @@
+<project default="import">
+
+  <path id="classpath">
+    <pathelement location="../lib/spiralcraft-core.jar"/>
+    <pathelement location="../lib/spiralcraft-net.jar"/>
+    <pathelement location="../../../build/lib/bsh.jar"/>
+  </path>
+  <property name="classpath" refid="classpath"/>
+  
+  <target name="import">
+    <java 
+      fork="true" 
+      classpath="${classpath}"
+      classname="bsh.Interpreter"
+      >
+      <arg value="SMTPConnection.bsh"/>
+    </java>
+  </target>
+  
+
+</project>
