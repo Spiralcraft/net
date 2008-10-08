@@ -256,6 +256,10 @@ public class SMTPConnection
   public synchronized boolean
     sendMessage(String sender,List<String> recipients,String message)
   { 
+    if (socket==null || socket.isClosed())
+    { throw new IllegalStateException("Not connected");
+    }
+    
     exception=null;
     try
     {
