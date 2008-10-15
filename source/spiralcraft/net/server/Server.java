@@ -24,12 +24,11 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 import spiralcraft.service.Service;
-import spiralcraft.service.ServiceResolver;
-import spiralcraft.service.ServiceException;
 
 import spiralcraft.registry.RegistryNode;
 import spiralcraft.registry.Registrant;
 
+import spiralcraft.builder.LifecycleException;
 import spiralcraft.net.Connection;
 import spiralcraft.net.ConnectionQueue;
 import spiralcraft.net.Endpoint;
@@ -112,8 +111,8 @@ public class Server
   /**
    * Service.init
    */
-  public void init(ServiceResolver resolver)
-    throws ServiceException
+  public void start()
+    throws LifecycleException
   { 
     try
     { 
@@ -125,14 +124,14 @@ public class Server
       
 
       bind();
-      start();
+      startHandler();
       _channelDispatcher.start();
       if (_logger!=null && _logger.isLoggable(Level.INFO))
       { _logger.info("Started");
       }
     }
     catch (IOException x)
-    { throw new ServiceException("Error binding endpoints",x);
+    { throw new LifecycleException("Error binding endpoints",x);
     }
   }
 
@@ -140,7 +139,8 @@ public class Server
   /**
    * Service.destroy
    */  
-  public void destroy()
+  @Override
+  public void stop()
   { 
     release();
     _channelDispatcher.stop();
@@ -212,7 +212,7 @@ public class Server
     }
   }
 
-  private synchronized void start()
+  private synchronized void startHandler()
   {
     if (_handlerThread==null)
     { 

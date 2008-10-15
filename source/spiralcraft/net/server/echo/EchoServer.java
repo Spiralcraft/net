@@ -14,12 +14,11 @@
 //
 package spiralcraft.net.server.echo;
 
+import spiralcraft.builder.LifecycleException;
 import spiralcraft.net.server.ProtocolHandler;
 import spiralcraft.net.server.ProtocolHandlerFactory;
 import spiralcraft.net.server.Server;
 
-import spiralcraft.service.ServiceResolver;
-import spiralcraft.service.ServiceException;
 
 /**
  * A simple server which echoes input to output
@@ -30,11 +29,11 @@ public class EchoServer
 {
   
   @Override
-  public void init(ServiceResolver resolver)
-    throws ServiceException
+  public void start()
+    throws LifecycleException
   { 
     setProtocolHandlerFactory(this);
-    super.init(resolver);
+    super.start();
   }
 
   public ProtocolHandler createProtocolHandler()
