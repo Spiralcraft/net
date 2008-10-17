@@ -1,5 +1,14 @@
+import spiralcraft.net.syntax.MailAddress;
+
 show();
 originalUrl="/ this is a string, \"decoded\", not 100% valid in a URL /";
 encodedUrl=spiralcraft.net.http.URLCodec.encode(originalUrl);
 decodedUrl=spiralcraft.net.http.URLCodec.decode(encodedUrl);
 originalUrl.equals(decodedUrl);
+
+
+new MailAddress("mike@spiralcraft.com");
+new MailAddress("mike.toth@spiralcraft.com");
+new MailAddress("<mike.toth@spiralcraft.com>");
+new MailAddress("Mike Toth <mike.toth@spiralcraft.com>");
+new MailAddress("\"Mike Toth\" <mike.toth@spiralcraft.com>");

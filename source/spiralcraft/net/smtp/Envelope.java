@@ -14,37 +14,52 @@
 //
 package spiralcraft.net.smtp;
 
+import java.util.LinkedList;
 import java.util.List;
+
+import spiralcraft.net.syntax.MailAddress;
+
+import spiralcraft.text.ParseException;
 
 public class Envelope
 {
 
   private String server;
-  private String sender;
-  private List<String> recipients;
-  private String message;
+  private MailAddress sender;
+  private List<MailAddress> recipients;
+  private String encodedMessage;
   
   /**
    * @return the sender
    */
-  public String getSender()
-  {
-    return sender;
+  public MailAddress getSenderMailAddress()
+  { return sender;
   }
 
   /**
    * @param sender the sender to set
    */
-  public void setSender(
-    String sender)
+  public void setSender(String sender)
   {
-    this.sender = sender;
+    if (sender==null)
+    { this.sender=null;
+    }
+    else
+    {
+      try
+      { this.sender = new MailAddress(sender);
+      }
+      catch (ParseException x)
+      { throw new IllegalArgumentException(x);
+      }
+    }
+    
   }
 
   /**
    * @return the recipients
    */
-  public List<String> getRecipients()
+  public List<MailAddress> getRecipients()
   {
     return recipients;
   }
@@ -53,34 +68,48 @@ public class Envelope
    * @param recipients the recipients to set
    */
   public void setRecipients(
-    List<String> recipients)
+    List<MailAddress> recipients)
   {
     this.recipients = recipients;
   }
 
   /**
+   * @param Specify a single recipient
+   */
+  public void setRecipient(String recipient)
+  { 
+    this.recipients=new LinkedList<MailAddress>();
+    if (recipient!=null)
+    {
+      try
+      { this.recipients.add(new MailAddress(recipient));
+      }
+      catch (ParseException x)
+      { throw new IllegalArgumentException(x);
+      }
+    }
+  }
+  
+  /**
    * @return the message
    */
-  public String getMessage()
+  public String getEncodedMessage()
   {
-    return message;
+    return encodedMessage;
   }
 
   /**
    * @param message the message to set
    */
-  public void setMessage(
-    String message)
-  {
-    this.message = message;
+  public void setEncodedMessage(String message)
+  { this.encodedMessage = message;
   }
 
   /**
    * @return the server
    */
   public String getServer()
-  {
-    return server;
+  { return server;
   }
 
   public void setServer(String server)
