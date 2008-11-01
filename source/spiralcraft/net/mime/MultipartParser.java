@@ -25,7 +25,7 @@ import spiralcraft.io.NullOutputStream;
 import spiralcraft.io.WindowInputStream;
 import spiralcraft.log.ClassLogger;
 
-import spiralcraft.util.StringUtil;
+import spiralcraft.util.string.StringUtil;
 
 /**
  * Parses Multipart Mime request data

@@ -17,7 +17,7 @@ package spiralcraft.net.server;
 import spiralcraft.net.Connection;
 import spiralcraft.net.ConnectionListener;
 
-import spiralcraft.util.StringUtil;
+import spiralcraft.util.string.StringUtil;
 
 import java.io.OutputStream;
 import java.io.InputStream;
