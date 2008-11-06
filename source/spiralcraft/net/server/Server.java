@@ -116,9 +116,9 @@ public class Server
   { 
     try
     { 
-      _threadPool.init();
+      _threadPool.start();
       _protocolHandlerPool.setResourceFactory(this);
-      _protocolHandlerPool.init();
+      _protocolHandlerPool.start();
       _channelDispatcher=new StandardChannelDispatcher();
       _channelDispatcher.register(_registryNode.createChild("channelDispatcher"));
       
