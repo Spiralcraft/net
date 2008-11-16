@@ -93,8 +93,9 @@ public class Client
     return response;
   }
   
-	public void execute(ExecutionContext context,String[] args)
+	public void execute(String ... args)
 	{ 
+	  ExecutionContext context=ExecutionContext.getInstance();
  	  ClientRequest req=new ClientRequest();
     OutputStream outputStream=null;
     
