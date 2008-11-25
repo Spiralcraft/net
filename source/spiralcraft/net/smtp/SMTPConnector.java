@@ -17,16 +17,15 @@ package spiralcraft.net.smtp;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
-import spiralcraft.log.ClassLogger;
+import spiralcraft.log.ClassLog;
 import spiralcraft.net.syntax.MailAddress;
 
 public class SMTPConnector
 {
   
-  private static final Logger log
-    =ClassLogger.getInstance(SMTPConnector.class);
+  private static final ClassLog log
+    =ClassLog.getInstance(SMTPConnector.class);
 
   private String server;
   

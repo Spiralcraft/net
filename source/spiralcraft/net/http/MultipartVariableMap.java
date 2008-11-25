@@ -11,7 +11,7 @@ import spiralcraft.vfs.StreamUtil;
 
 import java.util.LinkedList;
 
-import spiralcraft.log.ClassLogger;
+import spiralcraft.log.ClassLog;
 import spiralcraft.io.NullOutputStream;
 import spiralcraft.net.mime.MultipartParser;
 
@@ -20,8 +20,8 @@ public class MultipartVariableMap
 {
   private static final boolean DEBUG=false;
   
-  private static final ClassLogger log
-    =ClassLogger.getInstance(MultipartVariableMap.class);
+  private static final ClassLog log
+    =ClassLog.getInstance(MultipartVariableMap.class);
   
   
   private LinkedList<URI> tempFiles=new LinkedList<URI>();

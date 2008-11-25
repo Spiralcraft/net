@@ -16,14 +16,14 @@ package spiralcraft.net.mime;
 
 import java.io.InputStream;
 import java.io.IOException;
-import java.util.logging.Level;
 
 import spiralcraft.vfs.StreamUtil;
 
 import spiralcraft.io.NullOutputStream;
 
 import spiralcraft.io.WindowInputStream;
-import spiralcraft.log.ClassLogger;
+import spiralcraft.log.ClassLog;
+import spiralcraft.log.Level;
 
 import spiralcraft.util.string.StringUtil;
 
@@ -34,8 +34,8 @@ public class MultipartParser
 {
 
   private static final boolean DEBUG=false;
-  private static final ClassLogger log
-    =ClassLogger.getInstance(MultipartParser.class);
+  private static final ClassLog log
+    =ClassLog.getInstance(MultipartParser.class);
   
   private MimeHeaderMap _headers;
   private String quotableChars=null;

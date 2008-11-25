@@ -26,10 +26,10 @@ import java.net.UnknownHostException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import spiralcraft.log.ClassLogger;
+import spiralcraft.log.Level;
+import spiralcraft.log.Log;
+import spiralcraft.log.ClassLog;
 
 /**
  *
@@ -37,8 +37,8 @@ import spiralcraft.log.ClassLogger;
  */
 public class SMTPConnection
 {
-  private static final Logger log
-    =ClassLogger.getInstance(SMTPConnection.class);
+  private static final ClassLog log
+    =ClassLog.getInstance(SMTPConnection.class);
   
   public static void test(String tester, String server)
     throws IOException
@@ -92,7 +92,7 @@ public class SMTPConnection
   { soTimeout=timeoutMs;
   }
 
-  public void setProtocolLog(Logger log)
+  public void setProtocolLog(Log log)
   { protocolLog=log;
   }
 
@@ -141,7 +141,7 @@ public class SMTPConnection
 
   private String localHost=null;
   private int soTimeout=0;
-  private Logger protocolLog;
+  private Log protocolLog;
   private Exception exception;
   private boolean needsReset;
 
