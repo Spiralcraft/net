@@ -203,7 +203,6 @@ public class MailAddress
   
   
   protected PushbackParserContext startParse()
-    throws ParseException
   { 
     PushbackParserContext in=new PushbackParserContext(rawAddress);
     in.getPosition().setContext(rawAddress);

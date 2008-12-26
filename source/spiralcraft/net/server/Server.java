@@ -95,6 +95,7 @@ public class Server
 
   /**
    * Service.providesInterface
+   * @param serviceInterface 
    */
   public boolean providesInterface(Class<?> serviceInterface)
   { return false;
@@ -102,6 +103,7 @@ public class Server
 
   /**
    * Service.getInterface
+   * @param serviceInterface 
    */
   public Object getInterface(Class<?> serviceInterface)
   { return null;

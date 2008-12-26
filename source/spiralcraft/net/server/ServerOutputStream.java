@@ -50,7 +50,7 @@ public class ServerOutputStream
     throws IOException
   {
     _out.write(bytes,start,len);
-    _connection.bytesWritten(bytes,start,len);;
+    _connection.bytesWritten(bytes,start,len);
   }
 
   @Override

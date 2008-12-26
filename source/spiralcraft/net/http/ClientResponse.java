@@ -251,7 +251,7 @@ public final class ClientResponse
 		_cookies=new LinkedList<Cookie>();
     readStatus();
     // Deal with 100, 101 result codes- no headers.
-    while (readHeader());
+    while (readHeader()) {}
 
 	}	
 

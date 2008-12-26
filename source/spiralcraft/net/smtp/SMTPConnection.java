@@ -41,7 +41,6 @@ public class SMTPConnection
     =ClassLog.getInstance(SMTPConnection.class);
   
   public static void test(String tester, String server)
-    throws IOException
   {
 
     SMTPConnection con=new SMTPConnection();
