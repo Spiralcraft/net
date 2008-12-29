@@ -14,7 +14,8 @@
 //
 package spiralcraft.net.server.echo;
 
-import spiralcraft.builder.LifecycleException;
+import spiralcraft.common.LifecycleException;
+
 import spiralcraft.net.server.ProtocolHandler;
 import spiralcraft.net.server.ProtocolHandlerFactory;
 import spiralcraft.net.server.Server;

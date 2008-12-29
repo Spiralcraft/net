@@ -28,7 +28,8 @@ import spiralcraft.service.Service;
 import spiralcraft.registry.RegistryNode;
 import spiralcraft.registry.Registrant;
 
-import spiralcraft.builder.LifecycleException;
+import spiralcraft.common.LifecycleException;
+
 import spiralcraft.net.Connection;
 import spiralcraft.net.ConnectionQueue;
 import spiralcraft.net.Endpoint;
