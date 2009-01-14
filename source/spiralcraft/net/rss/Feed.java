@@ -14,57 +14,39 @@
 //
 package spiralcraft.net.rss;
 
-import java.io.IOException;
-import java.io.Writer;
-
 import spiralcraft.lang.BindException;
+import spiralcraft.lang.Expression;
 import spiralcraft.lang.Focus;
-import spiralcraft.lang.FocusChainObject;
-import spiralcraft.text.Renderer;
+
+import spiralcraft.sax.ElementRenderer;
 
 /**
- * <p>Renders an RSS style feed based on source data obtained from the
- *   FocusChain
+ * <p>Renders an RSS Feed container
  * </p>
  * 
  * @author mike
  *
  */
-public class RSSRenderer
-  implements Renderer, FocusChainObject
+public class Feed
+    extends ElementRenderer
 {
-
-  @Override
-  public String render()
-    throws IOException
-  {
-    // TODO Auto-generated method stub
-    return null;
+  
+  { document=true;
   }
-
+  
   @Override
-  public void render(
-    Writer writer)
-    throws IOException
-  {
-  // TODO Auto-generated method stub
-
+  public String getLocalName()
+  { return "rss";
   }
-
+  
+  
   @Override
-  public void bind(
-    Focus<?> focusChain)
+  public Focus<?> bind(Focus<?> parentFocus)
     throws BindException
   {
-  // TODO Auto-generated method stub
-
+    addAttributeBinding("version",Expression.create("\"2.0\""));
+    return super.bind(parentFocus);
   }
-
-  @Override
-  public Focus<?> getFocus()
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  
 
 }
