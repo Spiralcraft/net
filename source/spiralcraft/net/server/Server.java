@@ -30,10 +30,10 @@ import spiralcraft.registry.Registrant;
 
 import spiralcraft.common.LifecycleException;
 
-import spiralcraft.net.Connection;
-import spiralcraft.net.ConnectionQueue;
-import spiralcraft.net.Endpoint;
-import spiralcraft.net.StandardChannelDispatcher;
+import spiralcraft.net.io.Connection;
+import spiralcraft.net.io.ConnectionQueue;
+import spiralcraft.net.io.Endpoint;
+import spiralcraft.net.io.StandardChannelDispatcher;
 
 import spiralcraft.pool.ThreadPool;
 import spiralcraft.pool.Pool;

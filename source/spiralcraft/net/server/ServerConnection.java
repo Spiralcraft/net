@@ -14,8 +14,8 @@
 //
 package spiralcraft.net.server;
 
-import spiralcraft.net.Connection;
-import spiralcraft.net.ConnectionListener;
+import spiralcraft.net.io.Connection;
+import spiralcraft.net.io.ConnectionListener;
 
 import spiralcraft.util.string.StringUtil;
 

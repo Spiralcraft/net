@@ -15,7 +15,7 @@
 package spiralcraft.net.server.echo;
 
 
-import spiralcraft.net.Connection;
+import spiralcraft.net.io.Connection;
 import spiralcraft.net.server.ProtocolHandler;
 import spiralcraft.net.server.ProtocolHandlerSupport;
 

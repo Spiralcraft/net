@@ -14,7 +14,7 @@
 //
 package spiralcraft.net.server;
 
-import spiralcraft.net.Connection;
+import spiralcraft.net.io.Connection;
 
 /**
  * Runs a server protocol for a single connection.

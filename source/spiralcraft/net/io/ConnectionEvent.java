@@ -12,17 +12,26 @@
 // Unless otherwise agreed to in writing, this software is distributed on an
 // "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
 //
-package spiralcraft.net;
+package spiralcraft.net.io;
 
-public interface ChannelListener
+import java.util.EventObject;
+
+public class ConnectionEvent
+  extends EventObject
 {
-  void channelAccept(ChannelEvent event);
+
+  private static final long serialVersionUID = 1L;
   
-  void channelConnect(ChannelEvent event);
+  private Connection _connection;
+
+  public ConnectionEvent(Connection connection)
+  { 
+    super(connection);
+    _connection=connection;
+  }
   
-  void channelRead(ChannelEvent event);
-  
-  void channelWrite(ChannelEvent event);
-  
+  public Connection getConnection()
+  { return _connection;
+  }
   
 }
