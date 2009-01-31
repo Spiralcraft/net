@@ -39,6 +39,9 @@ public class Feed
   { return "rss";
   }
   
+  public String getContentType()
+  { return "application/rss+xml;charset=UTF-8";
+  }
   
   @Override
   public Focus<?> bind(Focus<?> parentFocus)
