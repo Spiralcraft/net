@@ -19,6 +19,8 @@ import java.util.Date;
 import spiralcraft.lang.BindException;
 import spiralcraft.lang.Expression;
 import spiralcraft.lang.Focus;
+import spiralcraft.lang.util.DictionaryBinding;
+import spiralcraft.net.syntax.InetTextMessages;
 import spiralcraft.sax.ElementRenderer;
 
 public class Item
@@ -47,7 +49,14 @@ public class Item
     addLeaf("title",titleX);
     addLeaf("link", linkX);
     addLeaf("description", descriptionX);
-    addLeaf("pubDate", pubDateX);
+    
+    {
+      DictionaryBinding<Date> binding=new DictionaryBinding<Date>();
+      binding.setName("pubDate");
+      binding.setTarget(pubDateX);
+      binding.setConverter(InetTextMessages.dateConverter());
+      addLeaf(binding);
+    }
     addLeaf("guid", guidX);
     return super.bind(parentFocus);
     
