@@ -14,8 +14,12 @@
 //
 package spiralcraft.net.syntax;
 
+import java.util.Date;
+
 import spiralcraft.text.ParseException;
 import spiralcraft.text.PushbackParserContext;
+import spiralcraft.util.string.DateToString;
+import spiralcraft.util.string.StringConverter;
 
 /**
  * <p>Provides validation and parsing support for common syntactic elements in
@@ -28,6 +32,9 @@ import spiralcraft.text.PushbackParserContext;
 public class InetTextMessages
 {
 
+  private static final StringConverter<Date> RFC822_DATE_CONVERTER
+    =new DateToString("EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z");
+  
   /**
    * <pre>
    * specials    =  "(" / ")" / "&lt;" / "&gt;" / "@"  ; Must be in quoted-
@@ -331,5 +338,9 @@ public class InetTextMessages
     }
     return lwsp.toString();
   }  
+  
+  public static final StringConverter<Date> dateConverter()
+  { return RFC822_DATE_CONVERTER;
+  }
   
 }
