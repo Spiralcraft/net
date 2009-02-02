@@ -26,3 +26,7 @@ set=new AddressSet("192.168.0.0/28,65.115.71.110/27");
 set.contains("192.168.0.254");
 set.contains("192.168.0.1");
 
+set=new AddressSet("65.115.71.110,65.115.71.112");
+set.contains("65.115.71.110");
+set.contains("65.115.71.111");
+set.contains("65.115.71.112");
