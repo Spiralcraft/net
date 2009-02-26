@@ -140,10 +140,11 @@ public class Server
 
 
   /**
-   * Service.destroy
+   * Service.stop()
    */  
   @Override
   public void stop()
+    throws LifecycleException
   { 
     release();
     _channelDispatcher.stop();
