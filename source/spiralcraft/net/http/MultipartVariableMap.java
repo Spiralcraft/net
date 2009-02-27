@@ -26,6 +26,31 @@ public class MultipartVariableMap
   
   private LinkedList<URI> tempFiles=new LinkedList<URI>();
 
+  /**
+   * Create an empty MultipartVariableMap
+   */
+  public MultipartVariableMap()
+  {
+  }
+
+  /**
+   * <p>Read the MultipartVariableMap from a multipart input stream
+   * </p>
+   * 
+   * @param in
+   * @param contentType
+   * @param contentLength
+   * @throws IOException
+   */
+  public MultipartVariableMap
+    (InputStream in
+    ,String contentType
+    ,int contentLength
+    )
+    throws IOException
+  { read(in,contentType,contentLength);
+  }
+  
   public void read(InputStream in,String contentType,int contentLength)
     throws IOException
   {

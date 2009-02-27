@@ -16,6 +16,7 @@ package spiralcraft.net.http;
 
 import spiralcraft.util.ListMap;
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,6 +139,21 @@ public class VariableMap
     { return buf.toString();
     }
       
+  }
+  
+  public Iterator<String> getNames()
+  { return keySet().iterator();
+  }
+  
+  public String[] getValues(String name)
+  {
+    List<String> ret=get(name);
+    if (ret!=null)
+    { return ret.toArray(new String[ret.size()]);
+    }
+    else
+    { return null;
+    }
   }
   
   @Override
