@@ -20,7 +20,9 @@ import java.util.LinkedHashMap;
 public class MimeHeaderMap
   extends LinkedHashMap<String,MimeHeader>
 {
-
+  // TODO: Mime headers are case insensitive. Use CaseInsensitiveString and
+  //   canonicalize lookup
+  
   private static final long serialVersionUID = 1L;
   
   public static final String HDR_CONTENT_TYPE="Content-Type";
@@ -29,11 +31,11 @@ public class MimeHeaderMap
   private String quotableChars;
   
   public ContentDispositionHeader getContentDisposition()
-  { return (ContentDispositionHeader) get("Content-Disposition");
+  { return (ContentDispositionHeader) get(HDR_CONTENT_DISPOSITION);
   }
 
   public ContentTypeHeader getContentType()
-  { return (ContentTypeHeader) get("Content-Type");
+  { return (ContentTypeHeader) get(HDR_CONTENT_TYPE);
   }
   
   public void setQuotableChars(String quotableChars)
