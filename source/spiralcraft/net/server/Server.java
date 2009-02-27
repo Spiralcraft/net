@@ -75,6 +75,7 @@ public class Server
   { _traceUri=uri;
   }
 
+  @Override
   public void register(RegistryNode node)
   { 
     _registryNode=node;
@@ -88,32 +89,9 @@ public class Server
   }
 
   /**
-   * Service.getSelector
+   * Service.start()
    */
-  public Object getSelector()
-  { return null;
-  }
-
-  /**
-   * Service.providesInterface
-   * @param serviceInterface 
-   */
-  public boolean providesInterface(Class<?> serviceInterface)
-  { return false;
-  }
-
-  /**
-   * Service.getInterface
-   * @param serviceInterface 
-   */
-  public Object getInterface(Class<?> serviceInterface)
-  { return null;
-  }
-
-
-  /**
-   * Service.init
-   */
+  @Override
   public void start()
     throws LifecycleException
   { 
