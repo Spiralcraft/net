@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Iterator;
 
 import spiralcraft.codec.text.Base64Codec;
-import spiralcraft.codec.CodecException;
 
 import spiralcraft.vfs.Resolver;
 import spiralcraft.vfs.StreamUtil;
@@ -98,21 +97,8 @@ public class ClientRequest
 
   public final void setAuthorization(String authorization)
   { 
-    try
-    {
-      _authorization
-        =Base64Codec.encodeAsciiString(authorization).getBytes();
-    }
-    catch (CodecException x)
-    { 
-      throw new IllegalArgumentException
-        ("Could not encode "+authorization+": "+x,x);
-    }
-    catch (IOException x)
-    { 
-      throw new IllegalArgumentException
-        ("Could not encode "+authorization+": "+x,x);
-    }
+    _authorization
+      =Base64Codec.encodeAsciiString(authorization).getBytes();
     _headerVersion++;
   }
   
