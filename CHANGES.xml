@@ -1,0 +1,37 @@
+<scm:Change.list
+  xmlns:scm="class:/spiralcraft/scm/meta/"
+  >
+  <scm:Change>
+    <revision>0.3.2
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>2009-05-27
+    </date>
+
+    <notes>
+      <scm:Note>Moved VariableMapBinding from servlet module to
+         spiralcraft.net.http for general purpose usage.
+      </scm:Note>
+      <scm:Note>Updated server components for genericization and refactor 
+        of Pool.
+      </scm:Note>
+      <scm:Note>Updated components for ArrayUtil genericization
+      </scm:Note>
+    </notes>
+    
+    <path>/source/spiralcraft/net/http/VariableMapBinding.java
+    </path>
+    <path>/source/spiralcraft/net/server/Server.java
+    </path>
+    <path>/source/spiralcraft/net/io/ServerSocketEndpoint.java
+    </path>
+    <path>/source/spiralcraft/net/io/SocketConnection.java
+    </path>
+
+  </scm:Change>
+    
+  
+</scm:Change.list>

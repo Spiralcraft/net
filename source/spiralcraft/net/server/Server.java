@@ -1,5 +1,5 @@
 //
-// Copyright (c) 1998,2005 Michael Toth
+// Copyright (c) 1998,2009 Michael Toth
 // Spiralcraft Inc., All Rights Reserved
 //
 // This package is part of the Spiralcraft project and is licensed under
@@ -49,7 +49,7 @@ import spiralcraft.vfs.UnresolvableURIException;
  *   and dispatches IO events.
  */
 public class Server
-  implements Service,Registrant,ResourceFactory,ProtocolHandlerSupport
+  implements Service,Registrant,ResourceFactory<ProtocolHandler>,ProtocolHandlerSupport
 {
   
   private Endpoint[] _endpoints;
@@ -57,7 +57,8 @@ public class Server
   private Thread _handlerThread;
   private Logger _logger;
   private ThreadPool _threadPool=new ThreadPool();
-  private Pool _protocolHandlerPool=new Pool();
+  private Pool<ProtocolHandler> _protocolHandlerPool
+    =new Pool<ProtocolHandler>();
   private ProtocolHandlerFactory _protocolHandlerFactory;
   private int _connectionCount;
   private int _activeConnectionCount;
@@ -80,8 +81,6 @@ public class Server
   { 
     _registryNode=node;
     _logger=node.findInstance(Logger.class);
-    _threadPool.register(node.createChild("threadPool"));
-    _protocolHandlerPool.register(node.createChild("protocolHandlerPool"));
   }
 
   public Logger getLogger()
@@ -148,15 +147,15 @@ public class Server
   /**
    * Create a new ProtocolHandler for the pool.
    */
-  public Object createResource()
+  public ProtocolHandler createResource()
   { return _protocolHandlerFactory.createProtocolHandler();
   }
 
   /**
    * Discard a resource when no longer needed by the Pool.
    */
-  public void discardResource(Object resource)
-  { _protocolHandlerFactory.discardProtocolHandler((ProtocolHandler) resource);
+  public void discardResource(ProtocolHandler resource)
+  { _protocolHandlerFactory.discardProtocolHandler(resource);
   }
 
   /**
@@ -264,7 +263,7 @@ public class Server
 
     Connection serverConnection=new ServerConnection(this,connection);
 
-    ProtocolHandler handler=(ProtocolHandler) _protocolHandlerPool.checkout();
+    ProtocolHandler handler=_protocolHandlerPool.checkout();
     if (_logger!=null && _logger.isLoggable(Level.FINE))
     { _logger.fine("Dispatching connection "+serverConnection.toString());
     }

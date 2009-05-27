@@ -94,12 +94,12 @@ public class ServerSocketEndpoint
   public synchronized void addConnectionListener(ConnectionListener listener)
   { 
     if (!ArrayUtil.contains(_listeners,listener))
-    { _listeners=(ConnectionListener[]) ArrayUtil.append(_listeners,listener);
+    { _listeners=ArrayUtil.append(_listeners,listener);
     }
   }
 
   public synchronized void removeConnectionListener(ConnectionListener listener)
-  { _listeners=(ConnectionListener[]) ArrayUtil.remove(_listeners,listener);
+  { _listeners=ArrayUtil.remove(_listeners,listener);
   }
 
   public void init()
