@@ -1,0 +1,34 @@
+<sax:TupleFrame
+  xmlns:xsd="class:/spiralcraft/net/xmlschema/"
+  xmlns:sax="class:/spiralcraft/data/sax/"
+  >
+  
+  <elementURI>w3xsd:choice
+  </elementURI>
+
+  <type><xsd:Choice.type/>
+  </type>
+  
+  <container>[xsd:ComplexType].choices
+  </container>
+
+  <attributeBindings>
+
+    <sax:AttributeBinding>
+      <attribute>minOccurs
+      </attribute>
+      <target>required=(.!="0")
+      </target>
+    </sax:AttributeBinding>
+
+    <sax:AttributeBinding>
+      <attribute>maxOccurs
+      </attribute>
+      <target>plural=(.!=null &amp;&amp; .!="1")
+      </target>
+    </sax:AttributeBinding>
+
+  </attributeBindings> 
+
+    
+</sax:TupleFrame>

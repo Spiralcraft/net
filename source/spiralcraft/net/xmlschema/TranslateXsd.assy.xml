@@ -1,0 +1,17 @@
+<xsd:TranslateXsd
+  xmlns:xsd="class:/spiralcraft/net/xmlschema/"
+  xmlns:sax="class:/spiralcraft/data/sax/"
+  >
+
+  <chain>
+
+    <sax:ParseXml>
+    
+      <rootFrameHandler dataURI="xsd:Root.frame.xml"/>
+      
+      <uriX>[xsd:TranslateXsd].schemaURI
+      </uriX>
+    </sax:ParseXml>
+
+  </chain>
+</xsd:TranslateXsd>

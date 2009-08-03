@@ -1,0 +1,44 @@
+<sax:TupleFrame
+  xmlns:xsd="class:/spiralcraft/net/xmlschema/"
+  xmlns:sax="class:/spiralcraft/data/sax/"
+  >
+
+  <elementURI>w3xsd:attribute
+  </elementURI>
+            
+  <type><xsd:Attribute.type/>
+  </type>
+
+  <container>[xsd:ComplexType].attributes
+  </container>
+      
+  <attributeBindings>
+  
+    <sax:AttributeBinding>
+      <attribute>name
+      </attribute>
+      <target>name
+      </target>
+      <transformNamespace>true
+      </transformNamespace>
+    </sax:AttributeBinding>
+
+    <sax:AttributeBinding>
+      <attribute>type
+      </attribute>
+      <target>typeName
+      </target>
+      <transformNamespace>true
+      </transformNamespace>
+    </sax:AttributeBinding>
+
+    <sax:AttributeBinding>
+      <attribute>use
+      </attribute>
+      <target>required=(.=="required")
+      </target>
+    </sax:AttributeBinding>
+
+  </attributeBindings>
+    
+</sax:TupleFrame>

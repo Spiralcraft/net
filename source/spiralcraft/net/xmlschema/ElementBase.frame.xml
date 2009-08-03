@@ -1,0 +1,57 @@
+<sax:TupleFrame
+  xmlns:xsd="class:/spiralcraft/net/xmlschema/"
+  xmlns:sax="class:/spiralcraft/data/sax/"
+  >
+  
+  <elementURI>w3xsd:element
+  </elementURI>
+
+  <type><xsd:Element.type/>
+  </type>
+  
+  <attributeBindings>
+          
+    <sax:AttributeBinding>
+      <attribute>name
+      </attribute>
+      <target>elementName
+      </target>
+      <transformNamespace>true
+      </transformNamespace>
+    </sax:AttributeBinding>
+
+    <sax:AttributeBinding>
+      <attribute>type
+      </attribute>
+      <target>typeName
+      </target>
+      <transformNamespace>true
+      </transformNamespace>
+    </sax:AttributeBinding>
+
+    <sax:AttributeBinding>
+      <attribute>ref
+      </attribute>
+      <target>ref
+      </target>
+      <transformNamespace>true
+      </transformNamespace>
+    </sax:AttributeBinding>
+
+    <sax:AttributeBinding>
+      <attribute>minOccurs
+      </attribute>
+      <target>required=(.!="0")
+      </target>
+    </sax:AttributeBinding>
+
+    <sax:AttributeBinding>
+      <attribute>maxOccurs
+      </attribute>
+      <target>plural=(.!=null &amp;&amp; .!="1")
+      </target>
+    </sax:AttributeBinding>
+
+  </attributeBindings>
+    
+</sax:TupleFrame>

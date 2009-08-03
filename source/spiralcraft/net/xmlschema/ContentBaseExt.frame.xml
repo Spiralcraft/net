@@ -1,0 +1,17 @@
+<sax:ContainerFrame
+  xmlns:xsd="class:/spiralcraft/net/xmlschema/"
+  xmlns:sax="class:/spiralcraft/data/sax/"
+  >
+  
+      
+  <children>
+    <sax:ContainerFrame ref="xsd:Extension.frame.xml">
+          
+      <children>
+        <sax:ContainerFrame ref="xsd:SequenceExt.frame.xml"/>
+      </children>
+              
+    </sax:ContainerFrame>
+  </children>
+
+</sax:ContainerFrame>

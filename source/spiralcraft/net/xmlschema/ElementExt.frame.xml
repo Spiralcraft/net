@@ -1,0 +1,19 @@
+<sax:TupleFrame
+  xmlns:xsd="class:/spiralcraft/net/xmlschema"
+  xmlns:sax="class:/spiralcraft/data/sax"
+  ref="xsd:ElementBase.frame.xml"
+  >          
+  <container>[xsd:ComplexType].elements
+  </container>
+ 
+  <id>inlineElement
+  </id>
+  
+  <children>
+    <sax:RecursiveFrame>
+      <frameId>complexType
+      </frameId>
+    </sax:RecursiveFrame>    
+    <sax:TupleFrame ref="xsd:SimpleType.frame.xml"/>    
+  </children>
+</sax:TupleFrame>

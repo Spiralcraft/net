@@ -1,0 +1,66 @@
+<sax:TupleFrame
+  xmlns:xsd="class:/spiralcraft/net/xmlschema"
+  xmlns:sax="class:/spiralcraft/data/sax"
+  >          
+  <elementURI>w3xsd:simpleType
+  </elementURI>
+  
+  <type><xsd:SimpleType.type/>
+  </type>
+  
+  <attributeBindings>
+
+    <sax:AttributeBinding>
+      <attribute>name
+      </attribute>
+      <target>typeName
+      </target>
+      <transformNamespace>true
+      </transformNamespace>
+    </sax:AttributeBinding>
+
+  </attributeBindings>
+  
+  <children>
+    <sax:ContainerFrame>
+    
+      <elementURI>w3xsd:restriction
+      </elementURI>
+      
+      <attributeBindings>
+  
+        <sax:AttributeBinding>
+          <attribute>base
+          </attribute>
+          <target>[xsd:SimpleType].baseTypeName
+          </target>
+          <transformNamespace>true
+          </transformNamespace>
+        </sax:AttributeBinding>
+
+      </attributeBindings>
+      
+    </sax:ContainerFrame>
+    
+    <sax:ContainerFrame>
+    
+      <elementURI>w3xsd:list
+      </elementURI>
+      
+      <attributeBindings>
+  
+        <sax:AttributeBinding>
+          <attribute>itemType
+          </attribute>
+          <target>[xsd:SimpleType].listItemTypeName
+          </target>
+          <transformNamespace>true
+          </transformNamespace>
+        </sax:AttributeBinding>
+
+      </attributeBindings>
+      
+    </sax:ContainerFrame>
+
+  </children>
+</sax:TupleFrame>

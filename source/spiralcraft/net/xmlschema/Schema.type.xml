@@ -1,0 +1,36 @@
+<meta:Type
+  xmlns:meta="class:/spiralcraft/data/types/meta/"
+  xmlns:data="class:/spiralcraft/data/"
+  xmlns:sax="class:/spiralcraft/data/sax/"
+  xmlns:xsd="class:/spiralcraft/net/xmlschema/"
+  >
+  
+  <fields>
+    <meta:Field>
+      <name>targetNamespace
+      </name>
+      
+      <type>
+        <String.type/>
+      </type>
+    </meta:Field>
+
+    <meta:Field>
+      <name>types
+      </name>
+      
+      <type>
+        <xsd:ComplexType.list.type/>
+      </type>
+    </meta:Field>
+    
+    <meta:Field>
+      <name>rootElements
+      </name>
+      
+      <type>
+        <xsd:Element.list.type/>
+      </type>
+    </meta:Field>
+  </fields>
+</meta:Type>

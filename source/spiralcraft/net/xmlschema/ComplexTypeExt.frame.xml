@@ -1,0 +1,39 @@
+<sax:TupleFrame
+  xmlns:xsd="class:/spiralcraft/net/xmlschema"
+  xmlns:sax="class:/spiralcraft/data/sax"
+  ref="xsd:ComplexType.frame.xml"
+  >
+      
+  <assignment>[xsd:Element].inlineType
+  </assignment>
+      
+  <id>complexType
+  </id>
+  
+  <children>
+  
+    <sax:TupleFrame ref="xsd:Choice.frame.xml">
+      <children>
+        <sax:TupleFrame ref="xsd:ElementExt.frame.xml">
+          <container>[xsd:Choice].elements
+          </container>
+        </sax:TupleFrame>
+      </children>                
+    </sax:TupleFrame>
+  
+    <sax:ContainerFrame ref="xsd:SequenceExt.frame.xml"/>
+
+    <sax:ContainerFrame ref="ContentBaseExt.frame.xml">
+      <elementURI>w3xsd:complexContent
+      </elementURI>
+      
+    </sax:ContainerFrame>
+
+    <sax:ContainerFrame ref="ContentBaseExt.frame.xml">
+      <elementURI>w3xsd:simpleContent
+      </elementURI>
+      
+    </sax:ContainerFrame>
+          
+  </children>
+</sax:TupleFrame>

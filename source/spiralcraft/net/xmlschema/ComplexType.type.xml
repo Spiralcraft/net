@@ -1,0 +1,46 @@
+<meta:Type
+  xmlns:meta="class:/spiralcraft/data/types/meta/"
+  xmlns:data="class:/spiralcraft/data/"
+  xmlns:sax="class:/spiralcraft/data/sax/"
+  xmlns:xsd="class:/spiralcraft/net/xmlschema/"
+  >
+  <archetype><xsd:AbstractType.type/>
+  </archetype>
+  
+  <fields>
+
+    
+    <meta:Field>
+      <name>attributes
+      </name>
+      
+      <type><xsd:Attribute.list.type/>
+      </type>
+    </meta:Field>
+    
+    <meta:Field>
+      <name>elements
+      </name>
+      
+      <type><xsd:Element.list.type/>
+      </type>
+    </meta:Field>    
+    
+    <meta:Field>
+      <name>choices
+      </name>
+      
+      <type><xsd:Choice.list.type/>
+      </type>
+    </meta:Field>    
+
+    <meta:Field>
+      <name>baseTypeName
+      </name>
+      
+      <type><String.type/>
+      </type>
+    </meta:Field>    
+
+  </fields>
+</meta:Type>

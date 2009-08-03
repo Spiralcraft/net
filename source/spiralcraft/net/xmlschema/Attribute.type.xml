@@ -1,0 +1,33 @@
+<meta:Type
+  xmlns:meta="class:/spiralcraft/data/types/meta/"
+  xmlns:data="class:/spiralcraft/data/"
+  xmlns:sax="class:/spiralcraft/data/sax/"
+  >
+  
+  <fields>
+    <meta:Field>
+      <name>name
+      </name>
+      
+      <type><String.type/>
+      </type>
+    </meta:Field>
+      
+    <meta:Field>
+      <name>typeName
+      </name>
+      
+      <type><String.type/>
+      </type>
+    </meta:Field>
+    
+    <meta:Field>
+      <name>required
+      </name>
+      
+      <type><Boolean.type/>
+      </type>
+    </meta:Field>
+    
+  </fields>
+</meta:Type>

@@ -1,0 +1,59 @@
+<sax:RootFrame
+  xmlns:sax="class:/spiralcraft/data/sax/"
+  xmlns:xsd="class:/spiralcraft/net/xmlschema/"
+  >
+  <type><xsd:Translation.type/>
+  </type>
+
+  <target>[xsd:Translation]
+  </target>
+
+  
+  <prefixMappings>
+    <sax:PrefixMapping>w3xsd=http://www.w3.org/2001/XMLSchema
+    </sax:PrefixMapping>
+  </prefixMappings>
+  
+  <children>
+    <sax:TupleFrame>
+    
+      <elementURI>w3xsd:schema
+      </elementURI>
+      
+      <type><xsd:Schema.type/>
+      </type>
+      
+      <assignment>[xsd:Translation].schema
+      </assignment>
+      
+      <attributeBindings>
+        <sax:AttributeBinding>targetNamespace
+        </sax:AttributeBinding>
+      </attributeBindings>
+      
+      <children>
+      
+        <sax:TupleFrame ref="xsd:ElementBase.frame.xml">
+          
+          <container>[xsd:Schema].rootElements
+          </container>
+          
+          <children>
+            <sax:TupleFrame ref="xsd:ComplexTypeExt.frame.xml"/>
+            <sax:TupleFrame ref="xsd:SimpleType.frame.xml"/>
+          </children>
+          
+        </sax:TupleFrame>
+        
+        <sax:TupleFrame ref="xsd:ComplexTypeTop.frame.xml"/>
+        
+        <sax:TupleFrame ref="xsd:SimpleType.frame.xml">
+        
+          <container>[xsd:Schema].types
+          </container>
+        </sax:TupleFrame>          
+
+      </children>
+    </sax:TupleFrame>
+  </children>
+</sax:RootFrame>

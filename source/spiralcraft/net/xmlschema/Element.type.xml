@@ -1,0 +1,59 @@
+<meta:Type
+  xmlns:meta="class:/spiralcraft/data/types/meta/"
+  xmlns:data="class:/spiralcraft/data/"
+  xmlns:sax="class:/spiralcraft/data/sax/"
+  xmlns:xsd="class:/spiralcraft/net/xmlschema/"  
+  >
+  
+  <fields>
+    <meta:Field>
+      <name>elementName
+      </name>
+      
+      <type><String.type/>
+      </type>
+    </meta:Field>
+    
+    <meta:Field>
+      <name>typeName
+      </name>
+      
+      <type><String.type/>
+      </type>
+    </meta:Field>
+
+    <meta:Field>
+      <name>ref
+      </name>
+      
+      <type><String.type/>
+      </type>
+    </meta:Field>
+
+
+    <meta:Field>
+      <name>required
+      </name>
+      
+      <type><Boolean.type/>
+      </type>
+    </meta:Field>
+
+    <meta:Field>
+      <name>plural
+      </name>
+      
+      <type><Boolean.type/>
+      </type>
+    </meta:Field>
+
+    <meta:Field>
+      <name>inlineType
+      </name>
+      
+      <type><xsd:ComplexType.type/>
+      </type>
+    </meta:Field>
+
+  </fields>
+</meta:Type>

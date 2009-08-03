@@ -1,0 +1,24 @@
+<sax:ContainerFrame
+  xmlns:xsd="class:/spiralcraft/net/xmlschema/"
+  xmlns:sax="class:/spiralcraft/data/sax/"
+  >
+
+  <elementURI>w3xsd:sequence
+  </elementURI>
+              
+  <children>
+
+    <sax:TupleFrame ref="xsd:ElementExt.frame.xml"/>
+    
+    <sax:TupleFrame ref="xsd:Choice.frame.xml">
+      <children>
+        <sax:TupleFrame ref="xsd:ElementExt.frame.xml">
+          <container>[xsd:Choice].elements
+          </container>
+        </sax:TupleFrame>
+      </children>
+    </sax:TupleFrame>
+
+    
+  </children>
+</sax:ContainerFrame>

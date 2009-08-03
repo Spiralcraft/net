@@ -1,0 +1,30 @@
+<meta:Type
+  xmlns:meta="class:/spiralcraft/data/types/meta/"
+  xmlns:data="class:/spiralcraft/data/"
+  xmlns:sax="class:/spiralcraft/data/sax/"
+  xmlns:xsd="class:/spiralcraft/net/xmlschema/"
+  >
+  <archetype><xsd:AbstractType.type/>
+  </archetype>
+  
+  <fields>
+
+    
+    <meta:Field>
+      <name>baseTypeName
+      </name>
+      
+      <type><String.type/>
+      </type>
+    </meta:Field>
+    
+    <meta:Field>
+      <name>listItemTypeName
+      </name>
+      
+      <type><String.type/>
+      </type>
+    </meta:Field>
+    
+  </fields>
+</meta:Type>
