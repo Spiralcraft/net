@@ -229,7 +229,9 @@ public class TranslateXsd
       
         super.work();
         Tuple tt=translation.get();
-        log.fine("Read "+tt.toText("| "));
+        if (debug)
+        { log.fine("Read "+tt.toText("| "));
+        }
         generate(tt);
       }
       catch (Exception x)
@@ -251,7 +253,9 @@ public class TranslateXsd
 
       schema=(Tuple) translation.get("schema");
       targetNamespace=(String) schema.get("targetNamespace");
-      log.fine("Target namespace is "+targetNamespace);
+      if (debug)
+      { log.fine("Target namespace is "+targetNamespace);
+      }
       
       for (Tuple element : (Aggregate<Tuple>) schema.get("rootElements"))
       {
@@ -290,11 +294,15 @@ public class TranslateXsd
       String elementType=(String) element.get("typeName");
       String elementName=(String) element.get("elementName");
       
-      log.fine("Generating handler for "+elementName);
+      if (debug)
+      { log.fine("Generating handler for "+elementName);
+      }
       
       if (elementType!=null)
       { 
-        log.fine("type is "+elementType);
+        if (debug)
+        { log.fine("type is "+elementType);
+        }
         TypeRef elementTypeRef=resolveType(elementType);
         if (elementTypeRef==null)
         { throw new DataException
@@ -319,11 +327,14 @@ public class TranslateXsd
         (outputLocation.resolve(elementName+"Root.frame.xml"),rootFrame);
       
       
-      log.fine
-        (ReflectionType.canonicalType((Class) rootFrame.getClass())
-          .toData(rootFrame)
-          .toText("| ")
-        );
+      if (debug)
+      {
+        log.fine
+          ( ReflectionType.canonicalType((Class) rootFrame.getClass())
+            .toData(rootFrame)
+            .toText("| ")
+          );
+      }
       
     }
     
@@ -348,7 +359,10 @@ public class TranslateXsd
     private TypeRef createType(String elementType,Tuple xsdType)
       throws DataException,IOException
     {
-      log.fine("Creating type for "+elementType);
+      if (debug)
+      { log.fine("Creating type for "+elementType);
+      }
+      
       TypeRef ref=new TypeRef();
       ref.xsdType=xsdType;
       ref.typeName=elementType;
@@ -389,7 +403,9 @@ public class TranslateXsd
           createComplexType(ref);
         }
         else
-        { log.fine("No elements, attributes or choices found in "+ref.typeName);
+        { 
+          log.warning("No elements, attributes or choices found in "
+            +ref.typeName);
         }
       }
       else
@@ -459,7 +475,9 @@ public class TranslateXsd
       }
       
       URI typeURI=targetURI.resolve(typeLocalName);
-      log.fine("typeURI is "+typeURI+" for "+ref.typeName);
+      if (debug)
+      { log.fine("typeURI is "+typeURI+" for "+ref.typeName);
+      }
       // Pre-create the associated type so it can be cross-referenced 
       TypeImpl typeImpl=new TypeImpl(TypeResolver.getTypeResolver(),typeURI);
       ref.dataType=typeImpl;
@@ -484,7 +502,9 @@ public class TranslateXsd
       String baseTypeName=(String) ref.xsdType.get("baseTypeName");
       if (baseTypeName!=null)
       {
-        log.fine("Resolving base type "+baseTypeName+" for "+ref.typeName);
+        if (debug)
+        { log.fine("Resolving base type "+baseTypeName+" for "+ref.typeName);
+        }
         TypeRef baseType=resolveType(baseTypeName);
         if (baseType!=null && baseType.dataType!=null)
         {
@@ -638,7 +658,9 @@ public class TranslateXsd
       dataTypeDecl.set("fields",fieldDecls);
 
       // Write out declaration
-      log.fine("Created type "+typeURI+": "+ref.dataTypeDecl.toText("| "));
+      if (debug)
+      { log.fine("Created type "+typeURI+": "+ref.dataTypeDecl.toText("| "));
+      }
       new DataWriter().writeToURI
         (outputLocation.resolve(typeLocalName+".type.xml"),ref.dataTypeDecl);
 
@@ -681,8 +703,9 @@ public class TranslateXsd
           }
         }
       
-      }      
-      log.fine("Element '"+element.get("elementName")+"' missing public type");
+      }   
+      
+      log.warning("Element '"+element.get("elementName")+"' missing public type");
       return null;
     }
 
@@ -729,7 +752,7 @@ public class TranslateXsd
           }
         }
       }
-      log.fine("Attribute '"+attribute.get("name")+"' missing public type");
+      log.warning("Attribute '"+attribute.get("name")+"' missing public type");
       return null;
     }
     
@@ -908,11 +931,15 @@ public class TranslateXsd
       String elementType=(String) element.get("typeName");
       String elementName=(String) element.get("elementName");
       
-      log.fine("Generating handler for "+elementName);
+      if (debug)
+      { log.fine("Generating handler for "+elementName);
+      }
       
       if (elementType!=null)
       { 
-        log.fine("type is "+elementType);
+        if (debug)
+        { log.fine("type is "+elementType);
+        }
         TypeRef elementTypeRef=resolveType(elementType);
         if (elementTypeRef==null)
         { 
