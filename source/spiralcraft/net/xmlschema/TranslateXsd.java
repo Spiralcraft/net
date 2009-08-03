@@ -113,8 +113,6 @@ public class TranslateXsd
     =Type.resolve("class:/spiralcraft/data/sax/AttributeBinding.list");
   private Type<?> attributeBindingType
     =Type.resolve("class:/spiralcraft/data/sax/AttributeBinding");
-      
-  private boolean debugHandlers;
   
   public TranslateXsd()
     throws BindException,DataException
@@ -125,11 +123,6 @@ public class TranslateXsd
         );
     
   }
-  
-  public void setDebugHandlers(boolean debugHandlers)
-  { this.debugHandlers=debugHandlers;
-  }
-  
   
   public void setSchemaURI(URI schemaURI)
   { this.schemaURI=schemaURI;
@@ -431,6 +424,7 @@ public class TranslateXsd
           );
     }
     
+    @SuppressWarnings("unchecked")
     private void createSimpleType(TypeRef ref)
       throws DataException,IOException
     {
@@ -453,6 +447,7 @@ public class TranslateXsd
       }
     }
     
+    @SuppressWarnings("unchecked")
     private void createComplexType(TypeRef ref)
       throws DataException,IOException
     {
@@ -593,6 +588,10 @@ public class TranslateXsd
                 
                 if (typeElement.get("typeName")!=null)
                 { 
+                  @SuppressWarnings("unused")
+                  // We don't need to use this right now, we just need to
+                  //   generate it. If we implement disjoint union Types
+                  //   we'll use the types.
                   TypeRef elementType
                     =resolveType((String) typeElement.get("typeName"));
                 }
@@ -787,6 +786,7 @@ public class TranslateXsd
       return null;
     }
     
+    @SuppressWarnings("unchecked")
     private EditableArrayTuple extendHandler(TypeRef baseType)
       throws DataException,IOException
     {
@@ -956,7 +956,7 @@ public class TranslateXsd
     }
     
     
-    public Type getFieldDeclType(Tuple fieldDecl)
+    public Type<?> getFieldDeclType(Tuple fieldDecl)
       throws DataException
     { 
       Tuple typeRef=(Tuple) fieldDecl.get("type");
@@ -1000,7 +1000,7 @@ public class TranslateXsd
   }
   
   
-  private Tuple typeRefTuple(Type type)
+  private Tuple typeRefTuple(Type<?> type)
     throws DataException
   { 
     if (type.isLinked())
@@ -1010,7 +1010,7 @@ public class TranslateXsd
       return new EditableArrayTuple(type.getMetaType());
     }
       
-    TypeImpl metaType=new MetaType(type);
+    TypeImpl<?> metaType=new MetaType(type);
     metaType.link();
     // log.fine("MetaType for "+type+" is "+metaType);
     return new EditableArrayTuple(metaType);
