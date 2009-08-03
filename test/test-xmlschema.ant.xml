@@ -1,0 +1,31 @@
+<project name="spiralcraft-core-shell" basedir="." default="test">
+
+  <import file="../build.xml"/>
+  
+  <target name="test"
+    depends="clean"
+    >
+    <mkdir dir="out/xmlschema"/>
+ 
+    <devtask
+      codebase=".."
+      exec
+        ="--log log/spiralcraft --consoleLog
+         class:/spiralcraft/task/TaskRunner
+         class:/spiralcraft/net/xmlschema/TranslateXsd.assy
+         --schemaURI in/xmlschema/example.local.xsd
+         --targetURI class:/com/example/xsd/
+         --outputLocation out/xmlschema/
+         "
+    />
+  </target>
+	
+ 
+  <target name="clean">
+    <mkdir dir="out"/>
+    <delete>
+      <fileset dir="out" includes="**/*"/>
+    </delete>    
+  </target>
+  		
+</project>
