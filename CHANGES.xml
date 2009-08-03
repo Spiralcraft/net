@@ -2,6 +2,31 @@
   xmlns:scm="class:/spiralcraft/scm/meta/"
   >
   <scm:Change>
+    <revision>0.3.3
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>2009-08-03
+    </date>
+
+    <notes>
+      <scm:Note>New XML Schema mapping and translation mechanism handles
+        XML Data by mapping to a Tuple structure
+      </scm:Note>
+      <scm:Note>TranslateXsd is a Scenario which generates data Types and 
+        handler Frame definitions from an XML schema definition.
+      </scm:Note>
+    </notes>
+    
+
+    <path>source/spiralcraft/net/xmlschema/
+    </path>
+
+  </scm:Change>
+
+  <scm:Change>
     <revision>0.3.2
     </revision>
     
@@ -22,14 +47,20 @@
       </scm:Note>
     </notes>
     
-    <path>/source/spiralcraft/net/http/VariableMapBinding.java
+    <path>source/spiralcraft/net/
     </path>
-    <path>/source/spiralcraft/net/server/Server.java
-    </path>
-    <path>/source/spiralcraft/net/io/ServerSocketEndpoint.java
-    </path>
-    <path>/source/spiralcraft/net/io/SocketConnection.java
-    </path>
+    
+    
+    <resources>
+      <URI>http/VariableMapBinding.java
+      </URI>
+      <URI>server/Server.java
+      </URI>
+      <URI>io/ServerSocketEndpoint.java
+      </URI>
+      <URI>io/SocketConnection.java
+      </URI>
+    </resources>
 
   </scm:Change>
     
