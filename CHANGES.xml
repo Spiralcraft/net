@@ -2,6 +2,29 @@
   xmlns:scm="class:/spiralcraft/scm/meta/"
   >
   <scm:Change>
+    <revision>0.3.4
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>2009-08-07
+    </date>
+
+    <notes>
+      <scm:Note>Update XSD translator to work with task package refactoring
+        in spiralcraft-core. TranslateXsd now extends Chain instead
+        of Scenario.
+      </scm:Note>
+    </notes>
+    
+
+    <path>source/spiralcraft/net/xmlschema/TranslateXsd.java
+    </path>
+
+  </scm:Change>
+
+  <scm:Change>
     <revision>0.3.3
     </revision>
     

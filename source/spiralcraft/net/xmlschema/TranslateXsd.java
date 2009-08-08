@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
-import spiralcraft.task.Scenario;
+import spiralcraft.task.Chain;
 import spiralcraft.task.Task;
 
 
@@ -62,7 +62,7 @@ import spiralcraft.lang.Focus;
  */
 
 public class TranslateXsd
-  extends Scenario
+  extends Chain
 {
   public static URI DATA_SAX_URI=URI.create("class:/spiralcraft/data/sax/");
   public static URI DATA_XSD_URI=URI.create("class:/spiralcraft/net/xmlschema/"); 
