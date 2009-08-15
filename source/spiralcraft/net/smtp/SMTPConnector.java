@@ -28,15 +28,36 @@ public class SMTPConnector
     =ClassLog.getInstance(SMTPConnector.class);
 
   private String server;
+  private boolean testMode;
   
+  /**
+   * The SMTP server which will forward outgoing mail
+   * 
+   * @param server
+   */
   public void setServer(String server)
   { this.server=server;
   }
   
+  /**
+   * Send the message to the log, INSTEAD OF mailing it. Used for development
+   *   purposes.  
+   * 
+   * @param testMode
+   */
+  public void setTestMode(boolean testMode)
+  { this.testMode=testMode;
+  }  
   
   public void send(Envelope envelope)
     throws IOException
   { 
+    if (testMode)
+    { 
+      testSend(envelope);
+      return;
+    }
+    
     SMTPConnection con=new SMTPConnection();
     con.setServerName(envelope.getServer()!=null?envelope.getServer():server);
     // con.setProtocolLog(log);
@@ -96,4 +117,17 @@ public class SMTPConnector
     }
     
   }
+  
+  public void testSend(Envelope envelope)
+  {
+    log.warning
+      ("SMTPConnector is in test mode. MESSAGE WILL NOT BE SENT"
+      );
+    log.info(envelope.toString());
+    log.warning
+      ("SMTPConnector is in test mode. MESSAGE NOT SENT"
+      );
+    
+  }
+  
 }
