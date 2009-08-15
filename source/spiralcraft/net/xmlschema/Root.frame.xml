@@ -40,7 +40,7 @@
           
           <children>
             <sax:TupleFrame ref="xsd:ComplexTypeExt.frame.xml"/>
-            <sax:TupleFrame ref="xsd:SimpleType.frame.xml"/>
+            <sax:TupleFrame ref="xsd:SimpleTypeExt.frame.xml"/>
           </children>
           
         </sax:TupleFrame>

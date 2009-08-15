@@ -1,0 +1,10 @@
+<sax:TupleFrame
+  xmlns:xsd="class:/spiralcraft/net/xmlschema"
+  xmlns:sax="class:/spiralcraft/data/sax"
+  ref="xsd:SimpleType.frame.xml"
+  >
+      
+  <assignment>[xsd:Element].inlineType
+  </assignment>
+  
+</sax:TupleFrame>
