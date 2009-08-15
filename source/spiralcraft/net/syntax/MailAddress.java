@@ -33,6 +33,11 @@ public class MailAddress
   public String name;
   public String rawAddress;
   
+  public static MailAddress create(String address)
+    throws ParseException
+  { return new MailAddress(address);
+  }
+  
   protected MailAddress()
   { 
   }
