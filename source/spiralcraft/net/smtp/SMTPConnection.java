@@ -207,6 +207,7 @@ public class SMTPConnection
     }
     catch (IOException x)
     { 
+      exception=x;
       errorStatus="Caught IOException trying to connect to "
                       +serverName+" port "
                       +serverPort+": "+x.getMessage();
