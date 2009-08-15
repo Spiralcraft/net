@@ -9,11 +9,11 @@ decodedUrl=spiralcraft.net.http.URLCodec.decode(encodedUrl);
 originalUrl.equals(decodedUrl);
 
 
-new MailAddress("mike@spiralcraft.com");
-new MailAddress("mike.toth@spiralcraft.com");
-new MailAddress("<mike.toth@spiralcraft.com>");
-new MailAddress("Mike Toth <mike.toth@spiralcraft.com>");
-new MailAddress("\"Mike Toth\" <mike.toth@spiralcraft.com>");
+new MailAddress("joe@example.com");
+new MailAddress("joe.doe@example.com");
+new MailAddress("<joe.doe@example.com>");
+new MailAddress("Joe Doe <joe.doe@example.com>");
+new MailAddress("\"Joe Doe\" <joe.doe@example.com>");
 
 new Subnet("65.115.71.110/27");
 new Subnet("65.115.71.110/26");
