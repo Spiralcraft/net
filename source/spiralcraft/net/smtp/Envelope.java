@@ -116,5 +116,14 @@ public class Envelope
   { this.server=server;
   }
   
+  @Override
+  public String toString()
+  {
+     return super.toString()
+       +"[  \r\n  server=["+server+"] " 
+       +"\r\n  sender=["+sender+"] "
+       +"\r\n  recipients=["+recipients+"] "
+       +"\r\n  message=["+encodedMessage+"] \r\n";
+  }
   
 }
