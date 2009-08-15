@@ -2,6 +2,99 @@
   xmlns:scm="class:/spiralcraft/scm/meta/"
   >
   <scm:Change>
+    <revision>0.3.5
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>2009-08-14
+    </date>
+
+    <detail>
+    
+      <scm:Change>
+      
+        <date>2009-08-14
+        </date>
+
+        <notes>
+          <scm:Note>TranslateXsd properly handles lists of primitive types
+          </scm:Note>
+          <scm:Note>TranslateXsd properly reads a Tuple type that is
+            based on a primitive using the "value" field.
+          </scm:Note>
+        </notes>
+
+        <path>source/spiralcraft/net/xmlschema
+        </path>
+
+        <resources>
+          <URI>TranslateXsd.java
+          </URI>
+          <URI>ElementExt.frame.xml
+          </URI>
+          <URI>ElementTop.frame.xml
+          </URI>
+          <URI>Root.frame.xml
+          </URI>
+          <URI>SimpleTypeExt.frame.xml
+          </URI>
+        </resources>
+      </scm:Change>
+          
+      <scm:Change>
+      
+        <date>2009-08-12
+        </date>
+
+        <notes>
+          <scm:Note>Made a scenario for sending e-mail
+          </scm:Note>
+          <scm:Note>SMTPConnector has a test mode which logs mail instead
+            of sending it.
+          </scm:Note>
+          <scm:Note>SMTPConnection properly remembers connection exception
+          </scm:Note>
+          <scm:Note>Envelope has useful toString() implementation
+          </scm:Note>
+        </notes>
+
+        <path>source/spiralcraft/net/
+        </path>
+
+        <resources>
+          <URI>smtp/SendMail.java
+          </URI>
+          <URI>smtp/SMTPConnector.java
+          </URI>
+          <URI>smtp/SMTPConnection.java
+          </URI>
+          <URI>smtp/Envelope.java
+          </URI>
+          <URI>syntax/MailAddress.java
+          </URI>
+        </resources>
+      </scm:Change>
+
+      <scm:Change>
+      
+        <date>2009-08-11
+        </date>
+
+        <notes>
+          <scm:Note>XSD translator handles type recursion
+          </scm:Note>
+        </notes>
+
+        <path>source/spiralcraft/net/xmlschema/TranslateXsd.java
+        </path>
+
+      </scm:Change>
+    </detail>
+  </scm:Change>
+    
+  <scm:Change>
     <revision>0.3.4
     </revision>
     
