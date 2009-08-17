@@ -2,6 +2,36 @@
   xmlns:scm="class:/spiralcraft/scm/meta/"
   >
   <scm:Change>
+    <revision>0.3.5.1
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>2009-08-17
+    </date>
+
+    <detail>
+    
+      <scm:Change>
+      
+        <date>2009-08-17
+        </date>
+
+        <notes>
+          <scm:Note>Fix: Inherited type now properly includes child handlers
+            for base type when generating inherited handler.
+          </scm:Note>
+        </notes>
+
+        <path>source/spiralcraft/net/xmlschema/TranslateXsd.java
+        </path>
+        
+      </scm:Change>
+    </detail>
+  </scm:Change>
+  
+  <scm:Change>
     <revision>0.3.5
     </revision>
     

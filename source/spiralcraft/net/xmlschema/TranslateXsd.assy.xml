@@ -2,8 +2,7 @@
   xmlns:xsd="class:/spiralcraft/net/xmlschema/"
   xmlns:sax="class:/spiralcraft/data/sax/"
   >
-  <debug>false
-  </debug>
+
   <chain>
 
     <sax:ParseXml>

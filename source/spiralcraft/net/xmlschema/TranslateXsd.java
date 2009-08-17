@@ -29,7 +29,6 @@ import spiralcraft.data.core.AbstractCollectionType;
 import spiralcraft.data.core.MetaType;
 import spiralcraft.data.core.TypeImpl;
 import spiralcraft.data.lang.DataReflector;
-import spiralcraft.data.reflect.ReflectionType;
 import spiralcraft.data.sax.AbstractFrameHandler;
 import spiralcraft.data.sax.DataWriter;
 import spiralcraft.data.spi.EditableArrayListAggregate;
@@ -341,9 +340,7 @@ public class TranslateXsd
       if (debug)
       {
         log.fine
-          ( ReflectionType.canonicalType((Class) rootFrame.getClass())
-            .toData(rootFrame)
-            .toText("| ")
+          ( rootFrame.toText("| ")
           );
       }
       
@@ -913,6 +910,9 @@ public class TranslateXsd
         =new EditableArrayTuple(handler.getType());
       if (handler.get("attributeBindings")!=null)
       {
+        if (debug)
+        { log.fine("Copying attributeBindings from "+baseType);
+        }
         extension.set
           ("attributeBindings"
           ,new EditableArrayListAggregate
@@ -921,10 +921,20 @@ public class TranslateXsd
       }
       if (handler.get("children")!=null)
       {
+        if (debug)
+        { log.fine("Copying children from "+baseType);
+        }
         extension.set
           ("children"
           ,new EditableArrayListAggregate
             ((Aggregate) handler.get("children"))
+          );
+      }
+      if (debug)
+      { 
+        log.fine
+          ("Extended handler for "
+          +baseType.typeName+": "+extension.toText("| ")
           );
       }
       return extension;
@@ -949,14 +959,19 @@ public class TranslateXsd
           ("No handler template for "+ref.typeName);
       }
       
+      EditableArrayTuple handler;
       if (ref.xsdType==null || ref.xsdType.getType().equals(simpleTypeType))
-      { return makeSimpleHandler(ref);
+      { handler=makeSimpleHandler(ref);
       }
       else
       { 
         
-        return makeComplexHandler(ref);
+        handler=makeComplexHandler(ref);
       }
+      if (debug)
+      { log.fine("Handler for "+ref+" is "+handler.toText("| "));
+      }
+      return handler;
     }
     
     
@@ -983,9 +998,14 @@ public class TranslateXsd
         =new EditableArrayTuple(ref.handlerTemplate);
       
       EditableArrayListAggregate children
-        =new EditableArrayListAggregate(frameHandlerListType);
-      handler.set
-        ("children",children);
+        =(EditableArrayListAggregate) handler.get("children");
+      
+      if (children==null)
+      { 
+        children=new EditableArrayListAggregate(frameHandlerListType);
+        handler.set
+          ("children",children);
+      }
 
       HandlerRef handlerRef=new HandlerRef();
       handlerRef.handler=handler;
