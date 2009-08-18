@@ -285,14 +285,13 @@ public class TranslateXsd
     }
     
     @SuppressWarnings("unchecked")
+    // This is only called from the top level, not re-entrant
     private void generateHandlerSet(Tuple element)
       throws DataException,IOException
     {
       EditableArrayTuple rootFrame=new EditableArrayTuple(rootFrameType);
-      EditableArrayListAggregate children
-        =new EditableArrayListAggregate(frameHandlerListType);
-      rootFrame.set
-        ("children",children);
+      EditableArrayListAggregate children=ensureChildren(rootFrame);
+      
       if (targetNamespace!=null)
       { rootFrame.set("defaultURI",URI.create(targetNamespace));
       }
@@ -321,7 +320,8 @@ public class TranslateXsd
         }
         else
         {
-          EditableArrayTuple childElement=makeHandler(elementTypeRef);
+          EditableArrayTuple childElement
+            =makeHandlerFromTemplate(elementTypeRef);
           childElement.set("elementURI",elementName);
           children.add(childElement);
         }
@@ -447,13 +447,12 @@ public class TranslateXsd
           ,List.class
           );
       ref.handlerTemplate=new EditableArrayTuple(aggregateFrameType);
+      ensureChildren(ref.handlerTemplate).add(ref.unitTypeRef.handlerTemplate);
       
-      ref.handlerTemplate.set
-        ("children"
-        ,new EditableArrayListAggregate(frameHandlerListType)
-        );
-      ((EditableArrayListAggregate<Tuple>) ref.handlerTemplate.get("children"))
-        .add(extendHandler(ref.unitTypeRef));
+// extendHandler factor
+//      ((EditableArrayListAggregate<Tuple>) ref.handlerTemplate.get("children"))
+//        .add(extendHandler(ref.unitTypeRef));
+
      
 
       
@@ -533,7 +532,7 @@ public class TranslateXsd
         TypeRef baseType=resolveType(baseTypeName);
         if (baseType!=null && baseType.dataType!=null)
         {
-          
+          ref.baseTypeRef=baseType;
           if (baseType.dataType.isPrimitive())
           { 
             Tuple fieldDecl=generateField("value",baseType.dataType,false);
@@ -565,6 +564,7 @@ public class TranslateXsd
 
       
       ref.fieldMap=new HashMap<String,Tuple>();
+     
       
       if (ref.xsdType.get("elements")!=null)
       {
@@ -763,11 +763,18 @@ public class TranslateXsd
       
       if (type.dataType!=null)
       {
-        return generateField
+        Tuple field=generateField
           ((String) element.get("elementName")
           ,type.dataType
           ,Boolean.TRUE.equals(element.get("plural"))
           );
+        
+// Due to recursion issues, we can't add child templates here        
+//        EditableArrayTuple child=new EditableArrayTuple(type.handlerTemplate);
+//        child.set("elementURI",element.get("elementName"));
+//        ensureChildren(parent.handlerTemplate).add(child);
+
+        return field;
       }
       else
       { throw new DataException("TypeName '"+typeName+"' has no dataType");
@@ -901,11 +908,17 @@ public class TranslateXsd
       return null;      
     }
     
+    /** 
+     * Create a new handler for a subtype by copying all the attributes and
+     *   children of a base type
+     */
     @SuppressWarnings("unchecked")
     private EditableArrayTuple extendHandler(TypeRef baseType)
       throws DataException,IOException
     {
-      EditableArrayTuple handler=makeHandler(baseType);
+      // EditableArrayTuple handler=makeHandler(baseType);
+      EditableArrayTuple handler=baseType.handlerTemplate;
+      
       EditableArrayTuple extension
         =new EditableArrayTuple(handler.getType());
       if (handler.get("attributeBindings")!=null)
@@ -934,7 +947,7 @@ public class TranslateXsd
       { 
         log.fine
           ("Extended handler for "
-          +baseType.typeName+": "+extension.toText("| ")
+          +baseType.typeName+": "+extension.toString()
           );
       }
       return extension;
@@ -943,14 +956,14 @@ public class TranslateXsd
     
     /**
      * Make a handler for the specified type reference using the 
-     *   pre-constructed template as a prototype.
+     *   pre-constructed template as a prototype
      * 
      * @param ref
      * @return
      * @throws DataException
      * @throws IOException
      */
-    private EditableArrayTuple makeHandler(TypeRef ref)
+    private EditableArrayTuple makeHandlerFromTemplate(TypeRef ref)
       throws DataException,IOException
     {
       if (ref.handlerTemplate==null)
@@ -969,7 +982,7 @@ public class TranslateXsd
         handler=makeComplexHandler(ref);
       }
       if (debug)
-      { log.fine("Handler for "+ref+" is "+handler.toText("| "));
+      { log.fine("Handler for "+ref+" is "+handler.toString());
       }
       return handler;
     }
@@ -994,24 +1007,38 @@ public class TranslateXsd
       { log.fine("Making complex handler for "+ref.dataType+", "+ref.typeName);
       }
     
-      EditableArrayTuple handler
-        =new EditableArrayTuple(ref.handlerTemplate);
-      
-      EditableArrayListAggregate children
-        =(EditableArrayListAggregate) handler.get("children");
-      
-      if (children==null)
-      { 
-        children=new EditableArrayListAggregate(frameHandlerListType);
-        handler.set
-          ("children",children);
-      }
 
       HandlerRef handlerRef=new HandlerRef();
-      handlerRef.handler=handler;
+      handlerRef.handler=new EditableArrayTuple(ref.handlerTemplate);
       handlerRef.typeName=ref.typeName;
       handlerStack.push(handlerRef);
       
+      combineHandlerChildren(ref,handlerRef);
+      
+      
+      handlerStack.pop();
+      return (EditableArrayTuple) handlerRef.handler;
+    
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void combineHandlerChildren(TypeRef ref,HandlerRef handlerRef)
+      throws DataException,IOException
+    {
+      EditableArrayTuple handler=(EditableArrayTuple) handlerRef.handler;
+
+      EditableArrayListAggregate children
+        =ensureChildren(handler);      
+      // Account for type extension construct
+      
+      if (ref.baseTypeRef!=null && ref.baseTypeRef.xsdType!=null)
+      { 
+        if (debug)
+        { log.fine("Adding base children for "+ref.baseTypeRef);
+        }
+        combineHandlerChildren(ref.baseTypeRef,handlerRef);
+      }
+
       
       if (ref.xsdType.get("elements")!=null)
       {
@@ -1046,12 +1073,8 @@ public class TranslateXsd
           }
         }
       }
-      
-      
-      handlerStack.pop();
-      return handler;
-    
     }
+    
     
     /**
      * Complete the handler for an Element, within the context of 
@@ -1135,7 +1158,7 @@ public class TranslateXsd
         if (backRef==null)
         {
           EditableArrayTuple childHandler
-            =makeHandler(elementTypeRef);
+            =makeHandlerFromTemplate(elementTypeRef);
 
           String containingType=containerRef.dataType.getURI().toString();
           childHandler.set("elementURI",elementName);
@@ -1220,8 +1243,25 @@ public class TranslateXsd
       return null;
     }
     
+    @SuppressWarnings("unchecked")
+    public EditableArrayListAggregate<Tuple>
+      ensureChildren(EditableArrayTuple frameHandler)
+      throws DataException
+    {
+      EditableArrayListAggregate children
+        =(EditableArrayListAggregate) frameHandler.get("children");
+      if (children==null)
+      { 
+        children=new EditableArrayListAggregate(frameHandlerListType);
+        frameHandler.set("children",children);
+      }
+      return children;
+    }
+
     
   }
+  
+  
 
   @SuppressWarnings("unchecked")
   class TypeRef
