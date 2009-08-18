@@ -15,6 +15,21 @@
     
       <scm:Change>
       
+        <date>2009-08-18
+        </date>
+
+        <notes>
+          <scm:Note>Obtain StringConverter from target channel
+          </scm:Note>
+        </notes>
+
+        <path>source/spiralcraft/net/http/VariableMapBinding.java
+        </path>
+
+      </scm:Change>
+
+      <scm:Change>
+      
         <date>2009-08-17
         </date>
 
