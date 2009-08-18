@@ -8,11 +8,35 @@
     <authorId>miketoth
     </authorId>
     
-    <date>2009-08-17
+    <date>2009-08-18
     </date>
 
     <detail>
     
+      <scm:Change>
+      
+        <date>2009-08-17
+        </date>
+
+        <notes>
+          <scm:Note>Mapped xsd:dateTime and xsd:duration types
+          </scm:Note>
+        </notes>
+
+        <path>source/spiralcraft/net/xmlschema/
+        </path>
+        
+        <resources>
+          <URI>TranslateXsd.java
+          </URI>
+          <URI>types/Date.type.xml
+          </URI>
+          <URI>types/DurationType.java
+          </URI>
+        </resources>
+        
+      </scm:Change>
+          
       <scm:Change>
       
         <date>2009-08-17
