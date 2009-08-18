@@ -32,6 +32,8 @@ import spiralcraft.text.translator.Translator;
 import spiralcraft.util.ArrayUtil;
 import spiralcraft.util.string.StringConverter;
 
+import spiralcraft.lang.IterationDecorator;
+
 /**
  * <p>Associates a request or form VariableMap with a target Channel.
  * </p>
@@ -68,21 +70,27 @@ public class VariableMapBinding<Tvar>
     this.name=name;
     this.converter=converter;
     clazz=target.getContentType();
+     
     if (clazz.isArray())
     { 
       array=true;
       if (this.converter==null)
       {
-        this.converter
-          =StringConverter.getInstance(clazz.getComponentType());
+        IterationDecorator dec
+          =target.<IterationDecorator>decorate(IterationDecorator.class);
+        this.converter=dec.getComponentReflector().getStringConverter();
+        
+        if (this.converter==null)
+        {
+          this.converter
+            =StringConverter.getInstance(clazz.getComponentType());
+        }
       }
     }
     else
     {
       if (this.converter==null)
-      {
-        this.converter
-          =StringConverter.getInstance(clazz);
+      { this.converter=target.getReflector().getStringConverter();
       }
     }
     
