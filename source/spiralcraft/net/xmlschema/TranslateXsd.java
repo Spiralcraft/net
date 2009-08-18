@@ -202,7 +202,6 @@ public class TranslateXsd
       addStandardType("nonNegativeInteger","Integer");
       addStandardType("positiveInteger","Integer");
       addStandardType("int","Integer");
-      addStandardType("duration","Long");
       addStandardType("anyURI","URI");
       
       // XXX We should have a string subtype for the NMTOKEN rules
@@ -210,6 +209,7 @@ public class TranslateXsd
 
       addMappedType("dateTime","class:/spiralcraft/net/xmlschema/types/Date");
     
+      addMappedType("duration","class:/spiralcraft/net/xmlschema/types/Duration");
     
     }
     
