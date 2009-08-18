@@ -998,7 +998,6 @@ public class TranslateXsd
       
     }
     
-    @SuppressWarnings("unchecked")
     private EditableArrayTuple makeComplexHandler(TypeRef ref)
       throws DataException,IOException
     {
