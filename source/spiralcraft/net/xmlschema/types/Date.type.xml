@@ -1,0 +1,6 @@
+<standard:DateType
+  xmlns:standard="class:/spiralcraft/data/types/standard/"
+  >
+  <dateFormat>yyyy-MM-dd'T'hh:mm:ss
+  </dateFormat>
+</standard:DateType>

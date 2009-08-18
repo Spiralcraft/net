@@ -197,7 +197,6 @@ public class TranslateXsd
       addStandardType("string","String");
       addStandardType("decimal","BigDecimal");
       addStandardType("date","Date");
-      addStandardType("dateTime","Date");
       addStandardType("long","Long");
       addStandardType("boolean","Boolean");
       addStandardType("nonNegativeInteger","Integer");
@@ -208,8 +207,31 @@ public class TranslateXsd
       
       // XXX We should have a string subtype for the NMTOKEN rules
       addStandardType("NMTOKEN","String");
+
+      addMappedType("dateTime","class:/spiralcraft/net/xmlschema/types/Date");
+    
+    
     }
     
+    protected void addMappedType(String xsdLocalName,String typeURI)
+    {
+      TypeRef ref=new TypeRef();
+      ref.typeName=AbstractFrameHandler.combineName
+                    (XSD_URI.toString(), xsdLocalName);
+      try
+      {
+        ref.dataType
+          =Type.resolve
+            (typeURI);
+        ref.handlerTemplate=new EditableArrayTuple(valueFrameType);
+        typeMap.put(ref.typeName,ref);
+      }
+      catch (DataException x)
+      { throw new RuntimeException
+          ("Error resolving type "+typeURI,x);
+      }
+    }
+      
     protected void addStandardType(String xsdLocalName,String dataLocalName)
     { 
       TypeRef ref=new TypeRef();
@@ -914,7 +936,7 @@ public class TranslateXsd
      */
     @SuppressWarnings("unchecked")
     private EditableArrayTuple extendHandler(TypeRef baseType)
-      throws DataException,IOException
+      throws DataException
     {
       // EditableArrayTuple handler=makeHandler(baseType);
       EditableArrayTuple handler=baseType.handlerTemplate;
@@ -989,7 +1011,7 @@ public class TranslateXsd
     
     
     private EditableArrayTuple makeSimpleHandler(TypeRef ref)
-      throws DataException,IOException
+      throws DataException
     {
       EditableArrayTuple handler
         =new EditableArrayTuple(ref.handlerTemplate);
@@ -1142,8 +1164,6 @@ public class TranslateXsd
             
             handler.set("id",elementName);
             log.fine("Setting id="+elementName);
-            // Drop through and create the type once more for back ref
-            backRef=null;
           }
           else 
           {
@@ -1154,68 +1174,66 @@ public class TranslateXsd
           }
         }
             
-        if (backRef==null)
-        {
-          EditableArrayTuple childHandler
-            =makeHandlerFromTemplate(elementTypeRef);
 
-          String containingType=containerRef.dataType.getURI().toString();
-          childHandler.set("elementURI",elementName);
-              
-          if (containerRef.fieldMap!=null)
-          { 
-            // This element corresponds to a value of a field
-            Tuple fieldDecl=containerRef.fieldMap.get(elementName);
-            String fieldName=(String) fieldDecl.get("name");
-            String reference
-              =containingType!=null
-              ?("[:"+containingType+"].")+fieldName
-              :fieldName
-              ;
+        EditableArrayTuple childHandler
+          =makeHandlerFromTemplate(elementTypeRef);
+
+        String containingType=containerRef.dataType.getURI().toString();
+        childHandler.set("elementURI",elementName);
+            
+        if (containerRef.fieldMap!=null)
+        { 
+          // This element corresponds to a value of a field
+          Tuple fieldDecl=containerRef.fieldMap.get(elementName);
+          String fieldName=(String) fieldDecl.get("name");
+          String reference
+            =containingType!=null
+            ?("[:"+containingType+"].")+fieldName
+            :fieldName
+            ;
           
-            if (childHandler.getType().equals(tupleFrameType))
-            {
-              if ( getFieldDeclType(fieldDecl).isAggregate() )
-              { 
-                childHandler.set
-                  ("container", Expression.create(reference));
-              }
-              else
-              { 
-                childHandler.set
-                  ("assignment", Expression.create(reference));
-              }
-            }
-            else if (childHandler.getType().equals(valueFrameType))
+          if (childHandler.getType().equals(tupleFrameType))
+          {
+            if ( getFieldDeclType(fieldDecl).isAggregate() )
             { 
-              if (getFieldDeclType(fieldDecl).isAggregate())
-              { 
-                childHandler.set("container",Expression.create(reference));
-                childHandler.set
-                  ("type"
-                  ,typeRefTuple(getFieldDeclType(fieldDecl).getContentType())
-                  );
-              }
-              else
-              { childHandler.set("assignment",Expression.create(reference));
-              }
-            
+              childHandler.set
+                ("container", Expression.create(reference));
             }
-            else if (childHandler.getType().equals(aggregateFrameType))
-            {
-              childHandler.set("assignment", Expression.create(reference));
+            else
+            { 
+              childHandler.set
+                ("assignment", Expression.create(reference));
             }
-            
-            return childHandler;
           }
-          else if (containerRef.dataType.isAggregate())
+          else if (childHandler.getType().equals(valueFrameType))
           { 
-            // This element corresponds to an item in a collection
-            String reference="[:"+containingType+"]";
-            childHandler.set("container", Expression.create(reference));
+            if (getFieldDeclType(fieldDecl).isAggregate())
+            { 
+              childHandler.set("container",Expression.create(reference));
+              childHandler.set
+                ("type"
+                ,typeRefTuple(getFieldDeclType(fieldDecl).getContentType())
+                );
+            }
+            else
+            { childHandler.set("assignment",Expression.create(reference));
+            }
             
-            return childHandler;
           }
+          else if (childHandler.getType().equals(aggregateFrameType))
+          {
+            childHandler.set("assignment", Expression.create(reference));
+          }
+            
+          return childHandler;
+        }
+        else if (containerRef.dataType.isAggregate())
+        { 
+          // This element corresponds to an item in a collection
+          String reference="[:"+containingType+"]";
+          childHandler.set("container", Expression.create(reference));
+          
+          return childHandler;
         }
       }
       return null;
