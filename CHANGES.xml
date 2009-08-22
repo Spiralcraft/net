@@ -2,6 +2,37 @@
   xmlns:scm="class:/spiralcraft/scm/meta/"
   >
   <scm:Change>
+    <revision>0.3.6
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>2009-08-22
+    </date>
+
+    <detail>
+    
+      <scm:Change>
+      
+        <date>2009-08-22
+        </date>
+
+        <notes>
+          <scm:Note>VariableMap will encode multi-valued attributes
+            as multiple attribute/value pairs instead of non-standard
+            comma delimited value list for a single attribute.
+          </scm:Note>
+        </notes>
+
+        <path>source/spiralcraft/net/http/VariableMap.java
+        </path>
+
+      </scm:Change>
+    </detail>
+  </scm:Change>
+
+  <scm:Change>
     <revision>0.3.5.1
     </revision>
     
