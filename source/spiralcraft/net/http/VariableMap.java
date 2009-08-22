@@ -29,6 +29,19 @@ public class VariableMap
   extends ListMap<String,String>
 {
 
+  private boolean compactEncoding=false;
+  
+  /**
+   * Specify that multiple attribute values should be encoded as
+   *   comma delimited lists, instead of multiple attribute/value pairs.
+   *   
+   * @param compactEncoding
+   */
+  public void setCompactEncoding(boolean compactEncoding)
+  { this.compactEncoding=compactEncoding;
+    
+  }
+  
   /**
    * <p>Construct a Variable map from a URL encoded string of the 
    *   application/x-form-urlencoded content type.
@@ -111,25 +124,43 @@ public class VariableMap
     boolean first=true;
     for (Entry<String,List<String>> entry: entrySet())
     {
-      if (first)
-      { first=false;
-      }
-      else
-      { buf.append("&");
-      }
-      buf.append(URLCodec.encode(entry.getKey()));
-      buf.append("=");
-      
-      boolean first2=true;
-      for (String string:entry.getValue())
+      if (compactEncoding)
       {
-        if (first2)
-        { first2=false;
+        if (first)
+        { first=false;
         }
         else
-        { buf.append(",");
+        { buf.append("&");
         }
-        buf.append(URLCodec.encode(string));
+        buf.append(URLCodec.encode(entry.getKey()));
+        buf.append("=");
+      
+        boolean first2=true;
+        for (String string:entry.getValue())
+        {
+          if (first2)
+          { first2=false;
+          }
+          else
+          { buf.append(",");
+          }
+          buf.append(URLCodec.encode(string));
+        }
+      }
+      else
+      {
+        for (String string:entry.getValue())
+        {
+          if (first)
+          { first=false;
+          }
+          else
+          { buf.append("&");
+          }
+          buf.append(URLCodec.encode(entry.getKey()));
+          buf.append("=");
+          buf.append(URLCodec.encode(string));
+        }
       }
     }
     if (buf.length()==0)
