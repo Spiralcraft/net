@@ -17,6 +17,7 @@ package spiralcraft.net.http;
 import java.lang.reflect.Array;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import spiralcraft.log.Level;
@@ -24,6 +25,7 @@ import spiralcraft.log.ClassLog;
 
 import spiralcraft.lang.BindException;
 import spiralcraft.lang.Channel;
+import spiralcraft.lang.CollectionDecorator;
 
 
 import spiralcraft.text.ParseException;
@@ -47,51 +49,57 @@ public class VariableMapBinding<Tvar>
   private static final ClassLog log
     =ClassLog.getInstance(VariableMapBinding.class);
 
-  private final Channel<Tvar> target;
+  private final Channel<Tvar> targetChannel;
   private final String name;
   private StringConverter converter;
   private boolean array;
+  private IterationDecorator iterable;
+  private CollectionDecorator collectionDecorator;
   private Class<Tvar> clazz;
   private boolean passNull;
   private boolean debug;
-  private Translator translator;
-  
-  
+  private Translator translator;  
   
 
   public VariableMapBinding
-    (Channel<Tvar> target
+    (Channel<Tvar> targetChannel
     ,String name
-    ,StringConverter converter
+    ,StringConverter sconverter
     )
     throws BindException
   {
-    this.target=target;
+    this.targetChannel=targetChannel;
     this.name=name;
-    this.converter=converter;
-    clazz=target.getContentType();
+    this.converter=sconverter;
+    clazz=targetChannel.getContentType();
      
-    if (clazz.isArray())
+    if (this.converter==null)
+    { this.converter=targetChannel.getReflector().getStringConverter();
+    }
+    if (this.converter==null)
     { 
-      array=true;
-      if (this.converter==null)
-      {
-        IterationDecorator dec
-          =target.<IterationDecorator>decorate(IterationDecorator.class);
-        this.converter=dec.getComponentReflector().getStringConverter();
+      this.converter
+        =StringConverter.getInstance(targetChannel.getContentType());
+    }
+    if (this.converter==null)
+    { 
+      array=targetChannel.getContentType().isArray();
+      collectionDecorator
+        =targetChannel.<CollectionDecorator>decorate(CollectionDecorator.class);
+      iterable
+        =targetChannel.<IterationDecorator>decorate(IterationDecorator.class);
+      if (iterable!=null)
+      { 
         
+        this.converter=
+          iterable.getComponentReflector().getStringConverter();
         if (this.converter==null)
-        {
-          this.converter
-            =StringConverter.getInstance(clazz.getComponentType());
+        { 
+          this.converter=StringConverter.getInstance
+            (iterable.getComponentReflector().getContentType());
         }
       }
-    }
-    else
-    {
-      if (this.converter==null)
-      { this.converter=target.getReflector().getStringConverter();
-      }
+        
     }
     
     if (this.converter==null && clazz!=String.class)
@@ -232,7 +240,7 @@ public class VariableMapBinding<Tvar>
   {
     if (array)
     {
-      Tvar array=target.get();
+      Tvar array=targetChannel.get();
       if (debug)
       { 
         log.fine
@@ -259,9 +267,29 @@ public class VariableMapBinding<Tvar>
         return ret;
       }
     }
+    else if (iterable!=null)
+    { 
+      Iterator it=iterable.iterator();
+      if (it==null)
+      { return null;
+      }
+      else
+      {
+        List<String> ret=new ArrayList<String>();   
+        while (it.hasNext())
+        {
+          Object val=it.next();
+          String sval=translateValueOut(val);
+          if (sval!=null)
+          { ret.add(sval);
+          }
+        }
+        return ret;
+      }
+    }
     else
     {
-      Tvar val=target.get();
+      Tvar val=targetChannel.get();
       if (debug)
       { 
         log.fine
@@ -305,19 +333,41 @@ public class VariableMapBinding<Tvar>
 
       if (array)
       {
-        Object array=Array.newInstance(clazz.getComponentType());
-        array=ArrayUtil.expandBy(array, vals.size());
-        int i=0;
-        for (String val : vals)
-        { 
-          Array.set(array, i++, translateValueIn(val));
-        }
+        try
+        {
+          Object array=Array.newInstance(clazz.getComponentType(),0);
+          array=ArrayUtil.expandBy(array, vals.size());
+          int i=0;
+          for (String val : vals)
+          { 
+            Array.set(array, i++, translateValueIn(val));
+          }
          
-        if (debug)
-        { log.fine("Setting target to "+array);
+          if (debug)
+          { log.fine("Setting target to "+array);
+          }
+          targetChannel.set((Tvar) array);
         }
-        target.set((Tvar) array);
+        catch (IllegalArgumentException x)
+        {
+          throw new IllegalArgumentException
+            ("Error making array object for "
+            +clazz.getComponentType()+" to hold "+vals
+            ,x);
+        }
           
+      }
+      else if (collectionDecorator!=null)
+      {
+        Object collection=collectionDecorator.newCollection();
+        for (String val:vals)
+        { collectionDecorator.add(collection,translateValueIn(val));
+        }
+        if (debug)
+        { log.fine("Setting target to "+collection);
+        }
+        targetChannel.set((Tvar) collection);
+        
       }
       else
       { 
@@ -325,7 +375,7 @@ public class VariableMapBinding<Tvar>
         if (debug)
         { log.fine("Setting target to "+value);
         }
-        target.set((Tvar)value);
+        targetChannel.set((Tvar)value);
       }
         
     }
@@ -334,7 +384,7 @@ public class VariableMapBinding<Tvar>
       if (debug)
       { log.fine("Setting target to null for "+name);
       }
-      target.set(null);
+      targetChannel.set(null);
     }
   }
   
