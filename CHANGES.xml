@@ -2,6 +2,40 @@
   xmlns:scm="class:/spiralcraft/scm/meta/"
   >
   <scm:Change>
+    <revision>0.3.6.1
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>????
+    </date>
+
+    <detail>
+    
+      <scm:Change>
+      
+        <date>2009-08-31
+        </date>
+
+        <notes>
+          <scm:Note>VariableMap provides more informative exception
+            when an Array can't be created when reading multi-valued
+            attributes.
+          </scm:Note>
+          <scm:Note>VariableMap utilizes CollectionDecorator when available
+            to generically apply multi-valued attributes to a target.
+          </scm:Note>          
+        </notes>
+
+        <path>source/spiralcraft/net/http/VariableMap.java
+        </path>
+
+      </scm:Change>
+    </detail>
+  </scm:Change>
+    
+  <scm:Change>
     <revision>0.3.6
     </revision>
     
