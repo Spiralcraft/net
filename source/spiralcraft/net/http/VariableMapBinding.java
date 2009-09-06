@@ -59,6 +59,7 @@ public class VariableMapBinding<Tvar>
   private boolean passNull;
   private boolean debug;
   private Translator translator;  
+  private boolean trim;
   
 
   public VariableMapBinding
@@ -111,6 +112,15 @@ public class VariableMapBinding<Tvar>
     }
   }
 
+  /**
+   * Trim whitespace from input before converting
+   * 
+   * @param trim
+   */
+  public void setTrim(boolean trim)
+  { this.trim=trim;
+  }
+  
   /**
    * <p>Specify a Translator which sits between the VariableMap and the
    *   StringConverter and normalizes data read from the VariableMap and
@@ -310,6 +320,14 @@ public class VariableMapBinding<Tvar>
     }
   }
   
+  private String preprocess(String val)
+  {
+    if (val!=null && trim)
+    { val=val.trim();
+    }
+    return val;
+  }
+  
   /**
    * <p>Read data from the map and write it to the target channel.
    * </p>
@@ -340,6 +358,7 @@ public class VariableMapBinding<Tvar>
           int i=0;
           for (String val : vals)
           { 
+            val=preprocess(val);
             Array.set(array, i++, translateValueIn(val));
           }
          
@@ -361,7 +380,9 @@ public class VariableMapBinding<Tvar>
       {
         Object collection=collectionDecorator.newCollection();
         for (String val:vals)
-        { collectionDecorator.add(collection,translateValueIn(val));
+        { 
+          val=preprocess(val);
+          collectionDecorator.add(collection,translateValueIn(val));
         }
         if (debug)
         { log.fine("Setting target to "+collection);
@@ -371,7 +392,7 @@ public class VariableMapBinding<Tvar>
       }
       else
       { 
-        Object value=translateValueIn(vals.get(0));
+        Object value=translateValueIn(preprocess(vals.get(0)));
         if (debug)
         { log.fine("Setting target to "+value);
         }
