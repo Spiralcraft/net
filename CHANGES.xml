@@ -2,17 +2,32 @@
   xmlns:scm="class:/spiralcraft/scm/meta/"
   >
   <scm:Change>
-    <revision>0.3.6.1
+    <revision>0.3.7
     </revision>
     
     <authorId>miketoth
     </authorId>
     
-    <date>????
+    <date>2009-09-06
     </date>
 
     <detail>
     
+      <scm:Change>
+      
+        <date>2009-09-06
+        </date>
+
+        <notes>
+          <scm:Note>Option to trim incoming value in VariableMapBinding
+          </scm:Note>
+        </notes>
+
+        <path>source/spiralcraft/net/http/VariableMapBinding.java
+        </path>
+
+      </scm:Change>
+
       <scm:Change>
       
         <date>2009-08-31
