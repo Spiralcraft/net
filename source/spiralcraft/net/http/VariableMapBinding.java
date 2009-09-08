@@ -74,14 +74,9 @@ public class VariableMapBinding<Tvar>
     this.converter=sconverter;
     clazz=targetChannel.getContentType();
      
-    if (this.converter==null)
-    { this.converter=targetChannel.getReflector().getStringConverter();
-    }
-    if (this.converter==null)
-    { 
-      this.converter
-        =StringConverter.getInstance(targetChannel.getContentType());
-    }
+    // Prefer to handle aggregate types using the component type due to
+    //   the fact we can't always rely on a comma delimited list, which
+    //   will be the default for an array
     if (this.converter==null)
     { 
       array=targetChannel.getContentType().isArray();
@@ -101,6 +96,14 @@ public class VariableMapBinding<Tvar>
         }
       }
         
+    }
+    if (this.converter==null)
+    { this.converter=targetChannel.getReflector().getStringConverter();
+    }
+    if (this.converter==null)
+    { 
+      this.converter
+        =StringConverter.getInstance(targetChannel.getContentType());
     }
     
     if (this.converter==null && clazz!=String.class)
