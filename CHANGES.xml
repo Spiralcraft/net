@@ -2,6 +2,38 @@
   xmlns:scm="class:/spiralcraft/scm/meta/"
   >
   <scm:Change>
+    <revision>0.3.9
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>2009-09-25
+    </date>
+
+    <detail>
+    
+      <scm:Change>
+      
+        <date>2009-09-23
+        </date>
+
+        <notes>
+          <scm:Note>Added baseTypeNamespaceURI property to TranslateXsd that
+            allows developers to build optional Types in a specified package
+            that will be extended by generated types of the same name. 
+          </scm:Note>
+        </notes>
+
+        <path>source/spiralcraft/net/xmlschema/TranslateXsd.java
+        </path>
+
+      </scm:Change>
+    </detail>
+  </scm:Change>
+
+
+  <scm:Change>
     <revision>0.3.8
     </revision>
     

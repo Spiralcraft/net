@@ -14,6 +14,7 @@
          class:/spiralcraft/task/TaskRunner
          class:/spiralcraft/net/xmlschema/TranslateXsd.assy
          --schemaURI in/xmlschema/example.xsd
+         --baseTypeNamespaceURI in/xmlschema/base/
          --targetURI class:/com/example/xsd/
          --outputLocation out/xmlschema/
          "
