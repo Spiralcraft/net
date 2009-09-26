@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<meta:Type xmlns:meta="class:/spiralcraft/data/types/meta/">
+  <fields>
+    <meta:Field>
+      <name>name</name>
+      <type>
+        <String.type/>
+      </type>
+    </meta:Field>
+    <meta:Field>
+      <name>street</name>
+      <type>
+        <String.type/>
+      </type>
+    </meta:Field>
+    <meta:Field>
+      <name>city</name>
+      <type>
+        <String.type/>
+      </type>
+    </meta:Field>
+    <meta:Field>
+      <name>state</name>
+      <type>
+        <String.type/>
+      </type>
+    </meta:Field>
+    <meta:Field>
+      <name>zip</name>
+      <type>
+        <BigDecimal.type/>
+      </type>
+    </meta:Field>
+    <meta:Field>
+      <name>country</name>
+      <type>
+        <String.type/>
+      </type>
+    </meta:Field>
+  </fields>
+</meta:Type>

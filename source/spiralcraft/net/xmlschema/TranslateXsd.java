@@ -38,12 +38,14 @@ import spiralcraft.data.Aggregate;
 import spiralcraft.data.DataException;
 import spiralcraft.data.Tuple;
 import spiralcraft.data.Type;
+import spiralcraft.data.TypeNotFoundException;
 import spiralcraft.data.TypeResolver;
 
 import spiralcraft.lang.spi.ThreadLocalChannel;
 import spiralcraft.lang.BindException;
 import spiralcraft.lang.Expression;
 import spiralcraft.lang.Focus;
+import spiralcraft.log.Level;
 
 
 /**
@@ -81,6 +83,7 @@ public class TranslateXsd
   private URI schemaURI;
   
   private URI targetURI;
+  private URI baseTypeNamespaceURI;
   private URI outputLocation;
   
   private URI[] selectedURIs;
@@ -149,6 +152,27 @@ public class TranslateXsd
   { this.targetURI=targetURI;
   }
   
+  /**
+   * <p>The URI for the namespace that contains optional base types and
+   *   handlers for the types and handlers that will be automatically generated
+   *   by the XSD translation.
+   * </p>
+   *   
+   * <p>If a type or handler with the same local name as a generated type
+   *   or handler exists in this namespace, the generated type or handler
+   *   will extend (for types) or reference (for handlers) the found type
+   *   or handler. 
+   * </p>
+   * 
+   * <p>If this property is null, no base types or handlers will be resolved
+   * </p>
+   * 
+   * @param baseTypeNamespaceURI
+   */
+  public void setBaseTypeNamespaceURI(URI baseTypeNamespaceURI)
+  { this.baseTypeNamespaceURI=baseTypeNamespaceURI;
+  }
+  
   public void setSelectedURIs(URI[] selectedURIs)
   { this.selectedURIs=selectedURIs;
   }
@@ -173,7 +197,14 @@ public class TranslateXsd
   public void bindChildren(Focus<?> focus)
     throws BindException
   { 
-    focus=focus.chain(translation);    
+    focus=focus.chain(translation);   
+    if (baseTypeNamespaceURI!=null
+        && !baseTypeNamespaceURI.isAbsolute()
+        )
+    { 
+      baseTypeNamespaceURI
+        =URI.create("context:/").resolve(baseTypeNamespaceURI);
+    }
     super.bindChildren(focus);
   }
   
@@ -470,12 +501,7 @@ public class TranslateXsd
           );
       ref.handlerTemplate=new EditableArrayTuple(aggregateFrameType);
       ensureChildren(ref.handlerTemplate).add(ref.unitTypeRef.handlerTemplate);
-      
-// extendHandler factor
-//      ((EditableArrayListAggregate<Tuple>) ref.handlerTemplate.get("children"))
-//        .add(extendHandler(ref.unitTypeRef));
-
-     
+         
 
       
     }
@@ -521,6 +547,7 @@ public class TranslateXsd
       }
       
       URI typeURI=targetURI.resolve(typeLocalName);
+      
       if (debug)
       { log.fine("typeURI is "+typeURI+" for "+ref.typeName);
       }
@@ -582,6 +609,7 @@ public class TranslateXsd
       }
 
       ref.handlerTemplate.set("type",typeRefTuple(typeImpl));
+      
       
 
       
@@ -721,6 +749,31 @@ public class TranslateXsd
       
       
       dataTypeDecl.set("fields",fieldDecls);
+      
+      if (baseTypeNamespaceURI!=null)
+      {
+        // Try to resolve a predefined base type
+        URI baseTypeURI=baseTypeNamespaceURI.resolve(typeLocalName);
+        try
+        { 
+          Type baseType=Type.resolve(baseTypeURI);
+          dataTypeDecl.set("baseType", typeRefTuple(baseType));
+        }
+        catch (TypeNotFoundException x)
+        {
+          if (x.getCause()==null)
+          { 
+            if (debug)
+            { log.log(Level.DEBUG,"Base type not found "+baseTypeURI);
+            }
+          }
+          else
+          { throw x;
+          }
+          
+        }
+      }
+
 
       // Write out declaration
       if (debug)
