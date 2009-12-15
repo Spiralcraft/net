@@ -36,6 +36,7 @@ import spiralcraft.data.spi.EditableArrayTuple;
 import spiralcraft.data.util.StaticInstanceResolver;
 import spiralcraft.data.Aggregate;
 import spiralcraft.data.DataException;
+import spiralcraft.data.Field;
 import spiralcraft.data.Tuple;
 import spiralcraft.data.Type;
 import spiralcraft.data.TypeNotFoundException;
@@ -52,7 +53,7 @@ import spiralcraft.log.Level;
  * <p>Reads an XML-Data Schema and generates data Types and a SAX handler tree
  * </p>
  * 
- * <p>Currently experimental, as there is a large impedence mismatch
+ * <p>Currently experimental, due to the "impedance mismatch"
  *   between XML-Data Schema descriptions and normalized object oriented data
  *   models.
  * </p> 
@@ -63,7 +64,7 @@ import spiralcraft.log.Level;
  */
 
 public class TranslateXsd
-  extends Chain
+  extends Chain<Void,Void>
 {
   public static URI DATA_SAX_URI=URI.create("class:/spiralcraft/data/sax/");
   public static URI DATA_XSD_URI=URI.create("class:/spiralcraft/net/xmlschema/"); 
@@ -213,10 +214,16 @@ public class TranslateXsd
   {
     
     
-    private HashMap<String,TypeRef> typeMap
-      =new HashMap<String,TypeRef>();
+    private HashMap<String,TypeMapping> typeMap
+      =new HashMap<String,TypeMapping>();
     { addStandardTypes();
     }
+    
+    private HashMap<String,Tuple> schemaTypeMap
+      =new HashMap<String,Tuple>();
+    
+    private HashMap<String,Tuple> schemaElementMap
+      =new HashMap<String,Tuple>();
     
     private Tuple schema;
     private TypeResolver typeResolver;
@@ -246,7 +253,7 @@ public class TranslateXsd
     
     protected void addMappedType(String xsdLocalName,String typeURI)
     {
-      TypeRef ref=new TypeRef();
+      TypeMapping ref=new TypeMapping();
       ref.typeName=AbstractFrameHandler.combineName
                     (XSD_URI.toString(), xsdLocalName);
       try
@@ -265,7 +272,7 @@ public class TranslateXsd
       
     protected void addStandardType(String xsdLocalName,String dataLocalName)
     { 
-      TypeRef ref=new TypeRef();
+      TypeMapping ref=new TypeMapping();
       ref.typeName=AbstractFrameHandler.combineName
                     (XSD_URI.toString(), xsdLocalName);
       try
@@ -291,6 +298,10 @@ public class TranslateXsd
       {
       
         super.work();
+        if (getException()!=null)
+        { return;
+        }
+        
         Tuple tt=translation.get();
         if (debug)
         { log.fine("Read "+tt.toText("| "));
@@ -309,6 +320,9 @@ public class TranslateXsd
     }
     
     @SuppressWarnings("unchecked")
+    /**
+     * Generate artifacts for a whole xsd
+     */
     private void generate(Tuple translation)
       throws DataException,IOException
     { 
@@ -316,6 +330,11 @@ public class TranslateXsd
 
       schema=(Tuple) translation.get("schema");
       targetNamespace=(String) schema.get("targetNamespace");
+      
+      mapSchemaTypes((Aggregate) schema.get("types"));
+      mapSchemaElements((Aggregate) schema.get("rootElements"));
+      
+ 
       if (debug)
       { log.fine("Target namespace is "+targetNamespace);
       }
@@ -332,11 +351,66 @@ public class TranslateXsd
           }
         }
         else
-        { generateHandlerSet(element);
+        { 
+          generateHandlerSet(element);
+        }
+      }
+      
+      
+    }
+    
+    public void mapSchemaTypes(Aggregate<Tuple> typeList)
+      throws DataException
+    { 
+      for (Tuple type : typeList)
+      { 
+        String typeName=(String) type.get("typeName");
+        
+        if (targetNamespace!=null 
+            && !URI.create(typeName).isAbsolute()
+           )
+        { 
+          typeName
+            =AbstractFrameHandler.combineName
+                    (targetNamespace,typeName);
+        }        
+        schemaTypeMap.put(typeName, type);
+        if (debug)
+        { log.fine("Mapped type "+typeName+" -> "+type);
         }
       }
     }
     
+    public void mapSchemaElements(Aggregate<Tuple> elementList)
+      throws DataException
+    {
+      for (Tuple element : elementList)
+      { 
+        String elementName=(String) element.get("elementName");
+        
+        if (targetNamespace!=null 
+            && !URI.create(elementName).isAbsolute()
+           )
+        { 
+          elementName
+            =AbstractFrameHandler.combineName
+                    (targetNamespace,elementName);
+        }        
+        schemaElementMap.put(elementName, element);
+        if (debug)
+        { log.fine("Mapped element "+elementName+" -> "+element);
+        }
+      }      
+    }
+    
+    /**
+     * Generate a handler set for a root level element into a file
+     *   elementName+"Root.frame.xml"
+     * 
+     * @param element
+     * @throws DataException
+     * @throws IOException
+     */
     @SuppressWarnings("unchecked")
     // This is only called from the top level, not re-entrant
     private void generateHandlerSet(Tuple element)
@@ -353,41 +427,24 @@ public class TranslateXsd
       handlerRef.handler=rootFrame;
       handlerStack.push(handlerRef);
       
-      String elementType=(String) element.get("typeName");
-      String elementName=(String) element.get("elementName");
+      TypeMapping typeMapping=new TypeMapping();
+      typeMapping.handlerTemplate=rootFrame;
       
-      if (debug)
-      { log.fine("Generating handler for "+elementName);
-      }
+      // XXX Load data type here
+      //   automatically create a root.type with selected elements
+      //   or use a pre-built root type
       
-      if (elementType!=null)
-      { 
-        if (debug)
-        { log.fine("type is "+elementType);
-        }
-        TypeRef elementTypeRef=resolveType(elementType);
-        if (elementTypeRef==null)
-        { throw new DataException
-            ("No type resolved for element "+elementName+" type "+elementType);
-          
-        }
-        else
-        {
-          EditableArrayTuple childElement
-            =makeHandlerFromTemplate(elementTypeRef);
-          childElement.set("elementURI",elementName);
-          children.add(childElement);
-        }
+      Tuple childHandler=makeTopLevelHandler(element,typeMapping);
+      if (childHandler!=null)
+      { children.add(childHandler);
       }
-      else
-      { 
-      }
-      
-
       
       handlerStack.pop();
       new DataWriter().writeToURI
-        (outputLocation.resolve(elementName+"Root.frame.xml"),rootFrame);
+        (outputLocation.resolve
+          (localName((String) element.get("elementName"))+"Root.frame.xml")
+          ,rootFrame
+          );
       
       
       if (debug)
@@ -399,11 +456,110 @@ public class TranslateXsd
       
     }
     
-    private TypeRef resolveType(String elementType)
+    private EditableArrayTuple makeTopLevelHandler
+      (Tuple element
+      ,TypeMapping rootType
+      )
+      throws DataException,IOException
+    {
+      String elementType=(String) element.get("typeName");
+      String elementName=(String) element.get("elementName");
+      Tuple inlineType=(Tuple) element.get("inlineType");
+      
+      if (debug)
+      { log.fine("Generating handler for "+elementName);
+      }
+      
+      
+      if (elementType!=null)
+      { 
+        if (debug)
+        { log.fine("type is "+elementType);
+        }
+        TypeMapping elementTypeRef=resolveType(elementType);
+        if (elementTypeRef==null)
+        { 
+          if (inlineType!=null)
+          { 
+            elementTypeRef
+              =createType(elementName,inlineType);
+          }
+        }
+        
+        if (elementTypeRef==null)
+        {
+           throw new DataException
+              ("No type resolved for element "+elementName+" type "+elementType);
+          
+        }
+        else
+        {
+          EditableArrayTuple childElement
+            =makeHandlerFromTemplate(elementTypeRef);
+          String elementUri=elementName;
+          if (elementUri.startsWith(targetNamespace+"#"))
+          { elementUri=localName(elementUri);
+          }
+          childElement.set("elementURI",elementUri);
+
+
+          if (rootType.dataType!=null)
+          {
+            String typeName=rootType.dataType.getURI().toString();
+            String fieldName=null;
+            
+            // XXX Find the field of type elementTypeRef.dataType
+            for (Field<?> field: rootType.dataType.getFieldSet().fieldIterable())
+            {
+              if (field.getType().getURI()
+                 .equals(elementTypeRef.dataType.getURI())
+                 )
+              { 
+                fieldName=field.getName();
+                break;
+              }
+            }
+            
+            if (fieldName!=null)
+            {
+            
+              childElement.set
+                ("assignment"
+                ,Expression.create("[:"+typeName+"]."+fieldName)
+                );
+            }
+            else
+            {
+              throw new DataException
+                ("No field in "+rootType.dataType.getURI()+" is of type "
+                +elementTypeRef.dataType.getURI()
+                );
+            }
+          }
+          return childElement;
+        }
+      }
+      else
+      { return null;
+      }
+      
+
+      
+    }
+    
+    /**
+     * Resolve a type by name, creating it if it doesn't exist
+     * 
+     * @param elementType
+     * @return
+     * @throws DataException
+     * @throws IOException
+     */
+    private TypeMapping resolveType(String elementType)
       throws DataException,IOException
     {
       
-      TypeRef ref=typeMap.get(elementType);
+      TypeMapping ref=typeMap.get(elementType);
       if (ref==null)
       { 
         
@@ -416,15 +572,24 @@ public class TranslateXsd
       return ref;
     }
     
+    /**
+     *  Create a new type mapping and add it to the map
+     * 
+     * @param elementType
+     * @param xsdType
+     * @return
+     * @throws DataException
+     * @throws IOException
+     */
     @SuppressWarnings("unchecked")
-    private TypeRef createType(String elementType,Tuple xsdType)
+    private TypeMapping createType(String elementType,Tuple xsdType)
       throws DataException,IOException
     {
       if (debug)
       { log.fine("Creating type for "+elementType);
       }
       
-      TypeRef ref=new TypeRef();
+      TypeMapping ref=new TypeMapping();
       ref.xsdType=xsdType;
       ref.typeName=elementType;
       typeMap.put(elementType,ref);
@@ -465,6 +630,8 @@ public class TranslateXsd
         }
         else
         { 
+          // Empty type
+          createComplexType(ref);
           log.warning("No elements, attributes or choices found in "
             +ref.typeName);
         }
@@ -484,7 +651,7 @@ public class TranslateXsd
      * @param ref
      */
     @SuppressWarnings("unchecked")
-    private void createDeclaredListType(TypeRef ref,Tuple inlineType)
+    private void createDeclaredListType(TypeMapping ref,Tuple inlineType)
       throws DataException,IOException
     {
       String unitTypeName=ref.typeName+"Unit";
@@ -507,13 +674,13 @@ public class TranslateXsd
     }
     
     @SuppressWarnings("unchecked")
-    private void createSimpleType(TypeRef ref)
+    private void createSimpleType(TypeMapping ref)
       throws DataException,IOException
     {
       String itemTypeName=(String) ref.xsdType.get("listItemTypeName");
       if (itemTypeName!=null)
       {
-        TypeRef itemTypeRef=resolveType(itemTypeName);
+        TypeMapping itemTypeRef=resolveType(itemTypeName);
         ref.dataType=Type.getAggregateType(itemTypeRef.dataType);
 
       }
@@ -530,7 +697,7 @@ public class TranslateXsd
     }
     
     @SuppressWarnings("unchecked")
-    private void createComplexType(TypeRef ref)
+    private void createComplexType(TypeMapping ref)
       throws DataException,IOException
     {
       
@@ -578,7 +745,7 @@ public class TranslateXsd
         if (debug)
         { log.fine("Resolving base type "+baseTypeName+" for "+ref.typeName);
         }
-        TypeRef baseType=resolveType(baseTypeName);
+        TypeMapping baseType=resolveType(baseTypeName);
         if (baseType!=null && baseType.dataType!=null)
         {
           ref.baseTypeRef=baseType;
@@ -699,7 +866,7 @@ public class TranslateXsd
                   // We don't need to use this right now, we just need to
                   //   generate it. If we implement disjoint union Types
                   //   we'll use the types.
-                  TypeRef elementType
+                  TypeMapping elementType
                     =resolveType((String) typeElement.get("typeName"));
                 }
                 
@@ -813,7 +980,7 @@ public class TranslateXsd
       
       String typeName=(String) element.get("typeName");
       Tuple inlineType=(Tuple) element.get("inlineType");
-      TypeRef type=null;
+      TypeMapping type=null;
       
       if (typeName!=null)
       {
@@ -839,7 +1006,7 @@ public class TranslateXsd
       if (type.dataType!=null)
       {
         Tuple field=generateField
-          ((String) element.get("elementName")
+          (localName((String) element.get("elementName"))
           ,type.dataType
           ,Boolean.TRUE.equals(element.get("plural"))
           );
@@ -859,15 +1026,34 @@ public class TranslateXsd
       
     }
 
+    /** 
+     * Turns a name back into a local name if it is fully qualified (ie. is
+     *   an absolute URI)
+     * 
+     * @param uriName
+     * @return The uri fragment, if the uriName is fully qualified
+     */
+    private String localName(String uriName)
+    { 
+      URI uri=URI.create(uriName);
+      if (uri.isAbsolute())
+      { return uri.getFragment();
+      }
+      else
+      { return uriName;
+      }
+    }
+    
+    
     @SuppressWarnings("unchecked")
     private Tuple generateFieldFromAttribute
-      (Tuple attribute,TypeRef parent)
+      (Tuple attribute,TypeMapping parent)
       throws DataException,IOException
     {
       String typeName=(String) attribute.get("typeName");
       if (typeName!=null)
       {
-        TypeRef type=resolveType(typeName);
+        TypeMapping type=resolveType(typeName);
         if (type!=null && type.dataType!=null)
         {
           
@@ -876,14 +1062,14 @@ public class TranslateXsd
               parent.handlerTemplate.get("attributeBindings");
           
           Tuple field=generateField
-            ((String) attribute.get("name")
+            (localName((String) attribute.get("name"))
             ,type.dataType
             ,false
             );
 
           EditableArrayTuple binding
             =new EditableArrayTuple(attributeBindingType);
-          binding.set("name",attribute.get("name"));
+          binding.set("name",localName((String) attribute.get("name")));
           binding.set("target", Expression.create((String) field.get("name")));
 
           bindings.add(binding);
@@ -935,60 +1121,43 @@ public class TranslateXsd
       
     }
     
-    @SuppressWarnings("unchecked")
     private Tuple findXsdType(String elementType)
       throws DataException
     { 
-      for (Tuple type : (Aggregate<Tuple>) schema.get("types"))
-      { 
-        String compareName=(String) type.get("typeName");
-        if (targetNamespace!=null)
-        { 
-          compareName
-            =AbstractFrameHandler.combineName
-                    (targetNamespace,compareName);
-        }
-        
-        if (elementType.equals(compareName))
-        { return type;
-        }
-        else
-        { // log.fine(compareName+"!="+elementType);
-        }
+      if (targetNamespace!=null
+          && !URI.create(elementType).isAbsolute()
+         )
+      {
+        elementType
+          =AbstractFrameHandler.combineName
+            (targetNamespace,elementType);
+      
       }
-      return null;
+      return schemaTypeMap.get(elementType);
     }
-    
-    @SuppressWarnings("unchecked")
+          
     private Tuple findElementRef(String elementName)
       throws DataException
     {
-      for (Tuple element : (Aggregate<Tuple>) schema.get("rootElements"))
-      { 
-        String compareName=(String) element.get("elementName");
-        if (targetNamespace!=null)
-        { 
-          compareName
-            =AbstractFrameHandler.combineName
-                    (targetNamespace,compareName);
-        }
-        
-        if (elementName.equals(compareName))
-        { return element;
-        }
-        else
-        { // log.fine(compareName+"!="+elementType);
-        }
+      if (targetNamespace!=null
+          && !URI.create(elementName).isAbsolute()
+         )
+      {
+        elementName
+          =AbstractFrameHandler.combineName
+            (targetNamespace,elementName);
+      
       }
-      return null;      
+      return schemaElementMap.get(elementName);
     }
+
     
     /** 
      * Create a new handler for a subtype by copying all the attributes and
      *   children of a base type
      */
     @SuppressWarnings("unchecked")
-    private EditableArrayTuple extendHandler(TypeRef baseType)
+    private EditableArrayTuple extendHandler(TypeMapping baseType)
       throws DataException
     {
       // EditableArrayTuple handler=makeHandler(baseType);
@@ -1038,7 +1207,7 @@ public class TranslateXsd
      * @throws DataException
      * @throws IOException
      */
-    private EditableArrayTuple makeHandlerFromTemplate(TypeRef ref)
+    private EditableArrayTuple makeHandlerFromTemplate(TypeMapping ref)
       throws DataException,IOException
     {
       if (ref.handlerTemplate==null)
@@ -1063,7 +1232,7 @@ public class TranslateXsd
     }
     
     
-    private EditableArrayTuple makeSimpleHandler(TypeRef ref)
+    private EditableArrayTuple makeSimpleHandler(TypeMapping ref)
       throws DataException
     {
       EditableArrayTuple handler
@@ -1073,7 +1242,7 @@ public class TranslateXsd
       
     }
     
-    private EditableArrayTuple makeComplexHandler(TypeRef ref)
+    private EditableArrayTuple makeComplexHandler(TypeMapping ref)
       throws DataException,IOException
     {
 
@@ -1096,7 +1265,7 @@ public class TranslateXsd
     }
     
     @SuppressWarnings("unchecked")
-    private void combineHandlerChildren(TypeRef ref,HandlerRef handlerRef)
+    private void combineHandlerChildren(TypeMapping ref,HandlerRef handlerRef)
       throws DataException,IOException
     {
       EditableArrayTuple handler=(EditableArrayTuple) handlerRef.handler;
@@ -1161,9 +1330,10 @@ public class TranslateXsd
      * @throws DataException
      * @throws IOException
      */
+    // Called by makeHandlerFromTemplate->makeComplexHandler->combineHandlerChildren
     public Tuple completeHandlerForElement
       (Tuple element
-      ,TypeRef containerRef
+      ,TypeMapping containerRef
       ,EditableArrayTuple handler
       )
       throws DataException,IOException
@@ -1178,7 +1348,7 @@ public class TranslateXsd
       { log.fine("Generating handler for "+elementName);
       }
 
-      TypeRef elementTypeRef=null;
+      TypeMapping elementTypeRef=null;
       if (elementType!=null)
       {
         if (debug)
@@ -1193,7 +1363,9 @@ public class TranslateXsd
       }
       else if (inlineType!=null)
       { 
-        log.fine("Creating in-line type for '"+elementName+"'");
+        if (debug)
+        { log.fine("Creating in-line type for '"+elementName+"'");
+        }
         
         // Name the inline type after the element name
         elementTypeRef=createType(elementName,inlineType);
@@ -1209,14 +1381,18 @@ public class TranslateXsd
         HandlerRef backRef=findInStack(elementTypeRef.typeName);
         if (backRef!=null)
         {
-          log.fine("Found in stack "+backRef.handler);
+          if (debug)
+          { log.fine("Found in stack "+backRef.handler);
+          }
           String id=(String) backRef.handler.get("id");
           if (id==null)
           { 
             // We are at the top of the recursive chain
             
             handler.set("id",elementName);
-            log.fine("Setting id="+elementName);
+            if (debug)
+            { log.fine("Setting id="+elementName);
+            }
           }
           else 
           {
@@ -1231,7 +1407,9 @@ public class TranslateXsd
         EditableArrayTuple childHandler
           =makeHandlerFromTemplate(elementTypeRef);
 
-        String containingType=containerRef.dataType.getURI().toString();
+        String containingType
+          =containerRef.dataType.getURI().toString();
+
         childHandler.set("elementURI",elementName);
             
         if (containerRef.fieldMap!=null)
@@ -1334,14 +1512,16 @@ public class TranslateXsd
   
 
   @SuppressWarnings("unchecked")
-  class TypeRef
+  class TypeMapping
   {
+    
     public String typeName;
+    public String elementName;
     public Tuple xsdType;
     public Type dataType;
     public Tuple dataTypeDecl;
-    public TypeRef unitTypeRef;
-    public TypeRef baseTypeRef;
+    public TypeMapping unitTypeRef;
+    public TypeMapping baseTypeRef;
     public EditableArrayTuple handlerTemplate;
     public HashMap<String,Tuple> fieldMap;
     
