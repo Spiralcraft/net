@@ -43,7 +43,7 @@ import spiralcraft.util.ArrayUtil;
  *
  */
 public class SendMail
-  extends Chain
+  extends Chain<Void,Void>
 {
 
   private Channel<SMTPConnector> smtpChannel;
