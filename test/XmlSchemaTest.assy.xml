@@ -1,0 +1,48 @@
+<task:Sequence
+  xmlns:task="class:/spiralcraft/task/"
+  xmlns:xs="class:/spiralcraft/net/xmlschema/"
+  >
+  
+  <scenarios>
+    <xs:TranslateXsd>
+      <schemaURI>in/xmlschema/example.xsd
+      </schemaURI>
+      
+      <targetURI>class:/com/example/xsd/
+      </targetURI>
+      
+      <baseTypeNamespaceURI>in/xmlschema/base/
+      </baseTypeNamespaceURI>
+
+      
+      <outputLocation>out/xmlschema/example/
+      </outputLocation>
+    </xs:TranslateXsd>
+
+    <xs:TranslateXsd>
+      <debug>false
+      </debug>
+      
+      <schemaURI>in/xmlschema/facebook-1.0.xsd
+      </schemaURI>
+      
+      <targetURI>class:/com/example/xsd/
+      </targetURI>
+      
+      <outputLocation>out/xmlschema/fb/
+      </outputLocation>
+    </xs:TranslateXsd>
+
+    <xs:TranslateXsd>
+      <schemaURI>in/xmlschema/sdc-3.0.xsd
+      </schemaURI>
+      
+      <targetURI>class:/com/example/xsd/
+      </targetURI>
+      
+      <outputLocation>out/xmlschema/sdc/
+      </outputLocation>
+    </xs:TranslateXsd>
+
+  </scenarios>
+</task:Sequence>

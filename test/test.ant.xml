@@ -6,17 +6,16 @@
     depends="clean"
     >
     <mkdir dir="out/xmlschema"/>
- 
+    <mkdir dir="out/xmlschema/example"/>
+    <mkdir dir="out/xmlschema/sdc"/>
+    <mkdir dir="out/xmlschema/fb"/>
+      
     <devtask
       codebase=".."
       exec
         ="--log log/spiralcraft --consoleLog
          class:/spiralcraft/task/TaskRunner
-         class:/spiralcraft/net/xmlschema/TranslateXsd.assy
-         --schemaURI in/xmlschema/example.xsd
-         --baseTypeNamespaceURI in/xmlschema/base/
-         --targetURI class:/com/example/xsd/
-         --outputLocation out/xmlschema/
+         XmlSchemaTest.assy
          "
     />
   </target>

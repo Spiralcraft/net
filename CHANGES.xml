@@ -2,6 +2,87 @@
   xmlns:scm="class:/spiralcraft/scm/meta/"
   >
   <scm:Change>
+    <revision>0.4.0
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>?????
+    </date>
+
+    <detail>
+      <scm:Change>
+      
+        <date>2009-12-14
+        </date>
+
+        <notes>
+          <scm:Note>Update for new spiralcraft.task.Scenario signature
+          </scm:Note>
+        </notes>
+
+        <path>source/spiralcraft/net/smtp/SendMail.java
+        </path>
+
+      </scm:Change>
+    
+      <scm:Change>
+      
+        <date>2009-12-14
+        </date>
+
+        <notes>
+          <scm:Note>Changes to TranslateXsd to generate output suitable for
+            RPC call based web services.
+          </scm:Note>
+          <scm:Note>Renamed internal TypeRef to TypeMapping to clarify role,
+            and added "elementName" for a struct defined by a top level element
+            instead of a type declaration.
+          </scm:Note>
+          <scm:Note>Mapped root types and elements for faster performance
+            in large xsd models.
+          </scm:Note>
+          <scm:Note>Root element in-line definitions are now handled properly
+          </scm:Note>
+          <scm:Note>When the the root frame has a data type, and a child
+            element local name and type matches a field in the root frame's
+            type, an assignment will be generated. Requires additional
+            input to TranslateXsd to specify pre-existing root frame type.
+          </scm:Note>
+          <scm:Note>An empty type is created when no attributes, elements, or
+            choices are declared for a complex type.
+          </scm:Note>
+          <scm:Note>Cleaner implementation of namespace management- all names
+            are represented internally as fully qualified, using the "#" 
+            fragment to denote the local name part in a URI.
+          </scm:Note>
+        </notes>
+
+        <path>source/spiralcraft/net/xmlschema/TranslateXsd.java
+        </path>
+
+      </scm:Change>
+
+      <scm:Change>
+      
+        <date>2009-11-26
+        </date>
+
+        <notes>
+          <scm:Note>Fix NPE when schema URI not found or otherwise unavailable
+          </scm:Note>
+        </notes>
+
+        <path>source/spiralcraft/net/xmlschema/TranslateXsd.java
+        </path>
+
+      </scm:Change>
+    </detail>
+  </scm:Change>
+
+
+  <scm:Change>
     <revision>0.3.9
     </revision>
     
