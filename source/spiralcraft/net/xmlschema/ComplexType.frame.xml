@@ -11,6 +11,9 @@
   <id>complexType
   </id>
   
+  <strictMapping>true
+  </strictMapping>
+  
   <attributeBindings>
 
     <sax:AttributeBinding>
@@ -28,7 +31,6 @@
 
     
     <sax:TupleFrame ref="xsd:Attribute.frame.xml"/>
- 
-
+    <sax:ContainerFrame ref="xsd:Annotation.frame.xml"/>
   </children>
 </sax:TupleFrame>

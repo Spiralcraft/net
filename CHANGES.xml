@@ -2,6 +2,56 @@
   xmlns:scm="class:/spiralcraft/scm/meta/"
   >
   <scm:Change>
+    <revision>0.4.1
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>2010-01-05
+    </date>
+
+    <detail>
+      <scm:Change>
+      
+        <date>2009-12-31
+        </date>
+
+        <notes>
+          <scm:Note>Support XSD:All construct and prevent annotations
+            from throwing Exceptions
+          </scm:Note>
+          <scm:Note>Generate method and field names to meet
+            Java code conventions- (replace foo_bar with fooBar)
+          </scm:Note>
+          <scm:Note>Generate error handling elements in each top level
+            handler.
+          </scm:Note>
+        </notes>
+
+        <path>source/spiralcraft/net/xmlschema/
+        </path>
+        
+        <resources>
+          <URI>TranslateXsd.java
+          </URI>
+          <URI>All.frame.xml
+          </URI>
+          <URI>Annotation.frame.xml
+          </URI>
+          <URI>ComplexType.frame.xml
+          </URI>
+          <URI>ComplexTypeExt.frame.xml
+          </URI>
+          <URI>ComplexTypeTop.frame.xml
+          </URI>
+        </resources>
+
+      </scm:Change>
+    </detail>
+  </scm:Change>
+
+  <scm:Change>
     <revision>0.4.0
     </revision>
     

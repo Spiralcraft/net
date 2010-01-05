@@ -88,6 +88,7 @@ public class TranslateXsd
   private URI outputLocation;
   
   private URI[] selectedURIs;
+  private URI[] errorElementURIs;
   
   private Type<Tuple> complexTypeType
     =Type.<Tuple>resolve(DATA_XSD_URI.resolve("ComplexType"));
@@ -141,6 +142,14 @@ public class TranslateXsd
   
   public URI getSchemaURI()
   { return schemaURI;
+  }
+  
+  public void setErrorElementURIs(URI[] errorElementURIs)
+  { this.errorElementURIs=errorElementURIs;
+  }
+  
+  public void setErrorElementURI(URI errorElementURI)
+  { this.errorElementURIs=new URI[] {errorElementURI};
   }
   
   /**
@@ -339,6 +348,7 @@ public class TranslateXsd
       { log.fine("Target namespace is "+targetNamespace);
       }
       
+      
       for (Tuple element : (Aggregate<Tuple>) schema.get("rootElements"))
       {
         if (selectedURIs!=null)
@@ -355,7 +365,6 @@ public class TranslateXsd
           generateHandlerSet(element);
         }
       }
-      
       
     }
     
@@ -403,6 +412,7 @@ public class TranslateXsd
       }      
     }
     
+
     /**
      * Generate a handler set for a root level element into a file
      *   elementName+"Root.frame.xml"
@@ -411,9 +421,47 @@ public class TranslateXsd
      * @throws DataException
      * @throws IOException
      */
-    @SuppressWarnings("unchecked")
     // This is only called from the top level, not re-entrant
     private void generateHandlerSet(Tuple element)
+      throws DataException,IOException
+    {
+      
+      List<Tuple> elements=new ArrayList<Tuple>();
+      String handlerName=localName((String) element.get("elementName"));
+      elements.add(element);
+      if (errorElementURIs!=null)
+      {
+        for (URI elementURI:errorElementURIs)
+        {
+          Tuple errorElement=this.findElementRef(elementURI.toString());
+          if (errorElement!=null)
+          { elements.add(errorElement);
+          }
+          else
+          { 
+            throw new DataException
+              ("Error element '"
+                +elementURI+"' not found in top level elements"
+              );
+          }
+        }
+        
+      }
+      
+      generateHandlerSet(handlerName,elements);
+      
+    }
+    
+    /**
+     * Generate a root handler set for multiple elements into a file
+     *   name+"Root.frame.xml"
+     * 
+     * @param element
+     * @throws DataException
+     * @throws IOException
+     */
+    @SuppressWarnings("unchecked")    
+    private void generateHandlerSet(String handlerName,List<Tuple> elements)
       throws DataException,IOException
     {
       EditableArrayTuple rootFrame=new EditableArrayTuple(rootFrameType);
@@ -429,20 +477,22 @@ public class TranslateXsd
       
       TypeMapping typeMapping=new TypeMapping();
       typeMapping.handlerTemplate=rootFrame;
-      
-      // XXX Load data type here
+ 
+      // XXX We can give the RootElement a type here
       //   automatically create a root.type with selected elements
       //   or use a pre-built root type
-      
-      Tuple childHandler=makeTopLevelHandler(element,typeMapping);
-      if (childHandler!=null)
-      { children.add(childHandler);
+      for (Tuple element : elements)
+      {
+        Tuple childHandler=makeTopLevelHandler(element,typeMapping);
+        if (childHandler!=null)
+        { children.add(childHandler);
+        }
       }
-      
+
       handlerStack.pop();
       new DataWriter().writeToURI
         (outputLocation.resolve
-          (localName((String) element.get("elementName"))+"Root.frame.xml")
+          (handlerName+"Root.frame.xml")
           ,rootFrame
           );
       
@@ -455,6 +505,7 @@ public class TranslateXsd
       }
       
     }
+    
     
     private EditableArrayTuple makeTopLevelHandler
       (Tuple element
@@ -470,81 +521,79 @@ public class TranslateXsd
       { log.fine("Generating handler for "+elementName);
       }
       
+      TypeMapping elementTypeRef=null;
       
       if (elementType!=null)
       { 
         if (debug)
         { log.fine("type is "+elementType);
         }
-        TypeMapping elementTypeRef=resolveType(elementType);
-        if (elementTypeRef==null)
+        elementTypeRef=resolveType(elementType);
+      }
+      
+      
+      if (elementTypeRef==null)
+      { 
+        if (inlineType!=null)
         { 
-          if (inlineType!=null)
-          { 
-            elementTypeRef
-              =createType(elementName,inlineType);
-          }
+          elementTypeRef
+            =createType(elementName,inlineType);
         }
+      }
         
-        if (elementTypeRef==null)
-        {
-           throw new DataException
-              ("No type resolved for element "+elementName+" type "+elementType);
+      if (elementTypeRef==null)
+      {
+         throw new DataException
+            ("No type resolved for element "+elementName+" type "+elementType);
           
-        }
-        else
-        {
-          EditableArrayTuple childElement
-            =makeHandlerFromTemplate(elementTypeRef);
-          String elementUri=elementName;
-          if (elementUri.startsWith(targetNamespace+"#"))
-          { elementUri=localName(elementUri);
-          }
-          childElement.set("elementURI",elementUri);
-
-
-          if (rootType.dataType!=null)
-          {
-            String typeName=rootType.dataType.getURI().toString();
-            String fieldName=null;
-            
-            // XXX Find the field of type elementTypeRef.dataType
-            for (Field<?> field: rootType.dataType.getFieldSet().fieldIterable())
-            {
-              if (field.getType().getURI()
-                 .equals(elementTypeRef.dataType.getURI())
-                 )
-              { 
-                fieldName=field.getName();
-                break;
-              }
-            }
-            
-            if (fieldName!=null)
-            {
-            
-              childElement.set
-                ("assignment"
-                ,Expression.create("[:"+typeName+"]."+fieldName)
-                );
-            }
-            else
-            {
-              throw new DataException
-                ("No field in "+rootType.dataType.getURI()+" is of type "
-                +elementTypeRef.dataType.getURI()
-                );
-            }
-          }
-          return childElement;
-        }
       }
       else
-      { return null;
-      }
-      
+      {
+        EditableArrayTuple childElement
+          =makeHandlerFromTemplate(elementTypeRef);
+        String elementUri=elementName;
+        if (elementUri.startsWith(targetNamespace+"#"))
+        { elementUri=localName(elementUri);
+        }
+        childElement.set("elementURI",elementUri);
 
-      
+
+        if (rootType.dataType!=null)
+        {
+          String typeName=rootType.dataType.getURI().toString();
+          String fieldName=null;
+            
+          // XXX Find the field of type elementTypeRef.dataType
+          for (Field<?> field: rootType.dataType.getFieldSet().fieldIterable())
+          {
+            if (field.getType().getURI()
+               .equals(elementTypeRef.dataType.getURI())
+               )
+            { 
+              fieldName=field.getName();
+              break;
+            }
+          }
+          
+          if (fieldName!=null)
+          {
+            
+            childElement.set
+              ("assignment"
+              ,Expression.create("[:"+typeName+"]."+fieldName)
+              );
+          }
+          else
+          {
+            throw new DataException
+              ("No field in "+rootType.dataType.getURI()+" is of type "
+              +elementTypeRef.dataType.getURI()
+              );
+          }
+        }
+        return childElement;
+      }
+       
     }
     
     /**
@@ -696,13 +745,8 @@ public class TranslateXsd
       }
     }
     
-    @SuppressWarnings("unchecked")
-    private void createComplexType(TypeMapping ref)
-      throws DataException,IOException
+    private String cleanTypeName(String typeLocalName)
     {
-      
-      
-      String typeLocalName=AbstractFrameHandler.localName(ref.typeName);
       if (typeLocalName.endsWith("Type"))
       { typeLocalName=typeLocalName.substring(0,typeLocalName.length()-4);
       }
@@ -712,6 +756,43 @@ public class TranslateXsd
           =Character.toUpperCase
             (typeLocalName.charAt(0))+typeLocalName.substring(1);
       }
+      typeLocalName=underscoresToCaps(typeLocalName);
+      return typeLocalName;
+    }
+    
+    private String underscoresToCaps(String name)
+    {
+      int upos;
+      while ( (upos=name.indexOf('_')) >0)
+      { 
+        if (upos==name.length()-1)
+        { name=name.substring(0,name.length()-1);
+        }
+        else if (Character.isLetter(name.charAt(upos+1)))
+        { 
+          name=name.substring(0,upos)
+            +Character.toUpperCase(name.charAt(upos+1))
+            +(upos+2<name.length()?
+               name.substring(upos+2)
+               :""
+             );
+        }
+        else
+        { break;
+        }
+          
+      }
+      return name;
+    }
+    @SuppressWarnings("unchecked")
+    private void createComplexType(TypeMapping ref)
+      throws DataException,IOException
+    {
+      
+      
+      String typeLocalName
+        =cleanTypeName(AbstractFrameHandler.localName(ref.typeName));
+      
       
       URI typeURI=targetURI.resolve(typeLocalName);
       
@@ -1098,6 +1179,7 @@ public class TranslateXsd
     private Tuple generateField(String name,Type dataType,boolean plural)
       throws DataException
     {
+      name=underscoresToCaps(name);
       EditableArrayTuple fieldDecl=new EditableArrayTuple(fieldType);
       if (plural)
       { fieldDecl.set("name",name+"List");
@@ -1410,7 +1492,11 @@ public class TranslateXsd
         String containingType
           =containerRef.dataType.getURI().toString();
 
-        childHandler.set("elementURI",elementName);
+        String elementURI=elementName;
+        if (elementURI.startsWith(targetNamespace+"#"))
+        { elementURI=localName(elementName);
+        }
+        childHandler.set("elementURI",elementURI);
             
         if (containerRef.fieldMap!=null)
         { 

@@ -31,6 +31,10 @@
       
       <outputLocation>out/xmlschema/fb/
       </outputLocation>
+      
+      <errorElementURI>error_response
+      </errorElementURI>
+      
     </xs:TranslateXsd>
 
     <xs:TranslateXsd>

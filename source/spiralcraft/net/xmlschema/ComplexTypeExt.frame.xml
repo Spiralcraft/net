@@ -21,6 +21,15 @@
       </children>                
     </sax:TupleFrame>
   
+    <sax:ContainerFrame ref="xsd:All.frame.xml">
+      <children>
+        <sax:TupleFrame ref="xsd:ElementExt.frame.xml">
+          <container>[xsd:ComplexType].elements
+          </container>
+        </sax:TupleFrame>
+      </children>                
+    </sax:ContainerFrame>
+      
     <sax:ContainerFrame ref="xsd:SequenceExt.frame.xml"/>
 
     <sax:ContainerFrame ref="ContentBaseExt.frame.xml">
