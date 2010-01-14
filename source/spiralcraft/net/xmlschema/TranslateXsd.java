@@ -257,6 +257,7 @@ public class TranslateXsd
       addMappedType("dateTime","class:/spiralcraft/net/xmlschema/types/Date");
     
       addMappedType("duration","class:/spiralcraft/net/xmlschema/types/Duration");
+      addMappedType("boolean","class:/spiralcraft/net/xmlschema/types/Boolean");
     
     }
     
@@ -507,6 +508,15 @@ public class TranslateXsd
     }
     
     
+    /**
+     * Makes a HandlerFrame as a child of the RootFrame 
+     * 
+     * @param element
+     * @param rootType
+     * @return
+     * @throws DataException
+     * @throws IOException
+     */
     private EditableArrayTuple makeTopLevelHandler
       (Tuple element
       ,TypeMapping rootType
@@ -590,6 +600,10 @@ public class TranslateXsd
               +elementTypeRef.dataType.getURI()
               );
           }
+        }
+        
+        if (childElement.getType().equals(valueFrameType))
+        { childElement.set("type", typeRefTuple(elementTypeRef.dataType));
         }
         return childElement;
       }
