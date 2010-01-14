@@ -2,6 +2,44 @@
   xmlns:scm="class:/spiralcraft/scm/meta/"
   >
   <scm:Change>
+    <revision>0.4.2
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>2010-01-13
+    </date>
+
+    <detail>
+      <scm:Change>
+      
+        <date>2010-01-13
+        </date>
+
+        <notes>
+          <scm:Note>Top level ValueFrames now receive a Type so they can
+            properly parse a value for RootFrame.childAssignments to 
+            capture.
+          </scm:Note>
+          <scm:Note>Boolean type added to read "1" and "0" as 
+            valid data.
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/xmlschema/
+        </path>
+        
+        <resources>
+          <URI>TranslateXsd.java
+          </URI>
+        </resources>
+        
+      </scm:Change>
+    </detail>
+  </scm:Change>
+
+  <scm:Change>
     <revision>0.4.1
     </revision>
     
