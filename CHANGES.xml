@@ -2,6 +2,41 @@
   xmlns:scm="class:/spiralcraft/scm/meta/"
   >
   <scm:Change>
+    <revision>0.4.4
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>????
+    </date>
+
+    <detail>
+      <scm:Change>
+
+
+        <notes>
+          <scm:Note>Moved http header constants into spiralcraft-net module
+          </scm:Note>
+          <scm:Note>Moved RangeHeader into spiralcraft-net module
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/http/
+        </path>
+        
+        <resource>
+          <URI>Headers.java
+          </URI>
+          <URI>RangeHeader.java
+          </URI>s
+        </resource>
+        
+      </scm:Change>
+    </detail>
+  </scm:Change>
+
+  <scm:Change>
     <revision>0.4.2
     </revision>
     
