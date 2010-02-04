@@ -8,7 +8,7 @@
     <authorId>miketoth
     </authorId>
     
-    <date>????
+    <date>2010-02-03
     </date>
 
     <detail>
@@ -29,7 +29,7 @@
           <URI>Headers.java
           </URI>
           <URI>RangeHeader.java
-          </URI>s
+          </URI>
         </resource>
         
       </scm:Change>
