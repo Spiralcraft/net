@@ -30,7 +30,11 @@ public interface ProtocolHandlerSupport
 
   /**
    * Run an potentially blocking operation in its own Thread.
+   * 
+   * @throws InterruptedException if the Runnable could not be scheduled
+   *   in time
    */
-  void runBlockingOperation(Runnable runnable);
+  void runBlockingOperation(Runnable runnable)
+    throws InterruptedException;
 
 }

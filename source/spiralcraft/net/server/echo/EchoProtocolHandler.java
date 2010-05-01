@@ -55,7 +55,12 @@ public class EchoProtocolHandler
       catch (IOException x2)
       { x2.printStackTrace();
       }
-      _support.protocolFinished(this);
+    }
+    catch (InterruptedException x)
+    {
+    }
+    finally
+    { _support.protocolFinished(this);    
     }
     
   }

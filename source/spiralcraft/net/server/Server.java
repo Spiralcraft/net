@@ -263,11 +263,17 @@ public class Server
 
     Connection serverConnection=new ServerConnection(this,connection);
 
-    ProtocolHandler handler=_protocolHandlerPool.checkout();
-    if (_logger!=null && _logger.isLoggable(Level.FINE))
-    { _logger.fine("Dispatching connection "+serverConnection.toString());
+    try
+    {
+      ProtocolHandler handler=_protocolHandlerPool.checkout();
+      if (_logger!=null && _logger.isLoggable(Level.FINE))
+      { _logger.fine("Dispatching connection "+serverConnection.toString());
+      }
+      handler.handleConnection(this,serverConnection); 
     }
-    handler.handleConnection(this,serverConnection); 
+    catch (InterruptedException x)
+    { 
+    }
   }
 
   /**
@@ -286,6 +292,7 @@ public class Server
    * ProtocolHandlerSupport.runBlockingOperation(Runnable)
    */
   public void runBlockingOperation(Runnable runnable)
+    throws InterruptedException
   { _threadPool.run(runnable);
   }
 
