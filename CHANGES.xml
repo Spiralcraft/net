@@ -2,12 +2,36 @@
   xmlns:scm="class:/spiralcraft/scm/meta/"
   >
   <scm:Change>
-    <revision>0.4.4
+    <revision>0.4.8
     </revision>
     
     <authorId>miketoth
     </authorId>
     
+    <date>2010-05-01
+    </date>
+
+    <detail>
+      <scm:Change>
+
+
+        <notes>
+          <scm:Note>sync with core 0.4.8
+          </scm:Note>
+        </notes>
+        
+        
+      </scm:Change>
+    </detail>
+  </scm:Change>
+
+  <scm:Change>
+    <revision>0.4.4
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+
     <date>2010-02-03
     </date>
 
