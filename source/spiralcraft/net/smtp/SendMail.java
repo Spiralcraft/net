@@ -112,7 +112,7 @@ public class SendMail
   }
     
   /**
-   * <p>Assignments which get executed prior to a login attempt (eg. to resolve
+   * <p>Assignments which get executed prior to a send attempt (eg. to resolve
    *   credentials)
    * </p>
    * 
@@ -123,7 +123,7 @@ public class SendMail
   }  
 
   /**
-   * <p>Assignments which get executed immediately after a successful login
+   * <p>Assignments which get executed immediately after a successful send
    * </p>
    * 
    * <p>XXX refactor to setPostAssignments()
