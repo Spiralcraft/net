@@ -17,12 +17,13 @@ package spiralcraft.net.http;
 
 /**
  * <p>Encodes and decodes URLEncoded text, for escaping arbitrary character
- *   data for embedding in URLs.
+ *   data for embedding as part of x-form-urlencoded data and similar formats.
  * </p>
  * 
  * <p>Specifically, groups [A-Z], [a-z], and [0-9] are preserved, spaces are
  *   replaced with '+', and all other characters are numerically escaped using
- *   the %nn hex encoding method.
+ *   the %nn hex encoding method. Path characters are not preserved.
+ * </p>
  * 
  * @author mike
  *
