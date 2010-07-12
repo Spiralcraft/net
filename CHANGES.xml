@@ -16,7 +16,7 @@
 
 
         <notes>
-          <scm:Note>sync with core 0.4.8
+          <scm:Note>sync with core 0.4.9
           </scm:Note>
           <scm:Note>Complete SendMail task
           </scm:Note>
