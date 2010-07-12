@@ -149,7 +149,7 @@ public class SendMail
     protected void work() throws InterruptedException
     {
       Envelope envelope=new Envelope();
-      envelopeChannel.push(new Envelope());
+      envelopeChannel.push(envelope);
       try
       {
         Setter.applyArray(preSetters);
@@ -249,7 +249,7 @@ public class SendMail
         (Expression.create(targetX)
         ,source
         );
-    
+    assignment.setDebug(true);
     preAssignments
       =preAssignments!=null
       ?ArrayUtil.append
