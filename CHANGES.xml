@@ -2,6 +2,64 @@
   xmlns:scm="class:/spiralcraft/scm/meta/"
   >
   <scm:Change>
+    <revision>0.4.10
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>2010-07-21
+    </date>
+
+    <notes>
+      <scm:Note>Sync with core 0.4.10
+      </scm:Note>
+    </notes>
+    
+    <detail>
+      <scm:Change>
+
+        <notes>
+          <scm:Note>Removed spiralcraft.registry package and all
+            dependencies
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/
+        </path>
+        
+        <resources>
+          <URI>io/StandardChannelDispatcher.java
+          </URI>
+          <URI>server/Server.java
+          </URI>
+        </resources>
+        
+      </scm:Change>
+
+      <scm:Change>
+
+        <notes>
+          <scm:Note>Added support for SMTP Auth LOGIN
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/
+        </path>
+        
+        <resources>
+          <URI>smtp/SMTPConnection.java
+          </URI>
+          <URI>smtp/SMTPConnector.java
+          </URI>
+        </resources>
+        
+      </scm:Change>
+
+    </detail>
+  </scm:Change>
+
+  <scm:Change>
     <revision>0.4.9
     </revision>
     
