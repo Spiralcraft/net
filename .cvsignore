@@ -2,3 +2,4 @@ build.number
 bin
 out
 *.local
+test-out
