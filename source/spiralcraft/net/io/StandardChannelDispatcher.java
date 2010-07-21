@@ -22,11 +22,9 @@ import java.nio.channels.CancelledKeyException;
 import java.util.Iterator;
 import java.util.Set;
 
-import java.util.logging.Logger;
-import java.util.logging.Level;
 
-import spiralcraft.registry.Registrant;
-import spiralcraft.registry.RegistryNode;
+import spiralcraft.log.ClassLog;
+import spiralcraft.log.Level;
 
 import java.io.IOException;
 
@@ -34,12 +32,13 @@ import java.io.IOException;
  * Translates ops on SelectableChannels into ChannelEvents
  */
 public class StandardChannelDispatcher
-  implements ChannelDispatcher,Runnable,Registrant
+  implements ChannelDispatcher,Runnable
 {
   
   private final Selector _selector;
+  private static final ClassLog log
+    =ClassLog.getInstance(StandardChannelDispatcher.class);
 
-  private Logger _logger;
   private Thread _thread;
   private boolean _finished;
 
@@ -48,14 +47,7 @@ public class StandardChannelDispatcher
   { _selector=Selector.open();
   }
   
-  /**
-   * Registrant.register(RegistryNode)
-   *
-   * The registry is used to find a Logger instance.
-   */
-  public void register(RegistryNode node)
-  { _logger=node.findInstance(Logger.class);
-  }
+
     
   public void wakeup()
   { _selector.wakeup();
@@ -74,8 +66,8 @@ public class StandardChannelDispatcher
         }
         catch (NullPointerException x)
         { 
-          if (_logger.isLoggable(Level.FINE))
-          { _logger.fine("NPE in selector");
+          if (log.canLog(Level.FINE))
+          { log.fine("NPE in selector");
           }
           continue;
         }
@@ -128,8 +120,8 @@ public class StandardChannelDispatcher
           }
           catch (CancelledKeyException x)
           { 
-            if (_logger.isLoggable(Level.FINE))
-            { _logger.fine("Cancelled key "+key.channel());
+            if (log.canLog(Level.FINE))
+            { log.fine("Cancelled key "+key.channel());
             }
           }
             
@@ -143,8 +135,8 @@ public class StandardChannelDispatcher
 
   private void logFine(String message,ChannelListener listener)
   {
-    if (_logger!=null && _logger.isLoggable(Level.FINE))
-    { _logger.fine(message+": "+listener.toString());
+    if (log.canLog(Level.FINE))
+    { log.fine(message+": "+listener.toString());
     }
   }
   

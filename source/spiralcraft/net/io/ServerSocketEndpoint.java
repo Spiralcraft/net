@@ -27,8 +27,6 @@ import java.net.UnknownHostException;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
-import spiralcraft.registry.Registrant;
-import spiralcraft.registry.RegistryNode;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -38,7 +36,7 @@ import java.util.logging.Level;
  *   accepts connections from a ServerSocket.
  */
 public class ServerSocketEndpoint
-  implements Endpoint,ChannelListener,Registrant
+  implements Endpoint,ChannelListener
 {
   private ConnectionListener[] _listeners=new ConnectionListener[0];
   private int _port;
@@ -55,14 +53,7 @@ public class ServerSocketEndpoint
   private boolean _running=false;
   private ChannelDispatcher _dispatcher;
   
-  /**
-   * Registrant.register(RegistryNode)
-   *
-   * The registry is used to find a Logger instance.
-   */
-  public void register(RegistryNode node)
-  { _logger=node.findInstance(Logger.class);
-  }
+
 
   public void setPort(int val)
   { 

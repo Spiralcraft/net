@@ -20,16 +20,14 @@ import java.io.OutputStream;
 
 import java.net.URI;
 
-import java.util.logging.Logger;
-import java.util.logging.Level;
 
 import spiralcraft.service.Service;
 
-import spiralcraft.registry.RegistryNode;
-import spiralcraft.registry.Registrant;
 
+import spiralcraft.app.spi.AbstractComponent;
 import spiralcraft.common.LifecycleException;
 
+import spiralcraft.log.Level;
 import spiralcraft.net.io.Connection;
 import spiralcraft.net.io.ConnectionQueue;
 import spiralcraft.net.io.Endpoint;
@@ -49,13 +47,13 @@ import spiralcraft.vfs.UnresolvableURIException;
  *   and dispatches IO events.
  */
 public class Server
-  implements Service,Registrant,ResourceFactory<ProtocolHandler>,ProtocolHandlerSupport
+  extends AbstractComponent
+  implements ResourceFactory<ProtocolHandler>,ProtocolHandlerSupport,Service
 {
   
   private Endpoint[] _endpoints;
   private ConnectionQueue _queue=new ConnectionQueue();
   private Thread _handlerThread;
-  private Logger _logger;
   private ThreadPool _threadPool=new ThreadPool();
   private Pool<ProtocolHandler> _protocolHandlerPool
     =new Pool<ProtocolHandler>();
@@ -67,7 +65,6 @@ public class Server
   private int _traceCount;
   private int _readTimeoutMillis;
   private StandardChannelDispatcher _channelDispatcher;
-  private RegistryNode _registryNode;
   
   private long _bytesRead;
   private long _bytesWritten;
@@ -76,16 +73,7 @@ public class Server
   { _traceUri=uri;
   }
 
-  @Override
-  public void register(RegistryNode node)
-  { 
-    _registryNode=node;
-    _logger=node.findInstance(Logger.class);
-  }
 
-  public Logger getLogger()
-  { return _logger;
-  }
 
   /**
    * Service.start()
@@ -100,14 +88,13 @@ public class Server
       _protocolHandlerPool.setResourceFactory(this);
       _protocolHandlerPool.start();
       _channelDispatcher=new StandardChannelDispatcher();
-      _channelDispatcher.register(_registryNode.createChild("channelDispatcher"));
       
 
       bind();
       startHandler();
       _channelDispatcher.start();
-      if (_logger!=null && _logger.isLoggable(Level.INFO))
-      { _logger.info("Started");
+      if (log.canLog(Level.INFO))
+      { log.info("Started");
       }
     }
     catch (IOException x)
@@ -229,8 +216,8 @@ public class Server
     }
     catch (InterruptedException x)
     { 
-      if (_logger!=null && _logger.isLoggable(Level.SEVERE))
-      { _logger.severe("Server interrupted");
+      if (log.canLog(Level.SEVERE))
+      { log.severe("Server interrupted");
       }
       return;
     }
@@ -254,10 +241,7 @@ public class Server
       { connection.setReadTimeoutMillis(_readTimeoutMillis);
       }
       catch (IOException x)
-      { 
-        if (_logger!=null)
-        { _logger.warning("Could not set read timeout to "+_readTimeoutMillis);
-        }
+      { log.warning("Could not set read timeout to "+_readTimeoutMillis);
       }
     }
 
@@ -266,8 +250,8 @@ public class Server
     try
     {
       ProtocolHandler handler=_protocolHandlerPool.checkout();
-      if (_logger!=null && _logger.isLoggable(Level.FINE))
-      { _logger.fine("Dispatching connection "+serverConnection.toString());
+      if (log.canLog(Level.FINE))
+      { log.fine("Dispatching connection "+serverConnection.toString());
       }
       handler.handleConnection(this,serverConnection); 
     }
@@ -282,8 +266,8 @@ public class Server
   public void protocolFinished(ProtocolHandler handler)
   { 
     _activeConnectionCount--;
-    if (_logger!=null && _logger.isLoggable(Level.FINE))
-    { _logger.fine("Protocol finished "+handler.toString());
+    if (log.canLog(Level.FINE))
+    { log.fine("Protocol finished "+handler.toString());
     }
     _protocolHandlerPool.checkin(handler);
   }
@@ -317,22 +301,17 @@ public class Server
         }
         else
         {
-          if (_logger!=null)
-          { _logger.warning("Cannot write to "+resource.toString());
-          }
+          log.warning("Cannot write to "+resource.toString());
           return null;
         }
       }
       catch (UnresolvableURIException x)
-      { 
-        if (_logger!=null)
-        { _logger.warning(_traceUri.toString()+" could not be resolved");
-        }
+      { log.warning(_traceUri.toString()+" could not be resolved");
       }
       catch (IOException x)
       {
-        if (_logger!=null)
-        { _logger.warning("Error writing to "+resource.toString()+":"+x.toString());
+        if (log!=null)
+        { log.warning("Error writing to "+resource.toString()+":"+x.toString());
         }
       }
     }
