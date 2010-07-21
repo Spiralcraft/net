@@ -1,0 +1,28 @@
+<task:Reference
+  xmlns:task="class:/spiralcraft/task/"
+  xmlns:smtp="class:/spiralcraft/net/smtp/"
+  xmlns:ju="class:/java/util/"
+  >
+  
+  <targetURI>context:/SMTPConnector.local.xml
+  </targetURI>
+  
+  <chain>
+    <smtp:SendMail>
+      <senderX>"test@example.com"
+      </senderX>
+      
+      <recipientX>"test@example.com"
+      </recipientX>
+      
+      <messageX>
+        "Subject: test"
+        +"\r\nFrom: test@example.com"
+        +"\r\n"
+        +"\r\nThis is a test: "
+        +[@ju:Date].().toString()
+      </messageX>
+    
+    </smtp:SendMail>
+  </chain>
+</task:Reference>

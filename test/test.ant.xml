@@ -15,7 +15,7 @@
       exec
         ="--log log/spiralcraft --consoleLog
          class:/spiralcraft/task/TaskRunner
-         XmlSchemaTest.assy
+         Test
          "
     />
   </target>

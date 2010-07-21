@@ -1,0 +1,16 @@
+<task:Sequence
+  xmlns:task="class:/spiralcraft/task/"
+  xmlns:xs="class:/spiralcraft/net/xmlschema/"
+
+  >
+  
+  <scenarios>
+    <xmlschema:XmlSchemaTest
+      xmlns:xmlschema="class:/spiralcraft/net/xmlschema/test/"
+    />
+    <smtp:SMTPTest
+      xmlns:smtp="class:/spiralcraft/net/smtp/test/"
+    />
+
+  </scenarios>
+</task:Sequence>

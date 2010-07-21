@@ -1,0 +1,20 @@
+<smtp:SMTPConnector
+  xmlns:smtp="class:/spiralcraft/net/smtp/"
+  >
+
+  <server>mail.example.com
+  </server>
+  
+  <username>testuser
+  </username>
+  
+  <password>testpass
+  </password>
+
+  <debug>true
+  </debug>
+  
+  <testMode>true
+  </testMode>
+  
+</smtp:SMTPConnector>
