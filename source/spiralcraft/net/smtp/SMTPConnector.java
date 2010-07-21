@@ -28,6 +28,11 @@ public class SMTPConnector
     =ClassLog.getInstance(SMTPConnector.class);
 
   private String server;
+  private int port=25;
+  private String username;
+  private String password;
+  private boolean debug;
+  
   private boolean testMode;
   
   /**
@@ -40,6 +45,22 @@ public class SMTPConnector
   }
   
   /**
+   * The server port to connect to. Defaults to port 25, the standard
+   *   SMTP port.
+   */
+  public void setPort(int port)
+  { this.port=port;
+  }
+  
+  public void setUsername(String username)
+  { this.username=username;
+  }
+  
+  public void setPassword(String password)
+  { this.password=password;
+  }
+  
+  /**
    * Send the message to the log, INSTEAD OF mailing it. Used for development
    *   purposes.  
    * 
@@ -48,6 +69,10 @@ public class SMTPConnector
   public void setTestMode(boolean testMode)
   { this.testMode=testMode;
   }  
+  
+  public void setDebug(boolean debug)
+  { this.debug=debug;
+  }
   
   public void send(Envelope envelope)
     throws IOException
@@ -60,7 +85,16 @@ public class SMTPConnector
     
     SMTPConnection con=new SMTPConnection();
     con.setServerName(envelope.getServer()!=null?envelope.getServer():server);
-    // con.setProtocolLog(log);
+    con.setServerPort(port);
+    if (debug)
+    { con.setProtocolLog(log);
+    }
+    if (username!=null)
+    { con.setUsername(username);
+    }
+    if (password!=null)
+    { con.setPassword(password);
+    }
     
     try
     {

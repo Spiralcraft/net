@@ -25,8 +25,10 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import spiralcraft.codec.text.Base64Codec;
 import spiralcraft.log.Level;
 import spiralcraft.log.Log;
 import spiralcraft.log.ClassLog;
@@ -64,6 +66,27 @@ public class SMTPConnection
     }
     con.disconnect();
   }
+  
+  private String serverName = "pop";
+  private int serverPort = 25;
+  private String username;
+  private String password;
+  
+  private Socket socket = null;
+  private String errorStatus="Not Connected";
+  private BufferedReader in = null;
+  private BufferedWriter out = null;
+  private String lastResponse="";
+
+  private String connectResponse="";
+  private String heloResponse="";
+
+  private String localHost=null;
+  private int soTimeout=0;
+  private Log protocolLog;
+  private Exception exception;
+  private boolean needsReset;
+  
 
   ////////////////////////////////////////////////////////////////////////////
   //
@@ -79,6 +102,14 @@ public class SMTPConnection
   { serverName=n;
   }
 
+  public void setUsername(String username)
+  { this.username=username;
+  }
+  
+  public void setPassword(String password)
+  { this.password=password;
+  }
+  
   public int getServerPort()
   { return serverPort;
   }
@@ -127,22 +158,7 @@ public class SMTPConnection
   //
   ////////////////////////////////////////////////////////////////////////////
     
-  private String serverName = "pop";
-  private int serverPort = 25;
-  private Socket socket = null;
-  private String errorStatus="Not Connected";
-  private BufferedReader in = null;
-  private BufferedWriter out = null;
-  private String lastResponse="";
 
-  private String connectResponse="";
-  private String heloResponse="";
-
-  private String localHost=null;
-  private int soTimeout=0;
-  private Log protocolLog;
-  private Exception exception;
-  private boolean needsReset;
 
   public synchronized boolean connect()
   {
@@ -194,15 +210,19 @@ public class SMTPConnection
       { resp=readResponse();
       }
 
-      send("HELO "+localHost);
-      heloResponse=readResponse();
-      if (!heloResponse.startsWith("250"))
-      {
-        errorStatus="Error on connect confirmation. Response to HELO was: "+heloResponse;
-        return false;
+      if (username!=null)
+      { 
+        if (!login())
+        { return false;
+        }
       }
-
-      errorStatus="";
+      else
+      { 
+        if (!sendHelo())
+        { return false;
+        }
+      }
+      
       return true;
     }
     catch (IOException x)
@@ -218,6 +238,72 @@ public class SMTPConnection
     return false;
   }
 
+  
+  public boolean sendHelo()
+    throws IOException
+  {
+    send("HELO "+localHost);
+    heloResponse=readMultilineResponse()[0];
+    if (!heloResponse.startsWith("250"))
+    {
+      errorStatus="Error on connect confirmation. Response to HELO was: "+heloResponse;
+      return false;
+    }
+
+    errorStatus="";
+    return true;
+  }
+  
+  public boolean login()
+    throws IOException
+  {
+    send("EHLO "+localHost);
+    heloResponse=readMultilineResponse()[0];
+    if (!heloResponse.startsWith("250"))
+    {
+      errorStatus
+        ="Error on connect confirmation. Response to EHLO was: "+heloResponse;
+      return false;
+    }
+
+    
+    send("AUTH LOGIN");
+    
+    while (true)
+    {
+      String[] response=readMultilineResponse();
+    
+      if (response[0].startsWith("235"))
+      { return true;
+      }
+      else if (response[0].startsWith("334"))
+      {
+        String challenge=Base64Codec.decodeAsciiString(response[0].substring(4));
+        if (protocolLog!=null)
+        { 
+          protocolLog.log
+            (Level.TRACE,"( Challenge: "+challenge+" )");
+        }
+
+        if (challenge.equals("Username:"))
+        { send(Base64Codec.encodeAsciiString(username));
+        }
+        else if (challenge.equals("Password:"))
+        { send(Base64Codec.encodeAsciiString(password));
+        }
+
+      }
+      else
+      {
+        errorStatus
+          ="Error negotiating SMTPAuth session: Response was "
+            +Arrays.toString(response);
+        return false;
+      }
+      
+    }
+  }
+  
   public synchronized void disconnect()
   {
     if (protocolLog!=null)
@@ -235,6 +321,20 @@ public class SMTPConnection
     { }
   }
 
+  private synchronized String[] readMultilineResponse()
+    throws IOException
+  { 
+    ArrayList<String> list=new ArrayList<String>();
+    String line=readResponse();
+    while (line.charAt(3)=='-')
+    { 
+      list.add(line);
+      line=readResponse();
+    }
+    list.add(line);
+    return list.toArray(new String[list.size()]);
+  }
+  
   private synchronized String readResponse()
     throws IOException
   {
