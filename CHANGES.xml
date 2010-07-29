@@ -2,6 +2,51 @@
   xmlns:scm="class:/spiralcraft/scm/meta/"
   >
   <scm:Change>
+    <revision>0.4.10.1
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>2010-07-29
+    </date>
+    
+    <detail>
+      <scm:Change>
+
+        <notes>
+          <scm:Note>[SCPUBLIC-12] Commas should not be decoded as value 
+            separators by default in x-www-form-urlencoded input
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/http/VariableManager.java
+        </path>
+        
+        
+      </scm:Change>
+
+      <scm:Change>
+
+        <notes>
+          <scm:Note>[SCPUBLIC-17] Add support for SMTP test mode recipients
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/
+        </path>
+        
+        <resources>
+          <URI>smtp/SMTPConnector.java
+          </URI>
+        </resources>
+        
+      </scm:Change>
+
+    </detail>
+  </scm:Change>
+
+  <scm:Change>
     <revision>0.4.10
     </revision>
     
