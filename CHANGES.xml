@@ -39,6 +39,8 @@
         <resources>
           <URI>smtp/SMTPConnector.java
           </URI>
+          <URI>syntax/MailAddress.java
+          </URI>
         </resources>
         
       </scm:Change>
