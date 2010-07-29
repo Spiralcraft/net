@@ -16,6 +16,7 @@ package spiralcraft.net.smtp;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import spiralcraft.log.ClassLog;
@@ -72,8 +73,10 @@ public class SMTPConnector
   { this.testMode=testMode;
   }  
   
-  public void setTestRecipients(List<MailAddress> recipients)
-  { this.testRecipients=recipients;
+  public void setTestRecipients(MailAddress[] recipients)
+  { 
+    this.testRecipients=new ArrayList<MailAddress>();
+    this.testRecipients.addAll(Arrays.asList(recipients));
   }
   
   public void setDebug(boolean debug)
@@ -112,6 +115,7 @@ public class SMTPConnector
         if (testMode && testRecipients!=null)
         { recipients=testRecipients;
         }
+        
         List<String> smtpList=new ArrayList<String>(recipients.size());
         for (MailAddress address : recipients)
         { smtpList.add(address.getSMTPPath());

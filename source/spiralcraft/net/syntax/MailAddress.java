@@ -15,6 +15,7 @@
 package spiralcraft.net.syntax;
 
 
+import spiralcraft.common.Immutable;
 import spiralcraft.text.PushbackParserContext;
 import spiralcraft.text.ParseException;
 
@@ -26,6 +27,7 @@ import spiralcraft.text.ParseException;
  * @author mike
  *
  */
+@Immutable
 public class MailAddress
 {
 
