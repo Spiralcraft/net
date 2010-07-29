@@ -102,9 +102,17 @@ public class VariableMap
       if (eqpos>0 && eqpos<pair.length()-1)
       {
         String name=URLCodec.decode(pair.substring(0,eqpos));
-        String[] values=pair.substring(eqpos+1).split(",");
-        for (String value: values)
-        { add(name,URLCodec.decode(value));
+        String valueSet=pair.substring(eqpos+1);
+        
+        if (compactEncoding)
+        {
+          String[] values=valueSet.split(",");
+          for (String value: values)
+          { add(name,URLCodec.decode(value));
+          }
+        }
+        else
+        { add(name,URLCodec.decode(valueSet));
         }
       }
     }
