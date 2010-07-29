@@ -34,6 +34,7 @@ public class SMTPConnector
   private boolean debug;
   
   private boolean testMode;
+  private List<MailAddress> testRecipients;
   
   /**
    * The SMTP server which will forward outgoing mail
@@ -61,7 +62,8 @@ public class SMTPConnector
   }
   
   /**
-   * Send the message to the log, INSTEAD OF mailing it. Used for development
+   * Send the message to the log and the test recipients, if any, INSTEAD OF
+   *   sending it to the envelope recipients. Used for development
    *   purposes.  
    * 
    * @param testMode
@@ -70,6 +72,10 @@ public class SMTPConnector
   { this.testMode=testMode;
   }  
   
+  public void setTestRecipients(List<MailAddress> recipients)
+  { this.testRecipients=recipients;
+  }
+  
   public void setDebug(boolean debug)
   { this.debug=debug;
   }
@@ -77,7 +83,7 @@ public class SMTPConnector
   public void send(Envelope envelope)
     throws IOException
   { 
-    if (testMode)
+    if (testMode && (testRecipients==null || testRecipients.isEmpty()))
     { 
       testSend(envelope);
       return;
@@ -103,6 +109,9 @@ public class SMTPConnector
         log.fine("Connected.");
 
         List<MailAddress> recipients=envelope.getRecipients();
+        if (testMode && testRecipients!=null)
+        { recipients=testRecipients;
+        }
         List<String> smtpList=new ArrayList<String>(recipients.size());
         for (MailAddress address : recipients)
         { smtpList.add(address.getSMTPPath());
