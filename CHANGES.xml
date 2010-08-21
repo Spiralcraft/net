@@ -1,6 +1,33 @@
 <scm:Change.list
   xmlns:scm="class:/spiralcraft/scm/meta/"
   >
+
+  <scm:Change>
+    <revision>0.4.10.2
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>2010-08-21
+    </date>
+    
+    <detail>
+      <scm:Change>
+
+        <notes>
+          <scm:Note>[SCPUBLIC-25]- Add xsd "double" type to standard types in 
+            xmlschema translator
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/xmlschema/TranslateXsd.java
+        </path>
+
+      </scm:Change>
+    </detail>
+  </scm:Change>
+  
   <scm:Change>
     <revision>0.4.10.1
     </revision>

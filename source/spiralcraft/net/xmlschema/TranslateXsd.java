@@ -245,6 +245,7 @@ public class TranslateXsd
       addStandardType("decimal","BigDecimal");
       addStandardType("date","Date");
       addStandardType("long","Long");
+      addStandardType("double","Double");
       addStandardType("boolean","Boolean");
       addStandardType("nonNegativeInteger","Integer");
       addStandardType("positiveInteger","Integer");
