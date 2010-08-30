@@ -29,6 +29,7 @@ public class Envelope
   private List<MailAddress> recipients;
   private String encodedMessage;
   
+  
   /**
    * @return the sender
    */
@@ -103,6 +104,25 @@ public class Envelope
    */
   public void setEncodedMessage(String message)
   { this.encodedMessage = message;
+  }
+  
+  public void insertHeaders(HeaderBinding<?>[] headerBindings,boolean last)
+  { 
+    StringBuffer out=new StringBuffer();
+    for (HeaderBinding<?> binding : headerBindings)
+    { 
+      out.append(binding.getName())
+        .append(": ")
+        .append(binding.get())
+        .append("\r\n");
+    }
+    if (last)
+    { out.append("\r\n");
+    }
+    if (this.encodedMessage!=null)
+    { out.append(this.encodedMessage);
+    }
+    this.encodedMessage=out.toString();
   }
 
   /**

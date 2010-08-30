@@ -3,6 +3,43 @@
   >
 
   <scm:Change>
+    <revision>0.4.11
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>2010-08-29
+    </date>
+    
+    <detail>
+      <scm:Change>
+
+        <notes>
+          <scm:Note>[SCPUBLIC-28]- Provide structured header management for 
+            SMTP component
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/smtp/
+        </path>
+        
+        <resources>
+          <URI>Envelope.java
+          </URI>
+          <URI>HeaderBinding.java
+          </URI>
+          <URI>SendMail.java
+          </URI>
+          <URI>SMTPConnector.java
+          </URI>
+        </resources>
+
+      </scm:Change>
+    </detail>
+  </scm:Change>
+
+  <scm:Change>
     <revision>0.4.10.2
     </revision>
     

@@ -16,13 +16,20 @@
       </recipientX>
       
       <messageX>
-        "Subject: test"
-        +"\r\nFrom: test@example.com"
-        +"\r\n"
-        +"\r\nThis is a test: "
+        "This is a test: "
         +[@ju:Date].().toString()
       </messageX>
     
+      <headerBindings>Date=[@ju:Date].()
+      </headerBindings>
+
+      <headerBindings>From="&lt;test@example.com&gt;"
+      </headerBindings>
+
+      <headerBindings>Subject="test subject"
+      </headerBindings>
+      
     </smtp:SendMail>
+    
   </chain>
 </task:Reference>

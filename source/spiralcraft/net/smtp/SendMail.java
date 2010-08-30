@@ -64,11 +64,9 @@ public class SendMail
   private Expression<String> recipientX;
   private Expression<List<MailAddress>> recipientsX;
   private Expression<String> messageX;
+  
+  private HeaderBinding<?>[] headerBindings;
 
-  @Override
-  protected Task task()
-  { return new SendMailTask();
-  }
   
 
   /**
@@ -135,10 +133,31 @@ public class SendMail
   { this.postAssignments=assignments;
   }  
 
+  /**
+   * <p>Assignments which get executed immediately after a successful send
+   * </p>
+   * 
+   * <p>XXX refactor to setPostAssignments()
+   * </p>
+   * 
+   * @param assignments
+   */
+  public void setPostAssignments(Assignment<Object>[] assignments)
+  { this.postAssignments=assignments;
+  }  
+  
+  public void setHeaderBindings(HeaderBinding<?>[] headerBindings)
+  { this.headerBindings=headerBindings;
+  }
+    
   public void setSmtpConnector(SMTPConnector smtpConnector)
   { this.smtpConnector=smtpConnector;
   }
   
+  @Override
+  protected Task task()
+  { return new SendMailTask();
+  }
 
   
   class SendMailTask
@@ -170,6 +189,10 @@ public class SendMail
         {
           try
           {
+            if (headerBindings!=null)
+            { envelope.insertHeaders(headerBindings,true);
+            }
+            
             if (smtpChannel!=null)
             { smtpChannel.get().send(envelope);
             }
@@ -216,6 +239,7 @@ public class SendMail
     } 
     
     
+    
     focusChain=focusChain.telescope(envelopeChannel);
     
     if (senderX!=null)
@@ -236,6 +260,12 @@ public class SendMail
 
     postSetters=Assignment.bindArray(postAssignments,focusChain);
     preSetters=Assignment.bindArray(preAssignments,focusChain);
+    if (headerBindings!=null)
+    {
+      for (HeaderBinding<?> binding: headerBindings)
+      { binding.bind(focusChain);
+      }
+    }
     super.bindChildren(focusChain);
         
 
