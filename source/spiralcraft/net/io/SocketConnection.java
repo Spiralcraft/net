@@ -83,6 +83,7 @@ public class SocketConnection
     
   }
 
+  @Override
   public synchronized void addConnectionListener(ConnectionListener listener)
   { 
     if (!ArrayUtil.contains(_listeners,listener))
@@ -90,16 +91,19 @@ public class SocketConnection
     }
   }
 
+  @Override
   public synchronized void removeConnectionListener(ConnectionListener listener)
   { _listeners=ArrayUtil.remove(_listeners,listener);
   }
   
+  @Override
   public void channelAccept(ChannelEvent event)
   { 
     throw new UnsupportedOperationException
       ("Connections cannot accept connections");
   }
   
+  @Override
   public synchronized void channelConnect(ChannelEvent event)
   { 
     ConnectionEvent connEvent=new ConnectionEvent(this);
@@ -111,6 +115,7 @@ public class SocketConnection
     _out=new BlockingOutputStream();
   }
 
+  @Override
   public void channelRead(ChannelEvent event)
   { 
     synchronized (_readLock)
@@ -124,6 +129,7 @@ public class SocketConnection
     }
   }
   
+  @Override
   public void channelWrite(ChannelEvent event)
   { 
     synchronized (_writeLock)
@@ -137,15 +143,18 @@ public class SocketConnection
     }
   }
   
+  @Override
   public boolean isSecure()
   { return false;
   }
 
+  @Override
   public void setReadTimeoutMillis(int millis)
     throws IOException
   { _socket.setSoTimeout(millis);
   }
 
+  @Override
   public URI getLocalAddress()
   {
     if (_localAddress==null)
@@ -160,6 +169,7 @@ public class SocketConnection
     return _localAddress;
   }
 
+  @Override
   public URI getRemoteAddress()
   {
     if (_remoteAddress==null)
@@ -174,6 +184,7 @@ public class SocketConnection
     return _remoteAddress;
   }
 
+  @Override
   public synchronized void close()
     throws IOException
   { 
@@ -200,6 +211,7 @@ public class SocketConnection
   /**
    * Return a blocking InputStream
    */
+  @Override
   public InputStream getInputStream()
     throws IOException
   { 
@@ -214,6 +226,7 @@ public class SocketConnection
   /**
    * Return a blocking OutputStream
    */
+  @Override
   public OutputStream getOutputStream()
     throws IOException
   { 

@@ -63,6 +63,7 @@ import spiralcraft.log.Level;
  *
  */
 
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class TranslateXsd
   extends Chain<Void,Void>
 {
@@ -330,10 +331,6 @@ public class TranslateXsd
       
     }
     
-    @SuppressWarnings("unchecked")
-    /**
-     * Generate artifacts for a whole xsd
-     */
     private void generate(Tuple translation)
       throws DataException,IOException
     { 
@@ -462,7 +459,6 @@ public class TranslateXsd
      * @throws DataException
      * @throws IOException
      */
-    @SuppressWarnings("unchecked")    
     private void generateHandlerSet(String handlerName,List<Tuple> elements)
       throws DataException,IOException
     {
@@ -645,7 +641,6 @@ public class TranslateXsd
      * @throws DataException
      * @throws IOException
      */
-    @SuppressWarnings("unchecked")
     private TypeMapping createType(String elementType,Tuple xsdType)
       throws DataException,IOException
     {
@@ -714,7 +709,6 @@ public class TranslateXsd
      * 
      * @param ref
      */
-    @SuppressWarnings("unchecked")
     private void createDeclaredListType(TypeMapping ref,Tuple inlineType)
       throws DataException,IOException
     {
@@ -737,7 +731,6 @@ public class TranslateXsd
       
     }
     
-    @SuppressWarnings("unchecked")
     private void createSimpleType(TypeMapping ref)
       throws DataException,IOException
     {
@@ -799,7 +792,6 @@ public class TranslateXsd
       }
       return name;
     }
-    @SuppressWarnings("unchecked")
     private void createComplexType(TypeMapping ref)
       throws DataException,IOException
     {
@@ -1141,7 +1133,6 @@ public class TranslateXsd
     }
     
     
-    @SuppressWarnings("unchecked")
     private Tuple generateFieldFromAttribute
       (Tuple attribute,TypeMapping parent)
       throws DataException,IOException
@@ -1190,7 +1181,6 @@ public class TranslateXsd
     
 
     
-    @SuppressWarnings("unchecked")
     private Tuple generateField(String name,Type dataType,boolean plural)
       throws DataException
     {
@@ -1253,7 +1243,6 @@ public class TranslateXsd
      * Create a new handler for a subtype by copying all the attributes and
      *   children of a base type
      */
-    @SuppressWarnings("unchecked")
     private EditableArrayTuple extendHandler(TypeMapping baseType)
       throws DataException
     {
@@ -1361,7 +1350,6 @@ public class TranslateXsd
     
     }
     
-    @SuppressWarnings("unchecked")
     private void combineHandlerChildren(TypeMapping ref,HandlerRef handlerRef)
       throws DataException,IOException
     {
@@ -1592,7 +1580,6 @@ public class TranslateXsd
       return null;
     }
     
-    @SuppressWarnings("unchecked")
     public EditableArrayListAggregate<Tuple>
       ensureChildren(EditableArrayTuple frameHandler)
       throws DataException
@@ -1612,7 +1599,6 @@ public class TranslateXsd
   
   
 
-  @SuppressWarnings("unchecked")
   class TypeMapping
   {
     

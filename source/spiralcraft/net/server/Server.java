@@ -134,6 +134,7 @@ public class Server
   /**
    * Create a new ProtocolHandler for the pool.
    */
+  @Override
   public ProtocolHandler createResource()
   { return _protocolHandlerFactory.createProtocolHandler();
   }
@@ -141,6 +142,7 @@ public class Server
   /**
    * Discard a resource when no longer needed by the Pool.
    */
+  @Override
   public void discardResource(ProtocolHandler resource)
   { _protocolHandlerFactory.discardProtocolHandler(resource);
   }
@@ -188,6 +190,7 @@ public class Server
         =new Thread
           (new Runnable()
           {
+            @Override
             public void run()
             { handleConnections();
             }
@@ -263,6 +266,7 @@ public class Server
   /**
    * ProtocolHandlerSupport.protocolFinished()
    */
+  @Override
   public void protocolFinished(ProtocolHandler handler)
   { 
     _activeConnectionCount--;
@@ -275,6 +279,7 @@ public class Server
   /**
    * ProtocolHandlerSupport.runBlockingOperation(Runnable)
    */
+  @Override
   public void runBlockingOperation(Runnable runnable)
     throws InterruptedException
   { _threadPool.run(runnable);

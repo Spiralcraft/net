@@ -29,6 +29,7 @@ public class ConnectionQueue
   /**
    * ConnectionListener.connectionAccepted
    */
+  @Override
   public void connectionAccepted(ConnectionEvent event)
   { 
     Connection connection=event.getConnection();
@@ -52,6 +53,7 @@ public class ConnectionQueue
   /**
    * ConnectionListener.connectionEstablished
    */
+  @Override
   public void connectionEstablished(ConnectionEvent event)
   {
   }
@@ -59,6 +61,7 @@ public class ConnectionQueue
   /**
    * ConnectionListener.connectionClosed
    */
+  @Override
   public void connectionClosed(ConnectionEvent event)
   { remove(event.getConnection());
   }

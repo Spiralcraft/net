@@ -37,10 +37,12 @@ public class EchoServer
     super.start();
   }
 
+  @Override
   public ProtocolHandler createProtocolHandler()
   { return new EchoProtocolHandler();
   }
 
+  @Override
   public void discardProtocolHandler(ProtocolHandler handler)
   {
   }

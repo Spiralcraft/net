@@ -49,10 +49,12 @@ public class StandardChannelDispatcher
   
 
     
+  @Override
   public void wakeup()
   { _selector.wakeup();
   }
   
+  @Override
   public void run()
   {
     try
@@ -159,6 +161,7 @@ public class StandardChannelDispatcher
     _thread=null;
   }
   
+  @Override
   public SelectionKey registerChannel(SelectableChannel channel,ChannelListener listener)
     throws IOException
   { return channel.register(_selector,channel.validOps(),listener);

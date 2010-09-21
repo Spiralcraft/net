@@ -50,14 +50,17 @@ public class ServerConnection
     _trace=server.createTraceStream();
   }
 
+  @Override
   public void addConnectionListener(ConnectionListener listener)
   { _connection.addConnectionListener(listener);
   }
 
+  @Override
   public void removeConnectionListener(ConnectionListener listener)
   { _connection.removeConnectionListener(listener);
   }
 
+  @Override
   public InputStream getInputStream()
     throws IOException
   { 
@@ -67,6 +70,7 @@ public class ServerConnection
     return _inputStream;
   }
 
+  @Override
   public OutputStream getOutputStream()
     throws IOException
   { 
@@ -76,6 +80,7 @@ public class ServerConnection
     return _outputStream;
   }
 
+  @Override
   public void close()
     throws IOException
   { 
@@ -83,19 +88,23 @@ public class ServerConnection
     _server.traceStreamFinished(_trace);
   }
 
+  @Override
   public void setReadTimeoutMillis(int millis)
     throws IOException
   { _connection.setReadTimeoutMillis(millis);
   }
 
+  @Override
   public boolean isSecure()
   { return _connection.isSecure();
   }
 
+  @Override
   public URI getRemoteAddress()
   { return _connection.getRemoteAddress();
   }
 
+  @Override
   public URI getLocalAddress()
   { return _connection.getLocalAddress();
   }

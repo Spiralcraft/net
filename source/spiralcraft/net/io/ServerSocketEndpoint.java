@@ -82,6 +82,7 @@ public class ServerSocketEndpoint
     }
   }
 
+  @Override
   public synchronized void addConnectionListener(ConnectionListener listener)
   { 
     if (!ArrayUtil.contains(_listeners,listener))
@@ -89,10 +90,12 @@ public class ServerSocketEndpoint
     }
   }
 
+  @Override
   public synchronized void removeConnectionListener(ConnectionListener listener)
   { _listeners=ArrayUtil.remove(_listeners,listener);
   }
 
+  @Override
   public void init()
   {
     if (_factory==null)
@@ -103,6 +106,7 @@ public class ServerSocketEndpoint
   /**
    * Indicate whether the Endpoint supports non-blocking IO
    */
+  @Override
   public boolean supportsNonBlockingIO()
   { 
     if (_factory==null)
@@ -114,6 +118,7 @@ public class ServerSocketEndpoint
   /**
    * Bind for non-blocking operation
    */
+  @Override
   public synchronized void bind(ChannelDispatcher dispatcher)
     throws IOException
   {
@@ -130,6 +135,7 @@ public class ServerSocketEndpoint
   /**
    * Bind for blocking operation
    */
+  @Override
   public synchronized void bind()
     throws IOException
   {
@@ -144,6 +150,7 @@ public class ServerSocketEndpoint
   /**
    * Unbind and release all resources
    */
+  @Override
   public synchronized void release()
   {
     stopListening();
@@ -175,6 +182,7 @@ public class ServerSocketEndpoint
         =new Thread
           (new Runnable()
           {
+            @Override
             public void run()
             { acceptUntilReleased();
             }
@@ -190,18 +198,22 @@ public class ServerSocketEndpoint
     notify();
   }
 
+  @Override
   public void channelAccept(ChannelEvent event)
   { accept();
   }
 
+  @Override
   public void channelRead(ChannelEvent event)
   {
   }
   
+  @Override
   public void channelWrite(ChannelEvent event)
   {
   }
   
+  @Override
   public void channelConnect(ChannelEvent event)
   {
   }

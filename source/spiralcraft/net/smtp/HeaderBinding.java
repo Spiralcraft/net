@@ -32,7 +32,7 @@ import spiralcraft.util.string.StringConverter;
 public class HeaderBinding<T>
   extends DictionaryBinding<T>
 {
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings( "rawtypes" )
   private static final HashMap<Class,StringConverter> converterMap
     =new HashMap<Class,StringConverter>();
 
