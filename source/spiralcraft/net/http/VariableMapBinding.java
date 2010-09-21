@@ -43,7 +43,7 @@ import spiralcraft.lang.IterationDecorator;
  * @author mike
  *
  */
-@SuppressWarnings("unchecked") // Casts related to StringConverter and arrays
+@SuppressWarnings({"unchecked","rawtypes"}) // Casts related to StringConverter and arrays
 public class VariableMapBinding<Tvar>
 {
   private static final ClassLog log
@@ -61,7 +61,6 @@ public class VariableMapBinding<Tvar>
   private Translator translator;  
   private boolean trim;
   
-
   public VariableMapBinding
     (Channel<Tvar> targetChannel
     ,String name
@@ -344,10 +343,39 @@ public class VariableMapBinding<Tvar>
    */
   public void read(VariableMap map)
   {
-    List<String> vals=map!=null?map.get(name):null;
+    readValues(map!=null?map.get(name):null);
+  }
+  
+  /**
+   * <p>Translate the strings to a native value and write it to the target
+   *   channel.
+   * </p>
+   * 
+   * <p>The VariableMap represents data read from an HTTP request in the form
+   *   of a set of variable names mapped to one or more values.
+   * </p>
+   * 
+   * <p>
+   * @param map
+   */
+  public void readValues(List<String> vals)
+  { 
+    Tvar value=convertInput(vals);
+    if (value!=null || passNull)
+    { 
+      if (debug)
+      { log.fine("Setting target to "+value);
+      }
+      targetChannel.set(value);
+    }
+  }
+  
+  public Tvar convertInput(List<String> vals)
+  {
     if (debug)
     { log.fine("Reading "+vals+" for "+name);
     }
+    
     
     if (vals!=null && vals.size()>0)
     { 
@@ -364,11 +392,8 @@ public class VariableMapBinding<Tvar>
             val=preprocess(val);
             Array.set(array, i++, translateValueIn(val));
           }
-         
-          if (debug)
-          { log.fine("Setting target to "+array);
-          }
-          targetChannel.set((Tvar) array);
+
+          return (Tvar) array;
         }
         catch (IllegalArgumentException x)
         {
@@ -387,28 +412,22 @@ public class VariableMapBinding<Tvar>
           val=preprocess(val);
           collectionDecorator.add(collection,translateValueIn(val));
         }
-        if (debug)
-        { log.fine("Setting target to "+collection);
-        }
-        targetChannel.set((Tvar) collection);
+        return (Tvar) collection;
         
       }
       else
       { 
         Object value=translateValueIn(preprocess(vals.get(0)));
-        if (debug)
-        { log.fine("Setting target to "+value);
-        }
-        targetChannel.set((Tvar)value);
+        return (Tvar) value;
       }
         
     }
-    else if (passNull)
+    else 
     { 
       if (debug)
-      { log.fine("Setting target to null for "+name);
+      { log.fine("convert to null for "+name);
       }
-      targetChannel.set(null);
+      return null;
     }
   }
   
