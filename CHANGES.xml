@@ -3,6 +3,35 @@
   >
 
   <scm:Change>
+    <revision>0.4.11.1
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>2010-09-21
+    </date>
+    
+    <detail>
+      <scm:Change>
+
+        <notes>
+          <scm:Note>For VariableMapBinding, break up "read" function to expose
+            core conversion logic via "convert" method for use when the 
+            "write-to-target" functionality is handled at a higher level. 
+            This is a step towards abstracting the conversion logic into a 
+            utility class.
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/http/VariableMapBinding.java
+        </path>
+        
+      </scm:Change>
+    </detail>
+  </scm:Change>
+
+  <scm:Change>
     <revision>0.4.11
     </revision>
     
