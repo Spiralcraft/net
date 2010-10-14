@@ -159,8 +159,9 @@ public class Server
       { 
         try
         { 
-          _endpoints[i].init();
+
           _endpoints[i].addConnectionListener(_queue);
+          _endpoints[i].init();
 
           if (_endpoints[i].supportsNonBlockingIO())
           { _endpoints[i].bind(_channelDispatcher);

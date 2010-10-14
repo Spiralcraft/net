@@ -242,7 +242,7 @@ public class ServerSocketEndpoint
               +socketChannel.socket().getInetAddress().getHostAddress());
           }
           
-          Connection connection=new SocketConnection(socketChannel,_dispatcher);
+          Connection connection=new SocketChannelConnection(socketChannel,_dispatcher);
           fireConnectionAccepted(connection);
         }
         else
@@ -262,7 +262,7 @@ public class ServerSocketEndpoint
         { _logger.fine("Incoming connection from "+socket.getInetAddress().getHostAddress());
         }
         
-        Connection connection=new SocketConnection(socket);
+        Connection connection=new SocketChannelConnection(socket);
         fireConnectionAccepted(connection);
       }
     }
