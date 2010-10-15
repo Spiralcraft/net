@@ -1,7 +1,42 @@
 <scm:Change.list
   xmlns:scm="class:/spiralcraft/scm/meta/"
   >
+  
+  <scm:Change>
+  
+    <revision>0.4.12
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>2010-10-14
+    </date>
+    
+    <detail>
+      <scm:Change>
 
+        <notes>
+          <scm:Note>Sync with core 0.4.12
+          </scm:Note>
+          <scm:Note>[SCPUBLIC-53] Allow character encoding to be specified for
+            multipart forms and default to UTF-8 instead of ASCII
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net</path>
+        
+        <resources>
+          <URI>http/MultipartVariableMap.java
+          </URI>
+          <URI>mime/MultipartParser.java
+          </URI>
+        </resources>
+      </scm:Change>
+    </detail>
+  </scm:Change>
+  
+  
   <scm:Change>
     <revision>0.4.11.1
     </revision>
