@@ -227,7 +227,8 @@ public class MultipartParser
     while (true)
     {
       String line
-        =StreamUtil.readLine(_in,null,_contentLength-_count,defaultPartEncoding);
+        =StreamUtil.readUntilEOL
+          (_in,null,_contentLength-_count,defaultPartEncoding);
       
       if (DEBUG)
       { log.fine("line ("+(line.length()+2)+"): "+line);
