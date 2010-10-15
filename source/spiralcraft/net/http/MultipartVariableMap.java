@@ -25,6 +25,7 @@ public class MultipartVariableMap
   
   
   private LinkedList<URI> tempFiles=new LinkedList<URI>();
+  private String defaultPartEncoding="UTF-8";
 
   /**
    * Create an empty MultipartVariableMap
@@ -51,10 +52,15 @@ public class MultipartVariableMap
   { read(in,contentType,contentLength);
   }
   
+  public void setDefaultPartEncoding(String defaultPartEncoding)
+  { this.defaultPartEncoding=defaultPartEncoding;
+  }
+  
   public void read(InputStream in,String contentType,int contentLength)
     throws IOException
   {
-    MultipartParser parser=new MultipartParser(in,contentType,contentLength);
+    MultipartParser parser=new MultipartParser
+      (in,contentType,contentLength,defaultPartEncoding);
     parser.setQuotableChars("\\\"");
     int partNum=0;
     while (parser.nextPart())
@@ -78,6 +84,7 @@ public class MultipartVariableMap
         
           add(name+".filename",partFilename);
           add(name+".contentType",parser.getPartContentType());
+          
         
           File tempFile=File.createTempFile("upload",null);
           tempFiles.add(tempFile.toURI());
@@ -94,7 +101,14 @@ public class MultipartVariableMap
       }
       else
       { 
-        String content=StreamUtil.readAsciiString(contentIn,-1);
+        String partContentType=parser.getPartContentType();
+        byte[] bytes=StreamUtil.readBytes(contentIn);
+        
+        String content
+          =partContentType!=null
+          ?new String(bytes,defaultPartEncoding)
+          :new String(bytes,defaultPartEncoding)
+          ;
 //        log.fine(name+"="+content);
         add(name,content);
       }

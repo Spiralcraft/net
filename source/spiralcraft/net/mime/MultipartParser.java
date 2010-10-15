@@ -39,14 +39,17 @@ public class MultipartParser
   
   private MimeHeaderMap _headers;
   private String quotableChars=null;
+  private String defaultPartEncoding;
 
 
   
-  public MultipartParser(InputStream in,String contentType,int contentLength)
+  public MultipartParser(InputStream in,String contentType,int contentLength,String defaultPartEncoding)
     throws IOException
   {
     _contentType=contentType;
     _contentLength=contentLength;
+    this.defaultPartEncoding=defaultPartEncoding;
+    
     if (DEBUG)
     { log.fine("Content Length= "+contentLength);
     }
@@ -223,7 +226,8 @@ public class MultipartParser
     StringBuilder header=new StringBuilder();
     while (true)
     {
-      String line=StreamUtil.readAsciiLine(_in,null,_contentLength-_count);
+      String line
+        =StreamUtil.readLine(_in,null,_contentLength-_count,defaultPartEncoding);
       
       if (DEBUG)
       { log.fine("line ("+(line.length()+2)+"): "+line);
