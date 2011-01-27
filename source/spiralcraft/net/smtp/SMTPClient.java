@@ -84,6 +84,7 @@ public class SMTPClient
   { this.debug=debug;
   }
   
+  @Override
   public void send(Envelope envelope)
     throws IOException
   { 
