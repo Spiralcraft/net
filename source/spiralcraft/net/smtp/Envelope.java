@@ -17,13 +17,14 @@ package spiralcraft.net.smtp;
 import java.util.LinkedList;
 import java.util.List;
 
+
 import spiralcraft.net.syntax.MailAddress;
 
 import spiralcraft.text.ParseException;
 
 public class Envelope
 {
-
+      
   private String server;
   private MailAddress sender;
   private List<MailAddress> recipients;
