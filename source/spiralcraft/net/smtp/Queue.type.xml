@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<meta:Type
+  xmlns:meta="class:/spiralcraft/data/types/meta/"
+  xmlns:smtp="class:/spiralcraft/net/smtp/"
+  >
+  
+
+  <fields>
+    <meta:SequenceField>
+
+      <name>id
+      </name>
+
+      <type><Long.type/>
+      </type>
+
+    </meta:SequenceField>
+        
+    <meta:Field>
+        
+      <name>envelope
+      </name>
+        	
+      <type><Envelope.type/>
+      </type>
+        	
+    </meta:Field>
+  </fields>
+</meta:Type>
+
