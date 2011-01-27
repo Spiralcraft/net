@@ -1,4 +1,4 @@
-<smtp:SMTPConnector
+<smtp:SMTPClient
   xmlns:smtp="class:/spiralcraft/net/smtp/"
   >
 
@@ -17,4 +17,4 @@
   <testMode>true
   </testMode>
   
-</smtp:SMTPConnector>
+</smtp:SMTPClient>

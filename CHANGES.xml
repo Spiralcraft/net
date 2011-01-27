@@ -4,6 +4,44 @@
   
   <scm:Change>
   
+    <revision>0.5
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>
+    </date>
+    
+    <detail>
+      <scm:Change>
+
+        <notes>
+          <scm:Note>Refactored SMTPConnector to SMTPClient. SMTPConnector is now an
+            interface.
+          </scm:Note>
+          <scm:Note>SMTP Queuing implementation of SMTPConnector
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/smtp</path>
+        
+        <resources>
+          <URI>SMTPConnector.java
+          </URI>
+          <URI>SMTPClient.java
+          </URI>
+          <URI>SMTPQueue.java
+          </URI>
+          <URI>Queue.type.xml
+          </URI>
+        </resources>
+      </scm:Change>
+    </detail>
+  </scm:Change>
+  
+  <scm:Change>
+  
     <revision>0.4.12
     </revision>
     
