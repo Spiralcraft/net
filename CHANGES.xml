@@ -17,8 +17,27 @@
       <scm:Change>
 
         <notes>
-          <scm:Note>Refactored SMTPConnector to SMTPClient. SMTPConnector is now an
-            interface.
+          <scm:Note>URLCodec removed- redundant of URLDataEncoder in 
+            spiralcraft.text.html
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/http/
+        </path>
+        
+        <resources>
+          <URI>URLCodec.java
+          </URI>
+          <URI>VariableMap.java
+          </URI>
+        </resources>
+      </scm:Change>
+
+      <scm:Change>
+
+        <notes>
+          <scm:Note>Refactored SMTPConnector to SMTPClient. SMTPConnector is 
+            now an interface.
           </scm:Note>
           <scm:Note>SMTP Queuing implementation of SMTPConnector
           </scm:Note>
