@@ -15,14 +15,12 @@
 package spiralcraft.net.smtp;
 
 import java.io.IOException;
-import spiralcraft.app.spi.AbstractComponent;
 import spiralcraft.data.DataException;
 import spiralcraft.data.RuntimeDataException;
 import spiralcraft.data.Space;
 import spiralcraft.data.Tuple;
 import spiralcraft.data.Type;
 import spiralcraft.data.editor.TupleEditor;
-import spiralcraft.data.reflect.ReflectionType;
 import spiralcraft.lang.BindException;
 import spiralcraft.lang.Contextual;
 import spiralcraft.lang.Focus;
