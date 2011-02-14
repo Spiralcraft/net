@@ -16,6 +16,8 @@ package spiralcraft.net.http;
 
 import spiralcraft.util.ListMap;
 
+import spiralcraft.text.html.URLDataEncoder;
+
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -101,18 +103,18 @@ public class VariableMap
       int eqpos=pair.indexOf('=');
       if (eqpos>0 && eqpos<pair.length()-1)
       {
-        String name=URLCodec.decode(pair.substring(0,eqpos));
+        String name=URLDataEncoder.decode(pair.substring(0,eqpos));
         String valueSet=pair.substring(eqpos+1);
         
         if (compactEncoding)
         {
           String[] values=valueSet.split(",");
           for (String value: values)
-          { add(name,URLCodec.decode(value));
+          { add(name,URLDataEncoder.decode(value));
           }
         }
         else
-        { add(name,URLCodec.decode(valueSet));
+        { add(name,URLDataEncoder.decode(valueSet));
         }
       }
     }
@@ -140,7 +142,7 @@ public class VariableMap
         else
         { buf.append("&");
         }
-        buf.append(URLCodec.encode(entry.getKey()));
+        buf.append(URLDataEncoder.encode(entry.getKey()));
         buf.append("=");
       
         boolean first2=true;
@@ -152,7 +154,7 @@ public class VariableMap
           else
           { buf.append(",");
           }
-          buf.append(URLCodec.encode(string));
+          buf.append(URLDataEncoder.encode(string));
         }
       }
       else
@@ -165,9 +167,9 @@ public class VariableMap
           else
           { buf.append("&");
           }
-          buf.append(URLCodec.encode(entry.getKey()));
+          buf.append(URLDataEncoder.encode(entry.getKey()));
           buf.append("=");
-          buf.append(URLCodec.encode(string));
+          buf.append(URLDataEncoder.encode(string));
         }
       }
     }
