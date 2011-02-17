@@ -17,14 +17,14 @@ package spiralcraft.net.smtp;
 import java.io.IOException;
 import spiralcraft.data.DataException;
 import spiralcraft.data.RuntimeDataException;
-import spiralcraft.data.Space;
+//import spiralcraft.data.Space;
 import spiralcraft.data.Tuple;
 import spiralcraft.data.Type;
 import spiralcraft.data.editor.TupleEditor;
 import spiralcraft.lang.BindException;
 import spiralcraft.lang.Contextual;
 import spiralcraft.lang.Focus;
-import spiralcraft.lang.util.LangUtil;
+//import spiralcraft.lang.util.LangUtil;
 
 public class SMTPQueue
   implements SMTPConnector,Contextual
@@ -32,7 +32,7 @@ public class SMTPQueue
 
   
   private TupleEditor editor;
-  private Space space;
+  // private Space space;
   private Type<Tuple> queueType;
   
   
@@ -67,7 +67,7 @@ public class SMTPQueue
     
     focusChain=editor.bind(focusChain);
     
-    space=LangUtil.findInstance(Space.class, focusChain);
+    // space=LangUtil.findInstance(Space.class, focusChain);
     
     
     return focusChain;
