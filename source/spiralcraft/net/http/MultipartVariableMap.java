@@ -62,7 +62,7 @@ public class MultipartVariableMap
     MultipartParser parser=new MultipartParser
       (in,contentType,contentLength,defaultPartEncoding);
     parser.setQuotableChars("\\\"");
-    int partNum=0;
+//    int partNum=0;
     while (parser.nextPart())
     {
       String name=parser.getPartName();      
@@ -113,7 +113,7 @@ public class MultipartVariableMap
         add(name,content);
       }
 
-      partNum++;
+//      partNum++;
       
     }
   }
