@@ -3,3 +3,4 @@ bin
 out
 *.local
 test-out
+.git
