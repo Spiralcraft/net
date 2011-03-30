@@ -58,16 +58,16 @@ public class Server
   private Pool<ProtocolHandler> _protocolHandlerPool
     =new Pool<ProtocolHandler>();
   private ProtocolHandlerFactory _protocolHandlerFactory;
-  private int _connectionCount;
-  private int _activeConnectionCount;
-  private int _uncaughtIOExceptionCount;
+//  private int _connectionCount;
+//  private int _activeConnectionCount;
+//  private int _uncaughtIOExceptionCount;
   private URI _traceUri;
   private int _traceCount;
   private int _readTimeoutMillis;
   private StandardChannelDispatcher _channelDispatcher;
   
-  private long _bytesRead;
-  private long _bytesWritten;
+//  private long _bytesRead;
+//  private long _bytesWritten;
 
   public void setTraceURI(URI uri)
   { _traceUri=uri;
@@ -236,8 +236,8 @@ public class Server
    */
   private void handleConnection(Connection connection)
   {
-    _connectionCount++;
-    _activeConnectionCount++;
+//    _connectionCount++;
+//    _activeConnectionCount++;
 
     if (_readTimeoutMillis>0)
     { 
@@ -270,7 +270,7 @@ public class Server
   @Override
   public void protocolFinished(ProtocolHandler handler)
   { 
-    _activeConnectionCount--;
+//    _activeConnectionCount--;
     if (log.canLog(Level.FINE))
     { log.fine("Protocol finished "+handler.toString());
     }
@@ -340,21 +340,21 @@ public class Server
   }
 
   public void uncaughtIOException()
-  { _uncaughtIOExceptionCount++;
+  { // _uncaughtIOExceptionCount++;
   }
 
   /**
    * Called by the ServerInputStream when data is read
    */
   public synchronized void countBytesRead(long bytes)
-  { _bytesRead+=bytes;
+  { // _bytesRead+=bytes;
   }
 
   /**
    * Called by the ServerInputStream when data is written
    */
   public synchronized void countBytesWritten(long bytes)
-  { _bytesWritten+=bytes;
+  { // _bytesWritten+=bytes;
   }
 
   /**
