@@ -37,6 +37,7 @@ public class SMTPClient
   
   private boolean testMode;
   private List<MailAddress> testRecipients;
+  private boolean requireSSL;
   
   /**
    * The SMTP server which will forward outgoing mail
@@ -61,6 +62,15 @@ public class SMTPClient
   
   public void setPassword(String password)
   { this.password=password;
+  }
+  
+  /**
+   * Require the use of SSL
+   * 
+   * @param requireSSL
+   */
+  public void setRequireSSL(boolean requireSSL)
+  { this.requireSSL=requireSSL;
   }
   
   /**
@@ -95,6 +105,9 @@ public class SMTPClient
     }
     
     SMTPConnection con=new SMTPConnection();
+    if (requireSSL)
+    { con.setRequireSSL(requireSSL);
+    }
     con.setServerName(envelope.getServer()!=null?envelope.getServer():server);
     con.setServerPort(port);
     if (debug)
@@ -113,7 +126,7 @@ public class SMTPClient
       {
         log.fine("Connected.");
 
-        List<MailAddress> recipients=envelope.getRecipients();
+        List<MailAddress> recipients=envelope.getRecipientList();
         if (testMode && testRecipients!=null)
         { recipients=testRecipients;
         }
