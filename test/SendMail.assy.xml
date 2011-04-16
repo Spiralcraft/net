@@ -1,0 +1,25 @@
+<smtp:SendMail
+  xmlns:smtp="class:/spiralcraft/net/smtp/"
+  xmlns:ju="class:/java/util/"
+  >
+  <senderX>"${test.mail.sender}"
+  </senderX>
+  
+  <recipientX>"${test.mail.recipient}"
+  </recipientX>
+  
+  <messageX>
+    "This is a test: "
+    +[@ju:Date].().toString()
+  </messageX>
+
+  <headerBindings>Date=[@ju:Date].()
+  </headerBindings>
+
+  <headerBindings>From="&lt;test@example.com&gt;"
+  </headerBindings>
+
+  <headerBindings>Subject="test subject"
+  </headerBindings>
+  
+</smtp:SendMail>

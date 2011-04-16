@@ -1,0 +1,10 @@
+<SendMail
+  xmlns:smtp="class:/spiralcraft/net/smtp/"
+  xmlns:ju="class:/java/util/"
+  xmlns:syntax="class:/spiralcraft/net/syntax/"
+  >
+  
+  <recipientsX>[{"${test.mail.recipient}","mike.bcc1@spiralcraft.com","mike.bcc2@spiralcraft.com"}]
+  </recipientsX>
+  
+</SendMail>

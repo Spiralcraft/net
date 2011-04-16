@@ -1,0 +1,16 @@
+<task:Reference
+  xmlns:task="class:/spiralcraft/task/"
+  xmlns:smtp="class:/spiralcraft/net/smtp/"
+  xmlns:ju="class:/java/util/"
+  >
+  
+  <targetURI>context:/SMTPConnector.test.local.xml
+  </targetURI>
+  
+  <chain>
+    <SendMail/>
+    
+  </chain>
+  
+  
+</task:Reference>

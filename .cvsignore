@@ -4,3 +4,4 @@ out
 *.local
 test-out
 .git
+build-local.properties

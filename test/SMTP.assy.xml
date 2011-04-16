@@ -1,0 +1,13 @@
+<task:Reference
+  xmlns:task="class:/spiralcraft/task/"
+  >
+  
+  <targetURI>context:/SMTPConnector.local.xml
+  </targetURI>
+  
+  <chain>
+    <SendMail/>    
+  </chain>
+  
+  
+</task:Reference>

@@ -1,23 +1,33 @@
 <project name="spiralcraft-net-test" basedir="." default="test">
-
+        
   <import file="../build.xml"/>
   
   <target name="test"
     depends="clean"
     >
+    <echo>${test.mail.recipient}</echo>
+    <echo>${test.mail.sender}</echo>
+      
+    <property name="test.mail.recipient" value="example@example.com"/>
+    <property name="test.mail.sender" value="example@example.com"/>
+      
     <mkdir dir="out/xmlschema"/>
     <mkdir dir="out/xmlschema/example"/>
     <mkdir dir="out/xmlschema/sdc"/>
     <mkdir dir="out/xmlschema/fb"/>
-      
+    
     <devtask
       codebase=".."
       exec
-        ="--log log/spiralcraft --consoleLog
+        ="-Dtest.mail.recipient=${test.mail.recipient}
+          -Dtest.mail.sender=${test.mail.sender}
+         --log log/spiralcraft 
+         --consoleLog
          class:/spiralcraft/task/TaskRunner
          Test
          "
     />
+    
   </target>
         
  
