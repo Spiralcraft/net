@@ -31,6 +31,22 @@ import spiralcraft.text.ParseException;
 public class MailAddress
 {
 
+  public static final MailAddress[] toAddresses(String[] addresses)
+    throws ParseException
+  {
+    if (addresses==null)
+    { return null;
+    }
+    MailAddress[] maddresses=new MailAddress[addresses.length];
+    for (int i=0;i<maddresses.length;i++)
+    { maddresses[i]=create(addresses[i]);
+    }
+    return maddresses;
+      
+  }
+
+
+    
   public String smtpPath;
   public String name;
   public String rawAddress;
