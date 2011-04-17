@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLSocketFactory;
+
 import spiralcraft.codec.text.Base64Codec;
 import spiralcraft.log.Level;
 import spiralcraft.log.Log;
@@ -39,6 +42,9 @@ import spiralcraft.log.ClassLog;
  */
 public class SMTPConnection
 {
+  public static final int DEFAULT_PORT=25;
+  public static final int  DEFAULT_SSL_PORT=465;
+  
   private static final ClassLog log
     =ClassLog.getInstance(SMTPConnection.class);
   
@@ -86,6 +92,9 @@ public class SMTPConnection
   private Log protocolLog;
   private Exception exception;
   private boolean needsReset;
+  private boolean requireSSL;
+  
+  private SocketFactory socketFactory;
   
 
   ////////////////////////////////////////////////////////////////////////////
@@ -118,6 +127,11 @@ public class SMTPConnection
   { serverPort=p;
   }
 
+  
+  public void setRequireSSL(boolean requireSSL)
+  { this.requireSSL=requireSSL;
+  }
+  
   public void setSoTimeout(int timeoutMs)
   { soTimeout=timeoutMs;
   }
@@ -125,6 +139,7 @@ public class SMTPConnection
   public void setProtocolLog(Log log)
   { protocolLog=log;
   }
+
 
   ////////////////////////////////////////////////////////////////////////////
   //
@@ -162,6 +177,22 @@ public class SMTPConnection
 
   public synchronized boolean connect()
   {
+    if (socketFactory==null)
+    { 
+      if (requireSSL)
+      { 
+        if (serverPort==DEFAULT_PORT)
+        { serverPort=DEFAULT_SSL_PORT;
+        }
+        SSLSocketFactory sslSocketFactory
+          =(SSLSocketFactory) SSLSocketFactory.getDefault();
+        
+        socketFactory=sslSocketFactory;
+      }
+      else
+      { socketFactory=SocketFactory.getDefault();
+      }
+    }
     needsReset=false;
     if (localHost==null)
     {
@@ -177,7 +208,7 @@ public class SMTPConnection
 
     try
     {
-      socket=new Socket(InetAddress.getByName(serverName),serverPort);
+      socket=socketFactory.createSocket(InetAddress.getByName(serverName),serverPort);
       socket.setTcpNoDelay(true);
       if (protocolLog!=null)
       { protocolLog.log(Level.FINE,"Connected to "+serverName+":"+serverPort);
