@@ -4,6 +4,50 @@
   
   <scm:Change>
   
+    <revision>0.4.13.1
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>
+    </date>
+    
+    <detail>
+      <scm:Change>
+        <release>-dev1
+        </release>
+        
+        <notes>
+          <scm:Note>Added convenient way to specify multiple recipients as
+            a String[] in SMTP utility via the SendMail.recipients property. 
+          </scm:Note>
+          <scm:Note>Support SSL connection type via SMTPClient.requireSSL and
+            SMTPConnection.requireSSL
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net
+        </path>
+        
+        <resources>
+          <URI>smtp/Envelope.java
+          </URI>
+          <URI>smtp/SendMail.java
+          </URI>
+          <URI>smtp/SMTPClient.java
+          </URI>
+          <URI>smtp/SMTPConnection.java
+          </URI>
+          <URI>syntax/MailAddress.java
+          </URI>
+        </resources>
+      </scm:Change>
+    </detail>
+  </scm:Change>
+
+  <scm:Change>
+  
     <revision>0.4.13
     </revision>
     
