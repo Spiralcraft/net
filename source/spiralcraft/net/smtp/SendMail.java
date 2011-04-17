@@ -16,7 +16,6 @@ package spiralcraft.net.smtp;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.List;
 
 import spiralcraft.lang.Assignment;
 import spiralcraft.lang.BindException;
@@ -26,7 +25,6 @@ import spiralcraft.lang.Focus;
 import spiralcraft.lang.Setter;
 import spiralcraft.lang.reflect.BeanReflector;
 import spiralcraft.lang.spi.ThreadLocalChannel;
-import spiralcraft.net.syntax.MailAddress;
 import spiralcraft.task.Chain;
 import spiralcraft.task.Task;
 import spiralcraft.util.ArrayUtil;
@@ -62,7 +60,7 @@ public class SendMail
   
   private Expression<String> senderX;
   private Expression<String> recipientX;
-  private Expression<List<MailAddress>> recipientsX;
+  private Expression<String[]> recipientsX;
   private Expression<String> messageX;
   
   private HeaderBinding<?>[] headerBindings;
@@ -95,7 +93,7 @@ public class SendMail
    * 
    * @param senderX
    */
-  public void setRecipientsX(Expression<List<MailAddress>> recipientsX)
+  public void setRecipientsX(Expression<String[]> recipientsX)
   { this.recipientsX=recipientsX;
   }
 
@@ -178,7 +176,7 @@ public class SendMail
         { this.addException(new Exception("Envelope missing sender address"));
         }
         else if 
-          (envelope.getRecipients()==null || envelope.getRecipients().isEmpty())
+          (envelope.getRecipientList()==null || envelope.getRecipientList().isEmpty())
         { this.addException(new Exception("Envelope missing recipients"));
         }
         else if
@@ -207,7 +205,7 @@ public class SendMail
             if (debug)
             {  
               log.fine
-                ("Sent to "+envelope.getRecipients()
+                ("Sent to "+envelope.getRecipientList()
                 +"\r\n"+envelope.getEncodedMessage()
                 );
             }
@@ -279,7 +277,7 @@ public class SendMail
         (Expression.create(targetX)
         ,source
         );
-    assignment.setDebug(true);
+    assignment.setDebug(this.debug);
     preAssignments
       =preAssignments!=null
       ?ArrayUtil.append

@@ -14,9 +14,9 @@
 //
 package spiralcraft.net.smtp;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
 
 import spiralcraft.net.syntax.MailAddress;
 
@@ -61,7 +61,7 @@ public class Envelope
   /**
    * @return the recipients
    */
-  public List<MailAddress> getRecipients()
+  public List<MailAddress> getRecipientList()
   {
     return recipients;
   }
@@ -69,10 +69,15 @@ public class Envelope
   /**
    * @param recipients the recipients to set
    */
-  public void setRecipients(
+  public void setRecipientList(
     List<MailAddress> recipients)
   {
     this.recipients = recipients;
+  }
+  
+  public void setRecipients(String[] recipients) 
+    throws ParseException
+  { setRecipientList(Arrays.asList(MailAddress.toAddresses(recipients)));
   }
 
   /**
