@@ -24,7 +24,7 @@ import java.net.URI;
 import spiralcraft.service.Service;
 
 
-import spiralcraft.app.spi.AbstractComponent;
+import spiralcraft.app.kit.AbstractComponent;
 import spiralcraft.common.LifecycleException;
 
 import spiralcraft.log.Level;
