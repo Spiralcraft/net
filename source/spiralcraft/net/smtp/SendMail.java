@@ -17,8 +17,8 @@ package spiralcraft.net.smtp;
 import java.io.IOException;
 import java.net.URI;
 
+import spiralcraft.common.ContextualException;
 import spiralcraft.lang.Assignment;
-import spiralcraft.lang.BindException;
 import spiralcraft.lang.Channel;
 import spiralcraft.lang.Expression;
 import spiralcraft.lang.Focus;
@@ -227,7 +227,7 @@ public class SendMail
 
   @Override
   protected void bindChildren(Focus<?> focusChain)
-    throws BindException
+    throws ContextualException
   {
     Focus<SMTPConnector> smtpFocus
       =focusChain.<SMTPConnector>

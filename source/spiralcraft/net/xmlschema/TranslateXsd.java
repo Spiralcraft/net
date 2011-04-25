@@ -25,6 +25,7 @@ import spiralcraft.task.Chain;
 import spiralcraft.task.Task;
 
 
+import spiralcraft.common.ContextualException;
 import spiralcraft.data.core.AbstractCollectionType;
 import spiralcraft.data.core.MetaType;
 import spiralcraft.data.core.TypeImpl;
@@ -206,7 +207,7 @@ public class TranslateXsd
   
   @Override
   public void bindChildren(Focus<?> focus)
-    throws BindException
+    throws ContextualException
   { 
     focus=focus.chain(translation);   
     if (baseTypeNamespaceURI!=null
