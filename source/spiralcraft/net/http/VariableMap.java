@@ -93,10 +93,16 @@ public class VariableMap
    *   application/x-form-urlencoded content type.
    * </p>
    * 
+   * <p>If the specified String is null, no values will be added to the map
+   * </p>
    * @param encodedForm
    */
   public void parseEncodedForm(String encodedForm)
   { 
+    if (encodedForm==null)
+    { return;
+    }
+    
     String[] pairs=encodedForm.split("&");
     for (String pair: pairs)
     {
@@ -196,6 +202,11 @@ public class VariableMap
     { return null;
     }
   }
+  
+  public String getValue(String name)
+  { return getOne(name);
+  }
+  
   
   @Override
   public void add(String name,String value)
