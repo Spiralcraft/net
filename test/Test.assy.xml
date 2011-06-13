@@ -5,6 +5,7 @@
   >
   
   <scenarios>
+    <HTTP.test/>
     <xmlschema:XmlSchemaTest
       xmlns:xmlschema="class:/spiralcraft/net/xmlschema/test/"
     />

@@ -4,6 +4,51 @@
   
   <scm:Change>
   
+    <revision>0.4.15
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>
+    </date>
+    
+    <detail>
+      <scm:Change>
+        <release>-dev1
+        </release>
+        
+        <notes>
+          <scm:Note>new HTTP RequestLine codec for use in clients, servers
+            and utility code.
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/http/RequestLine.java
+        </path>
+        
+      </scm:Change>
+
+      <scm:Change>
+        <release>-dev1
+        </release>
+        
+        <notes>
+          <scm:Note>VariableMap has new getValue():String function for use with
+            type-derivation based functionality.
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/http/VariableMap.java
+        </path>
+        
+      </scm:Change>
+
+    </detail>
+  </scm:Change>
+  
+  <scm:Change>
+  
     <revision>0.4.14
     </revision>
     

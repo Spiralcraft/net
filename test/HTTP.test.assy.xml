@@ -1,0 +1,24 @@
+<test:TestGroup
+  xmlns:task="class:/spiralcraft/task/"
+  xmlns:test="class:/spiralcraft/test/"
+  xmlns:http="class:/spiralcraft/net/http/"
+  xmlns:ju="class:/java/util/"
+  >
+  
+  
+  <sequence>
+    <test:Assertion>
+      <name>RequestLine 1
+      </name>
+      <subjectX>[@http:RequestLine].("GET /index.html HTTP/1.1")
+      </subjectX>
+      <testX>
+        <![CDATA[
+          .method=="GET" && .URI.path=="/index.html" && .version=="HTTP/1.1"
+        ]]>
+      </testX>
+    </test:Assertion>
+  </sequence>
+  
+  
+</test:TestGroup>
