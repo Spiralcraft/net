@@ -204,7 +204,7 @@ public class VariableMap
   }
   
   public String getValue(String name)
-  { return getOne(name);
+  { return getFirst(name);
   }
   
   
