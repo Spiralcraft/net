@@ -366,7 +366,9 @@ public class VariableMapBinding<Tvar>
       if (debug)
       { log.fine("Setting target to "+value);
       }
-      targetChannel.set(value);
+      if (!targetChannel.set(value))
+      { log.warning("Assignment failed for "+name);
+      }
     }
   }
   
