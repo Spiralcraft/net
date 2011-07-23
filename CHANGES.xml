@@ -19,6 +19,21 @@
         </release>
         
         <notes>
+          <scm:Note>SMTPQueue handles ContextualException instead of 
+            BindException
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/smtp/SMTPQueue.java
+        </path>
+        
+      </scm:Change>
+
+      <scm:Change>
+        <release>-dev1
+        </release>
+        
+        <notes>
           <scm:Note>MultiMap.getOne() renamed to getFirst()
           </scm:Note>
         </notes>
