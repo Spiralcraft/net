@@ -4,8 +4,8 @@ import spiralcraft.net.ip.AddressSet;
 
 show();
 originalUrl="/ this is a string, \"decoded\", not 100% valid in a URL /";
-encodedUrl=spiralcraft.net.http.URLCodec.encode(originalUrl);
-decodedUrl=spiralcraft.net.http.URLCodec.decode(encodedUrl);
+encodedUrl=spiralcraft.text.html.URLEncoder.encode(originalUrl);
+decodedUrl=spiralcraft.text.html.URLEncoder.decode(encodedUrl);
 originalUrl.equals(decodedUrl);
 
 

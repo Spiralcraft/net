@@ -4,6 +4,41 @@
   
   <scm:Change>
   
+    <revision>0.4.16
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>XXXX-XX-XX
+    </date>
+    
+    <detail>
+      <scm:Change>
+        <release>-dev1
+        </release>
+        
+        <notes>
+          <scm:Note>MimeHeaderMap now permits multiple headers with the same
+            name
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/mime
+        </path>
+        
+        <resources>
+          <URI>MimeHeaderMap.java
+          </URI>
+          <URI>MultipartParser.java
+          </URI>
+        </resources>
+      </scm:Change>
+    </detail>
+  </scm:Change>
+
+  <scm:Change>
+  
     <revision>0.4.15
     </revision>
     
