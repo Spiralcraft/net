@@ -15,10 +15,11 @@
 package spiralcraft.net.mime;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
+
+import spiralcraft.util.ListMap;
 
 public class MimeHeaderMap
-  extends LinkedHashMap<String,MimeHeader>
+  extends ListMap<String,MimeHeader>
 {
   // TODO: Mime headers are case insensitive. Use CaseInsensitiveString and
   //   canonicalize lookup
@@ -54,17 +55,17 @@ public class MimeHeaderMap
     String value=header.substring(colonPos+1);
     
     if (name.equals(HDR_CONTENT_TYPE))
-    { put(HDR_CONTENT_TYPE,new ContentTypeHeader(name,value));
+    { add(HDR_CONTENT_TYPE,new ContentTypeHeader(name,value));
     }
     else if (name.equals(HDR_CONTENT_DISPOSITION))
     { 
-      put
+      add
         (HDR_CONTENT_DISPOSITION
         ,new ContentDispositionHeader(name,value,quotableChars)
         );
     }
     else
-    { 
+    { add(name.intern(),new GenericHeader(name,value));
     }
     
   }

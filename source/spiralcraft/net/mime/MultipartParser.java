@@ -16,6 +16,7 @@ package spiralcraft.net.mime;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.List;
 
 import spiralcraft.vfs.StreamUtil;
 
@@ -166,6 +167,10 @@ public class MultipartParser
   }
 
   public MimeHeader getHeader(String name)
+  { return _headers.getFirst(name);
+  }
+  
+  public List<MimeHeader> getHeaders(String name)
   { return _headers.get(name);
   }
 
