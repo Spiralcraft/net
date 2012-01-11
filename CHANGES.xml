@@ -15,6 +15,36 @@
     
     <detail>
       <scm:Change>
+        <release>-dev2
+        </release>
+        
+        <notes>
+          <scm:Note>Added AcceptHeader to parse HTTP Accept media ranges
+          </scm:Note>
+          <scm:Note>Refactored header parsing logic into HeaderReader
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/
+        </path>
+        
+        <resources>
+          <URI>http/AcceptHeader.java
+          </URI>
+          <URI>mime/ContentDispositionHeader.java
+          </URI>
+          <URI>mime/ContentTypeHeader.java
+          </URI>
+          <URI>mime/HeaderReader.java
+          </URI>
+          <URI>mime/MimeHeader.java
+          </URI>
+          <URI>mime/MimeHeaderMap.java
+          </URI>
+        </resources>
+      </scm:Change>
+
+      <scm:Change>
         <release>-dev1
         </release>
         

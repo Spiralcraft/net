@@ -18,6 +18,15 @@
         ]]>
       </testX>
     </test:Assertion>
+    
+    <test:Assertion>
+      <name>Accept 1
+      </name>
+      <subjectX>[@http:AcceptHeader].@fromString("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+      </subjectX>
+      <testX>.accepts("image","png")
+      </testX>
+    </test:Assertion>
   </sequence>
   
   
