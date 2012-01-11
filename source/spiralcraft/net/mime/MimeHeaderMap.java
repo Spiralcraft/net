@@ -31,10 +31,12 @@ public class MimeHeaderMap
   
   private String quotableChars;
   
+  @SuppressWarnings("unchecked")
   public ContentDispositionHeader getContentDisposition()
   { return (ContentDispositionHeader) get(HDR_CONTENT_DISPOSITION);
   }
 
+  @SuppressWarnings("unchecked")
   public ContentTypeHeader getContentType()
   { return (ContentTypeHeader) get(HDR_CONTENT_TYPE);
   }

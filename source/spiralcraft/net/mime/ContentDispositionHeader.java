@@ -15,7 +15,6 @@
 package spiralcraft.net.mime;
 
 import java.io.IOException;
-import java.io.PushbackReader;
 import java.util.LinkedHashMap;
 
 public class ContentDispositionHeader
@@ -36,15 +35,15 @@ public class ContentDispositionHeader
   public void parse(String quotableChars)
     throws IOException
   {
-    PushbackReader in=startParse();
-    dispositionType=extractTokenTo(in,';');
+    HeaderReader in=startParse();
+    dispositionType=in.extractTokenTo(';');
     
     
     int c=in.read();
     if (c==';')
     { 
       in.unread(c);
-      parameters=extractParameters(in,quotableChars);
+      parameters=in.extractParameters(quotableChars,false);
     }
     else
     { throw new IOException("Found '"+c+"' in an unexpected place");

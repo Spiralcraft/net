@@ -15,7 +15,6 @@
 package spiralcraft.net.mime;
 
 import java.io.IOException;
-import java.io.PushbackReader;
 import java.util.LinkedHashMap;
 
 public class ContentTypeHeader
@@ -34,22 +33,22 @@ public class ContentTypeHeader
     
   }
   
-  public void parse()
+  private void parse()
     throws IOException
   {
-    PushbackReader in=startParse();
-    type=extractTokenTo(in,'/');
+    HeaderReader in=startParse();
+    type=in.extractTokenTo('/');
     int c=in.read();
     if (c!='/')
     { throw new IOException("Expected '/'");
     }
-    subtype=extractTokenTo(in,';');
+    subtype=in.extractTokenTo(';');
     
     c=in.read();
     if (c==';')
     { 
       in.unread(c);
-      parameters=extractParameters(in,null);
+      parameters=in.extractParameters(null,false);
     }
     else if (c!=-1)
     { throw new IOException("Found '"+(char) c+"' ("+c+") in an unexpected place");
