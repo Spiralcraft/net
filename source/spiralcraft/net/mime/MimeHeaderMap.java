@@ -24,6 +24,7 @@ public class MimeHeaderMap
   // TODO: Mime headers are case insensitive. Use CaseInsensitiveString and
   //   canonicalize lookup
   
+  @SuppressWarnings("unused")
   private static final long serialVersionUID = 1L;
   
   public static final String HDR_CONTENT_TYPE="Content-Type";
@@ -33,12 +34,12 @@ public class MimeHeaderMap
   
   @SuppressWarnings("unchecked")
   public ContentDispositionHeader getContentDisposition()
-  { return (ContentDispositionHeader) get(HDR_CONTENT_DISPOSITION);
+  { return (ContentDispositionHeader) getFirst(HDR_CONTENT_DISPOSITION);
   }
 
   @SuppressWarnings("unchecked")
   public ContentTypeHeader getContentType()
-  { return (ContentTypeHeader) get(HDR_CONTENT_TYPE);
+  { return (ContentTypeHeader) getFirst(HDR_CONTENT_TYPE);
   }
   
   public void setQuotableChars(String quotableChars)
