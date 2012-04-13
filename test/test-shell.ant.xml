@@ -1,0 +1,12 @@
+<project name="spiralcraft-net-test" basedir="." default="test">
+        
+  <import file="../build.xml"/>
+  
+  <target name="test">
+    <devgui
+      codebase=".."
+      env="shell-gui"
+    />
+  </target>
+
+</project>

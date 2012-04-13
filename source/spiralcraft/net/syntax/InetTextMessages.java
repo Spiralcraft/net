@@ -14,6 +14,8 @@
 //
 package spiralcraft.net.syntax;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 
 import spiralcraft.text.ParseException;
@@ -31,7 +33,7 @@ import spiralcraft.util.string.StringConverter;
  */
 public class InetTextMessages
 {
-
+  
   private static final StringConverter<Date> RFC822_DATE_CONVERTER
     =new DateToString("EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z");
   
@@ -341,6 +343,33 @@ public class InetTextMessages
   
   public static final StringConverter<Date> dateConverter()
   { return RFC822_DATE_CONVERTER;
+  }
+  
+  /**
+   * Reads an input stream until a CRLF is encountered 
+   * 
+   * @return
+   */
+  public static final String readHeaderLine(InputStream in,StringBuffer buf)
+    throws IOException
+  {
+    if (buf==null)
+    { buf=new StringBuffer();
+    }
+    for (int i=0;(i=in.read())>-1;)
+    { 
+      switch (i)
+      {
+        case '\r':
+          break;
+        case '\n':
+          return buf.toString();
+        default:
+          buf.append((char) i);
+           
+      }
+    }
+    return buf.toString();
   }
   
 }

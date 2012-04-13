@@ -46,7 +46,17 @@ public class MimeHeaderMap
   { this.quotableChars=quotableChars;
   }
   
-  public void parseHeader(String header)
+  public void add(MimeHeader header)
+  { add(header.getName(),header);
+  }
+  
+  public void put(MimeHeader header)
+  { 
+    remove(header.getName());
+    add(header.getName(),header);
+  }
+  
+  public void addHeader(String header)
     throws IOException
   {
     int colonPos=header.indexOf(":");
@@ -72,5 +82,6 @@ public class MimeHeaderMap
     }
     
   }
+  
   
 }

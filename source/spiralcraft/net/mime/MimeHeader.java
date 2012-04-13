@@ -14,6 +14,9 @@
 //
 package spiralcraft.net.mime;
 
+import java.io.IOException;
+import java.util.HashMap;
+
 import spiralcraft.log.ClassLog;
 
 
@@ -22,6 +25,35 @@ public abstract class MimeHeader
 {
   protected static final ClassLog log
     =ClassLog.getInstance(MimeHeader.class);
+  
+  private static final HashMap<String,HeaderFactory> factories
+    =new HashMap<String,HeaderFactory>();
+  
+  protected static void register(String name,HeaderFactory factory)
+  { factories.put(name,factory);
+  }
+  
+  public static MimeHeader parse(String header,String quotableChars)
+    throws IOException
+  {
+    int colonPos=header.indexOf(":");
+    if (colonPos<0)
+    { throw new IOException("':' in wrong place "+colonPos+" in "+header);
+    }
+        
+    String name=header.substring(0,colonPos).trim();
+    String value=header.substring(colonPos+1).trim();
+    
+    HeaderFactory factory=factories.get(name);
+    if (factory!=null)
+    { return factory.parse(name.intern(),value,quotableChars);
+    }
+    else
+    { return new GenericHeader(name,value);
+    }
+  }
+  
+  
   
   private String name;
   private String rawValue;
@@ -47,6 +79,11 @@ public abstract class MimeHeader
   
   protected HeaderReader startParse()
   { return new HeaderReader(rawValue);
+  }
+  
+  @Override
+  public String toString()
+  { return this.name+": "+this.rawValue; 
   }
 
 

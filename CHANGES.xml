@@ -4,6 +4,69 @@
   
   <scm:Change>
   
+    <revision>0.4.17
+    </revision>
+    
+    <authorId>miketoth
+    </authorId>
+    
+    <date>
+    </date>
+    
+    <detail>
+      <scm:Change>
+        <release>-dev1
+        </release>
+        
+        <notes>
+          <scm:Note>Added minimally functional HTTP client
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net
+        </path>
+        
+        <resources>
+          <URI>http/Client.java
+          </URI>
+          <URI>http/ClientRequest.java
+          </URI>
+          <URI>http/ClientResponse.java
+          </URI>
+          <URI>http/ConnectionHeader.java
+          </URI>
+          <URI>http/client/Client.java
+          </URI>
+          <URI>http/client/HttpConnection.java
+          </URI>
+          <URI>http/client/Request.java
+          </URI>
+          <URI>http/client/Response.java
+          </URI>
+          <URI>mime/ContentDispositionHeader.java
+          </URI>
+          <URI>mime/ContentLengthHeader.java
+          </URI>
+          <URI>mime/ContentTypeHeader.java
+          </URI>
+          <URI>mime/HeaderFactory.java
+          </URI>
+          <URI>mime/MimeHeader.java
+          </URI>
+          <URI>mime/MimeHeaderMap.java
+          </URI>
+          <URI>mime/MultipartParser.java
+          </URI>
+          <URI>syntax/InetTextMessages.java
+          </URI>
+          <URI>syntax/SyntaxException.java
+          </URI>
+        </resources>
+        
+      </scm:Change>
+
+  <scm:Change>
+  
     <revision>0.4.16
     </revision>
     

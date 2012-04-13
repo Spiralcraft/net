@@ -20,7 +20,31 @@ import java.util.LinkedHashMap;
 public class ContentDispositionHeader
     extends MimeHeader
 {
+  
+  public static final String NAME="Content-Disposition";
+  
+  static
+  { 
+    register
+      (NAME
+      ,new HeaderFactory()
+        {
+          @Override
+          public MimeHeader parse(String name,String value,String quotable)
+            throws IOException
+          { return new ContentDispositionHeader(NAME,value,quotable);
+          }
+        }
+      );
+    
+  }
+  
+  /**
+   * Tickle the static initializer 
+   */
+  public static final void init() {};
 
+  
   private String dispositionType;
   private LinkedHashMap<String,String> parameters
     =new LinkedHashMap<String,String>();

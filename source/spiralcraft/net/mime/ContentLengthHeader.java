@@ -15,13 +15,12 @@
 package spiralcraft.net.mime;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
 
-public class ContentTypeHeader
+public class ContentLengthHeader
     extends MimeHeader
 {
 
-  public static final String NAME="Content-Type";
+  public static final String NAME="Content-Length";
   
   static
   { 
@@ -32,61 +31,34 @@ public class ContentTypeHeader
           @Override
           public MimeHeader parse(String name,String value,String quotable)
             throws IOException
-          { return new ContentTypeHeader(NAME,value);
+          { return new ContentLengthHeader(NAME,value);
           }
         }
       );
     
   }
-
+  
   /**
    * Tickle the static initializer 
    */
   public static final void init() {};
   
-  private String type;
-  private String subtype;
-  private LinkedHashMap<String,String> parameters;
+  private long length;
   
-  public ContentTypeHeader(String name,String value)
-    throws IOException
+  public ContentLengthHeader(String name,String value)
   {
     super(name, value);
-    parse();
-    
+    length=Long.parseLong(value);
   }
   
-  private void parse()
-    throws IOException
-  {
-    HeaderReader in=startParse();
-    type=in.extractTokenTo('/');
-    int c=in.read();
-    if (c!='/')
-    { throw new IOException("Expected '/'");
-    }
-    subtype=in.extractTokenTo(';');
-    
-    c=in.read();
-    if (c==';')
-    { 
-      in.unread(c);
-      parameters=in.extractParameters(null,false);
-    }
-    else if (c!=-1)
-    { throw new IOException("Found '"+(char) c+"' ("+c+") in an unexpected place");
-    }
-  }
-  
-  public String getFullType()
-  { return type+"/"+subtype;
-  }
-  
-  public String getParameter(String name)
+  public ContentLengthHeader(long length)
   { 
-    if (parameters==null)
-    { return null;
-    }
-    return parameters.get(name);
+    super(NAME,Long.toString(length));
+    this.length=length;
   }
+  
+  public long getLength()
+  { return length;
+  }
+  
 }

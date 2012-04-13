@@ -2,13 +2,20 @@
 <ivy-module version="2.0">
   <info organisation="spiralcraft" module="net">
   </info> 
+ 
+  <configurations>
+    <conf name="default" description="default"/>
+    <conf name="test"  description="testing"/>
+  </configurations>
   
   <publications>
     <artifact name="spiralcraft-net" type="jar" ext="jar"/>
   </publications> 
     
   <dependencies>
-    <dependency org="spiralcraft" name="core" rev="[0.4.16-dev1,0.5-dev[">
+    <dependency org="spiralcraft" name="core" rev="[0.4.17-dev1,0.5-dev[">
+    </dependency>
+    <dependency org="spiralcraft" name="shell" rev="[0.4.17-dev1,0.5-dev[" conf="test->default">
     </dependency>
     
   </dependencies>

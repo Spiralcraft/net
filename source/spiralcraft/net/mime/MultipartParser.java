@@ -255,7 +255,7 @@ public class MultipartParser
         { 
           // Last header
           if (header.length()>0)
-          { _headers.parseHeader(header.toString());
+          { _headers.addHeader(header.toString());
           }
           break;
         }
@@ -270,7 +270,7 @@ public class MultipartParser
         else
         {
           if (header.length()>0)
-          { _headers.parseHeader(header.toString());
+          { _headers.addHeader(header.toString());
           }
           header.setLength(0);
           header.append(line);
