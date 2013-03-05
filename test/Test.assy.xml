@@ -11,7 +11,9 @@
     />
     <SMTP.test/>
     <SMTP.bcc.test/>
+<!--     
     <SMTP.ssl/>
     <SMTP/>
+-->
   </scenarios>
 </task:Sequence>

@@ -1,4 +1,4 @@
-<project name="spiralcraft-net-test" basedir="." default="test">
+<project name="spiralcraft-net.test" basedir="." default="test">
         
   <import file="../build.xml"/>
   
@@ -38,5 +38,22 @@
     </delete>    
   </target>
 	
-	
+
+  <target name="test-smtp-live">
+    <devtask
+      codebase=".."
+      exec="--consoleLog
+        SMTPLiveTest
+        "
+    />
+  </target>
+    
+  <target name="test-smtp-queue">
+    <devtask
+      codebase=".."
+      exec="--consoleLog
+        SMTPQueueTest
+        "
+    />
+  </target>
 </project>

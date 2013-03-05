@@ -1,0 +1,24 @@
+<task:TaskRunner
+  xmlns:task="class:/spiralcraft/task/"
+  xmlns:stask="class:/spiralcraft/servlet/task/"
+  xmlns:app="class:/spiralcraft/app"
+  xmlns:smtp="class:/spiralcraft/net/smtp"
+  context.test.mail.sender="test@example.com"
+  context.test.mail.recipient="test@example.com"
+  > 
+
+  
+  <rootContext>
+    <app:PlaceContext>
+      <imports>[*smtp:StubConnector]
+      </imports>
+    
+    </app:PlaceContext>
+  </rootContext>
+  
+  <chain>    
+    <SMTP.ssl/>
+    <SMTP/>
+  </chain>
+
+</task:TaskRunner>

@@ -1,0 +1,6 @@
+<project name="spiralcraft-net.test-smtp-live" 
+  basedir="../test" 
+  default="test-smtp-live"
+  >
+  <import file="../test/test.ant.xml"/>
+</project>

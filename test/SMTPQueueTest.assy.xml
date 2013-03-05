@@ -1,0 +1,61 @@
+<task:TaskRunner
+  xmlns:task="class:/spiralcraft/task/"
+  xmlns:dtask="class:/spiralcraft/data/task/"
+  xmlns:app="class:/spiralcraft/app"
+  xmlns:smtp="class:/spiralcraft/net/smtp"
+  xmlns:dxml="class:/spiralcraft/data/xml"
+  xmlns:vfs="class:/spiralcraft/vfs/context/"
+  context.test.mail.sender="test@example.com"
+  context.test.mail.recipient="test@example.com"
+  > 
+
+  <dataURI>context:/out/smtpQueue
+  </dataURI>
+  <placeContext>
+    <app:PlaceContext>
+      
+    
+      <stores>
+        <dxml:XmlStore>
+          <schema dataURI="smtp:SMTP.schema.xml">
+          </schema>
+        </dxml:XmlStore>
+      </stores>
+
+      <exports>[*smtp:QueueConnector{debug:=true}]
+      </exports>
+    </app:PlaceContext>
+  </placeContext>
+  
+  <chain>
+    <SendMail/>
+    <task:Value>
+      <value>
+        <smtp:SMTPClient>
+
+
+          <debug>true
+          </debug>
+  
+          <testMode>true
+          </testMode>
+  
+        </smtp:SMTPClient>      
+      </value>
+      <chain>
+        <task:Eval>
+          <x>[*dtask:Fetch{[@smtp:Queue.list]}].()[0]
+            {.!=null
+              ?.{[smtp:SMTPConnector].send(.envelope.@internalize())
+                 ,.@log("Sent "+.envelope)
+                }
+              :null
+           }
+          </x>
+        </task:Eval>
+      </chain>
+    
+    </task:Value>
+  </chain>
+
+</task:TaskRunner>

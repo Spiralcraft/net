@@ -15,6 +15,54 @@
     
     <detail>
       <scm:Change>
+        <release>-dev2
+        </release>
+        
+        <notes>
+          <scm:Note>Add mail queueing functionality 
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/smtp
+        </path>
+        
+        <resources>
+          <URI>Envelope.java
+          </URI>
+          <URI>QueueConnector.java
+          </URI>
+          <URI>SendMail.java
+          </URI>
+          <URI>SMTPClient.java
+          </URI>
+          <URI>SMTPQueue.java
+          </URI>
+          <URI>StubConnector.java
+          </URI>
+          <URI>Queue.type.xml
+          </URI>
+          <URI>SMTP.schema.xml
+          </URI>
+        </resources>
+
+      </scm:Change>
+
+      <scm:Change>
+        <release>-dev2
+        </release>
+        
+        <notes>
+          <scm:Note>Remove leading space from toString() when descriptive
+            part of address is null
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/syntax/MailAddress.java
+        </path>
+
+      </scm:Change>
+
+      <scm:Change>
         <release>-dev1
         </release>
         

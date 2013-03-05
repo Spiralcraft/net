@@ -1,0 +1,6 @@
+<project name="spiralcraft-net.test-smtp-queue" 
+  basedir="../test" 
+  default="test-smtp-queue"
+  >
+  <import file="../test/test.ant.xml"/>
+</project>
