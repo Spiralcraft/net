@@ -49,7 +49,7 @@ public class QueueConnector
     =new ThreadLocalChannel<DataSession>
       (BeanReflector.<DataSession>getInstance(DataSession.class));
   private Space space;
-  private boolean debug=true;
+  private boolean debug;
   
   
   @Override
