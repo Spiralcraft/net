@@ -92,7 +92,7 @@ public class MailAddress
   
   @Override
   public String toString()
-  { return (name!=null?name+" ":"")+smtpPath;
+  { return ( (name!=null && !name.isEmpty())?name+" ":"")+smtpPath;
   }
   
   /**
