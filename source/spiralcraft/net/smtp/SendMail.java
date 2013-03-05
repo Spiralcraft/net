@@ -15,7 +15,6 @@
 package spiralcraft.net.smtp;
 
 import java.io.IOException;
-import java.net.URI;
 
 import spiralcraft.common.ContextualException;
 import spiralcraft.lang.Assignment;
@@ -25,6 +24,7 @@ import spiralcraft.lang.Focus;
 import spiralcraft.lang.Setter;
 import spiralcraft.lang.reflect.BeanReflector;
 import spiralcraft.lang.spi.ThreadLocalChannel;
+import spiralcraft.lang.util.LangUtil;
 import spiralcraft.task.Chain;
 import spiralcraft.task.Task;
 import spiralcraft.util.ArrayUtil;
@@ -229,14 +229,7 @@ public class SendMail
   protected void bindChildren(Focus<?> focusChain)
     throws ContextualException
   {
-    Focus<SMTPConnector> smtpFocus
-      =focusChain.<SMTPConnector>
-        findFocus(URI.create("class:/spiralcraft/net/smtp/SMTPConnector"));
-    if (smtpFocus!=null)
-    { smtpChannel=smtpFocus.getSubject();
-    } 
-    
-    
+    smtpChannel=LangUtil.assertChannel(SMTPConnector.class,focusChain);
     
     focusChain=focusChain.telescope(envelopeChannel);
     

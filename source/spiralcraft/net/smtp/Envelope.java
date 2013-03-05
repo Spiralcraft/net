@@ -57,7 +57,12 @@ public class Envelope
     }
     
   }
-
+  
+  public String getSender()
+  { return sender==null?null:sender.toString();
+  }
+  
+  
   /**
    * @return the recipients
    */
@@ -69,7 +74,7 @@ public class Envelope
   /**
    * @param recipients the recipients to set
    */
-  public void setRecipientList(
+  private void setRecipientList(
     List<MailAddress> recipients)
   {
     this.recipients = recipients;
@@ -80,6 +85,20 @@ public class Envelope
   { setRecipientList(Arrays.asList(MailAddress.toAddresses(recipients)));
   }
 
+  public String[] getRecipients()
+  { 
+    if (recipients==null)
+    { return null;
+    }
+    
+    String[] ret=new String[recipients.size()];
+    int i=0;
+    for (MailAddress addr : recipients)
+    { ret[i++]=addr.toString();
+    }
+    return ret;
+  }
+  
   /**
    * @param Specify a single recipient
    */

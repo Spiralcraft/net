@@ -98,6 +98,9 @@ public class SMTPClient
   public void send(Envelope envelope)
     throws IOException
   { 
+    if (envelope==null)
+    { throw new IllegalArgumentException("Envelope is null");
+    }
     if (testMode && (testRecipients==null || testRecipients.isEmpty()))
     { 
       testSend(envelope);

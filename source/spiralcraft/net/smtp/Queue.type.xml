@@ -12,7 +12,7 @@
       <name>id
       </name>
 
-      <type><Long.type/>
+      <type><LSID.type/>
       </type>
 
     </meta:SequenceField>
@@ -22,10 +22,19 @@
       <name>envelope
       </name>
         	
-      <type><Envelope.type/>
+      <type><smtp:Envelope.type/>
       </type>
         	
     </meta:Field>
   </fields>
+  
+  <keys>
+    <meta:Key>
+      <primary>true
+      </primary>
+      <fieldList>id
+      </fieldList>
+    </meta:Key>
+  </keys>
 </meta:Type>
 

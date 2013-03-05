@@ -1,0 +1,14 @@
+<meta:Schema
+  xmlns:meta="class:/spiralcraft/data/types/meta"
+  xmlns:smtp="class:/spiralcraft/net/smtp"
+  >
+  <name>spiralcraft-net-smtp
+  </name>
+  
+  <entities>
+    <meta:Entity>
+      <type><smtp:Queue.type/>
+      </type>
+    </meta:Entity>
+  </entities>
+</meta:Schema>
