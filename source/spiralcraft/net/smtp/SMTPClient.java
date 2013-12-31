@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import spiralcraft.log.ClassLog;
+import spiralcraft.log.Level;
 import spiralcraft.net.syntax.MailAddress;
 
 public class SMTPClient
@@ -150,9 +151,12 @@ public class SMTPClient
         }
         else 
         { 
-          log.fine("Failed to send message.");
+          log.fine("Failed to send message. Last response: "
+            +con.getLastResponse()
+            );
           if (con.getException()!=null)
           { 
+            log.log(Level.WARNING,"Exception sending mail",con.getException());
             if (con.getException() instanceof IOException)
             { throw (IOException) con.getException();
             }
