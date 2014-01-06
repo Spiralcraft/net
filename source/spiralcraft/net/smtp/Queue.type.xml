@@ -16,7 +16,14 @@
       </type>
 
     </meta:SequenceField>
-        
+
+    <meta:Field>
+      <name>inProcess
+      </name>
+      <type><Boolean.type/>
+      </type>
+    </meta:Field>
+    
     <meta:Field>
         
       <name>envelope
