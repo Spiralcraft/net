@@ -22,6 +22,7 @@ import spiralcraft.net.http.ConnectionHeader;
 import spiralcraft.net.mime.ContentDispositionHeader;
 import spiralcraft.net.mime.ContentLengthHeader;
 import spiralcraft.net.mime.ContentTypeHeader;
+import spiralcraft.vfs.Resource;
 import spiralcraft.vfs.util.ByteArrayResource;
 
 
@@ -48,30 +49,48 @@ public class Client
   { this.debugStream=debugStream;
   }
   
+  
   public Response executeRequest(URI uri)
+      throws IOException
+  { return executeRequest("GET",uri,null,null);
+  }
+  
+  public Response executeRequest(String method,URI uri,String contentType,Resource content)
     throws IOException
   { 
     Request request=new Request();
+    request.setMethod(method);
     if (uri.getPath()!=null && !uri.getPath().isEmpty())
     { request.setPath(uri.getPath());
     }
     if (uri.getQuery()!=null)
     { request.setQuery(uri.getQuery());
     }
+    if (content!=null)
+    { 
+      request.setContent(content);
+      request.setContentType(contentType);
+      request.setContentLength(content.getSize());
+    }
     
     return executeRequest
-      (uri.getHost()
-      ,uri.getPort()>0?uri.getPort():80
+      (uri.getScheme()
+      ,uri.getHost()
+      ,uri.getPort()>0
+        ?uri.getPort()
+        :uri.getScheme().equalsIgnoreCase("https")
+        ?443
+        :80
       ,request
       );
   }
     
   public Response executeRequest
-    (String hostName,int port,Request request)
+    (String scheme,String hostName,int port,Request request)
     throws IOException
   {
     
-    HttpConnection connection=getConnection(hostName,port);
+    HttpConnection connection=getConnection(scheme,hostName,port);
     
     connection.startRequest(request);
     connection.completeRequest();
@@ -83,10 +102,19 @@ public class Client
     
   }
   
-  private HttpConnection getConnection(String hostName,int port)
+  private HttpConnection getConnection(String scheme,String hostName,int port)
     throws IOException
   { 
-    HttpConnection connection=new HttpConnection(hostName,port);
+    HttpConnection connection;
+    if (scheme.equalsIgnoreCase("http"))
+    { connection=new HttpConnection(hostName,port);
+    }
+    else if (scheme.equalsIgnoreCase("https"))
+    { connection=new HttpsConnection(hostName,port);
+    }
+    else
+    { throw new IOException("Unsupported protocol "+scheme);
+    }
     if (debugStream)
     { connection.setDebugStream(true);
     }

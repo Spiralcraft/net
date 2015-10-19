@@ -27,6 +27,8 @@ import spiralcraft.net.mime.MimeHeader;
 import spiralcraft.net.mime.MimeHeaderMap;
 import spiralcraft.net.syntax.InetTextMessages;
 import spiralcraft.net.syntax.SyntaxException;
+import spiralcraft.util.ArrayUtil;
+import spiralcraft.util.string.StringUtil;
 import spiralcraft.vfs.Resource;
 import spiralcraft.vfs.StreamUtil;
 
@@ -43,6 +45,7 @@ public final class Response
 	  =new MimeHeaderMap();
 	private Resource content;
 	
+	
   /**
    * Read the entire response.
    */
@@ -50,7 +53,6 @@ public final class Response
 		throws IOException
 	{ 
     start(in);
-    
 	}
 	
 	public void start(InputStream in)
@@ -61,7 +63,9 @@ public final class Response
 	  for ( MimeHeader header=null; (header=readHeader(in))!=null; )
 	  { headers.add(header.getName(),header);
 	  }
+	  
   }
+
 	
 	public boolean isKeepalive()
 	{
@@ -137,12 +141,17 @@ public final class Response
     { statusLine=InetTextMessages.readHeaderLine(in,lineBuffer);
     }
     String[] elements=statusLine.split(" ");
-    if (elements.length!=3)
+    if (elements.length<3)
     { throw new IOException(new SyntaxException("Bad status line ["+statusLine+"]"));
     }
     protocol=elements[0];
     status=Integer.parseInt(elements[1]);
-    reason=elements[2];
+    if (elements.length==3)
+    { reason=elements[2];
+    }
+    else
+    { reason=StringUtil.implode(' ',' ', ArrayUtil.tail(elements,2));
+    }
     lineBuffer.setLength(0);
   }
   
@@ -159,6 +168,8 @@ public final class Response
     { return MimeHeader.parse(headerLine,"\\\"");
     }
   }
+  
+
 
   public static String toString(byte[] bytes,int len)
   { 

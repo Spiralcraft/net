@@ -48,6 +48,11 @@ public class ContentTypeHeader
   private String subtype;
   private LinkedHashMap<String,String> parameters;
   
+  public ContentTypeHeader(String value)
+    throws IOException
+  { this("Content-Type", value);
+  }
+
   public ContentTypeHeader(String name,String value)
     throws IOException
   {

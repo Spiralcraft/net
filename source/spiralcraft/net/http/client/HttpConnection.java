@@ -92,7 +92,7 @@ public class HttpConnection
     { throw new IllegalStateException("Cannot be connected multiple times");
     }
     
-    socket=SocketFactory.getDefault().createSocket();
+    socket=getSocketFactory().createSocket();
     socket.setSoTimeout(readTimeout);
     socket.connect(new InetSocketAddress(address,port));
     outputStream=socket.getOutputStream();
@@ -238,6 +238,10 @@ public class HttpConnection
         OutputStream contentOut=response.getContent().getOutputStream();
         if (response.isChunkedTransferCoding())
         {
+          readChunkedContent
+            (contentOut
+            ,inputStream
+            );
         }
         else
         {
@@ -268,6 +272,61 @@ public class HttpConnection
     
   }
   
+  private final void readChunkedContent(OutputStream out,InputStream in)
+    throws IOException
+  {
+    int nextChunk=readChunkLen(in);
+    do
+    { 
+      StreamUtil.copyRaw(in, out, 2048, nextChunk);
+      readCRLF(in);
+      nextChunk=readChunkLen(in);
+    }
+    while (nextChunk>0);
+    
+  }  
+  
+  private final void readCRLF(InputStream in)
+    throws IOException
+  {
+    int c=in.read();
+    if (c==-1)
+    { throw new IOException("Unexpected EOF");
+    }
+    if (c==13)
+    {
+      if (in.read()!=10)
+      { throw new IOException("Expected LF");
+      }
+      return;
+    }
+    
+  }
+  
+  private final int readChunkLen(InputStream in)
+    throws IOException
+  {
+    StringBuilder hexBuf=new StringBuilder();
+    while (true)
+    {
+      int c=in.read();
+      if (c==-1)
+      { throw new IOException("Unexpected EOF");
+      }
+      if (c==13)
+      {
+        if (in.read()!=10)
+        { throw new IOException("Expected LF");
+        }
+        int chunkLen=Integer.parseInt(hexBuf.toString(),16);
+        log.fine("Chunk len "+chunkLen);
+        return chunkLen;
+      }
+      hexBuf.append((char) c);
+    }
+
+  }
+  
   public void close()
   {
     if (socket!=null)
@@ -281,4 +340,7 @@ public class HttpConnection
     }
   }
     
+  protected SocketFactory getSocketFactory()
+  { return SocketFactory.getDefault();
+  }
 }

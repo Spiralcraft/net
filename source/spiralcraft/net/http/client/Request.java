@@ -22,6 +22,7 @@ import java.util.List;
 
 import spiralcraft.net.http.Headers;
 import spiralcraft.net.mime.ContentLengthHeader;
+import spiralcraft.net.mime.ContentTypeHeader;
 import spiralcraft.net.mime.GenericHeader;
 import spiralcraft.net.mime.MimeHeader;
 import spiralcraft.net.mime.MimeHeaderMap;
@@ -47,6 +48,10 @@ public class Request
   {
   }
   
+  public void setMethod(String method)
+  { this.method=method;
+  }
+  
   public void setHost(String host)
   { headers.set(Headers.HOST,new GenericHeader(Headers.HOST,host));
   }
@@ -59,6 +64,7 @@ public class Request
   { this.query=query;
   }
  
+  
   public String getHost()
   { 
     MimeHeader header=headers.getFirst(Headers.HOST);
@@ -83,6 +89,11 @@ public class Request
   
   public void setContentLength(long contentLength)
   { headers.put(new ContentLengthHeader(contentLength));
+  }
+
+  public void setContentType(String contentType)
+    throws IOException
+  { headers.put(new ContentTypeHeader(contentType));
   }
   
   public MimeHeader getHeader(String name)
