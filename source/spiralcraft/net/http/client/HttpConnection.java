@@ -250,7 +250,6 @@ public class HttpConnection
             ,inputStream
             ,(ContentLengthHeader) response.getHeader(ContentLengthHeader.NAME)
             );
-          log.fine("Read content");
         }
         contentOut.flush();
         contentOut.close();
@@ -319,7 +318,6 @@ public class HttpConnection
         { throw new IOException("Expected LF");
         }
         int chunkLen=Integer.parseInt(hexBuf.toString(),16);
-        log.fine("Chunk len "+chunkLen);
         return chunkLen;
       }
       hexBuf.append((char) c);
