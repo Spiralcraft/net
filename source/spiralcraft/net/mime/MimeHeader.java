@@ -18,11 +18,19 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import spiralcraft.log.ClassLog;
+import spiralcraft.util.string.StringConverter;
 
 
 
 public abstract class MimeHeader
 {
+  
+  static
+  { 
+    StringConverter
+      .registerInstance(MimeHeader.class, new MimeHeaderToString());
+  }
+  
   protected static final ClassLog log
     =ClassLog.getInstance(MimeHeader.class);
   
