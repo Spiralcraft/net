@@ -15,6 +15,28 @@
     
     <detail>
       <scm:Change>
+        <release>-dev6
+        </release>
+        
+        <notes>
+          <scm:Note>Added StringConverter for MimeHeader to support
+            builder-based configuration.
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/mime
+        </path>
+        
+        <resources>
+          <URI>MimeHeader.java
+          </URI>
+          <URI>MimeHeaderToString.java
+          </URI>
+        </resources>
+      
+      </scm:Change>
+      
+      <scm:Change>
         <release>-dev5
         </release>
         
