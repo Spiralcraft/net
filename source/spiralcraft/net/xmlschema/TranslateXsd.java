@@ -27,6 +27,7 @@ import spiralcraft.task.Task;
 
 import spiralcraft.common.ContextualException;
 import spiralcraft.data.core.AbstractCollectionType;
+import spiralcraft.data.core.DataDefinedType;
 import spiralcraft.data.core.MetaType;
 import spiralcraft.data.core.TypeImpl;
 import spiralcraft.data.lang.DataReflector;
@@ -808,7 +809,7 @@ public class TranslateXsd
       { log.fine("typeURI is "+typeURI+" for "+ref.typeName);
       }
       // Pre-create the associated type so it can be cross-referenced 
-      TypeImpl typeImpl=new TypeImpl(TypeResolver.getTypeResolver(),typeURI);
+      TypeImpl typeImpl=new DataDefinedType(TypeResolver.getTypeResolver(),typeURI);
       ref.dataType=typeImpl;
       
       
@@ -1040,7 +1041,7 @@ public class TranslateXsd
 
       // Instantiate the type for cross ref
 
-      typeImpl=(TypeImpl) typeType.fromData
+      typeImpl=(DataDefinedType) typeType.fromData
           (ref.dataTypeDecl
           ,new StaticInstanceResolver(typeImpl)
           );
