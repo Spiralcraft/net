@@ -107,7 +107,15 @@ public class SMTPClient
       testSend(envelope);
       return;
     }
-    
+    if (!testMode && 
+          (envelope.getRecipientList()==null 
+          || envelope.getRecipientList().isEmpty()
+          )
+       )
+    { 
+      log.warning("No recipients in message from "+envelope.getSender());
+      return;
+    }
     SMTPConnection con=new SMTPConnection();
     if (requireSSL)
     { con.setRequireSSL(requireSSL);
