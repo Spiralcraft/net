@@ -15,6 +15,19 @@
     
     <detail>
       <scm:Change>
+        <release>-dev8
+        </release>
+        
+        <notes>
+          <scm:Note>Fix fencepost error in RangeHeader interpretation
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/http/RangeHeader.java
+        </path>
+      </scm:Change>
+
+      <scm:Change>
         <release>-dev7
         </release>
         
