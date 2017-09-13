@@ -44,7 +44,7 @@ public class RangeHeader
     if (stopBytes.length()>0)
     { 
       this.lastByte=Integer.parseInt(stopBytes);
-      this.maxBytes=this.lastByte-this.skipBytes;
+      this.maxBytes=(this.lastByte-this.skipBytes)+1;
     }
   }
   
