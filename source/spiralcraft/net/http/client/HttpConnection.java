@@ -28,6 +28,7 @@ import javax.net.SocketFactory;
 import spiralcraft.io.DebugInputStream;
 import spiralcraft.io.DebugOutputStream;
 import spiralcraft.log.ClassLog;
+import spiralcraft.log.Level;
 import spiralcraft.net.mime.ContentLengthHeader;
 import spiralcraft.vfs.StreamUtil;
 
@@ -263,7 +264,9 @@ public class HttpConnection
       if (lastRequest)
       { close();
       }
-      log.fine("Response completed");
+      if (log.canLog(Level.FINE))
+      { log.fine("Response completed");
+      }
     }
     else
     { throw new IllegalStateException("Current response already completed");
