@@ -1018,7 +1018,7 @@ public class TranslateXsd
         }
         catch (TypeNotFoundException x)
         {
-          if (x.getCause()==null)
+          if (x.getExternalCause()==null)
           { 
             if (debug)
             { log.log(Level.DEBUG,"Base type not found "+baseTypeURI);
