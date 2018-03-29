@@ -166,8 +166,8 @@ public class ServerConnection
   
   synchronized void writeTrace(char code,byte[] buffer,int start,int len)
   {
-    _traceFormatParameters[0]=new Character(code);
-    _traceFormatParameters[1]=new Integer(len);
+    _traceFormatParameters[0]=Character.valueOf(code);
+    _traceFormatParameters[1]=Integer.valueOf(len);
     try
     {
       _trace.write(EOL);
