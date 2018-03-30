@@ -89,6 +89,10 @@ public class MimeHeaderMap
   { return containsKey(mapCase(name));
   }
   
+  public List<MimeHeader> removeHeaders(String name)
+  { return remove(mapCase(name));
+  }
+  
   public void addRawHeader(String header)
     throws IOException
   {
