@@ -167,11 +167,11 @@ public class MultipartParser
   }
 
   public MimeHeader getHeader(String name)
-  { return _headers.getFirst(name);
+  { return _headers.getHeader(name);
   }
   
   public List<MimeHeader> getHeaders(String name)
-  { return _headers.get(name);
+  { return _headers.getHeaders(name);
   }
 
   public String getPartName()
@@ -255,7 +255,7 @@ public class MultipartParser
         { 
           // Last header
           if (header.length()>0)
-          { _headers.addHeader(header.toString());
+          { _headers.addRawHeader(header.toString());
           }
           break;
         }
@@ -270,7 +270,7 @@ public class MultipartParser
         else
         {
           if (header.length()>0)
-          { _headers.addHeader(header.toString());
+          { _headers.addRawHeader(header.toString());
           }
           header.setLength(0);
           header.append(line);

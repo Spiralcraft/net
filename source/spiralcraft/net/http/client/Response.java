@@ -19,8 +19,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.List;
 
-
-
+import spiralcraft.log.ClassLog;
 import spiralcraft.net.http.ConnectionHeader;
 import spiralcraft.net.mime.ContentLengthHeader;
 import spiralcraft.net.mime.MimeHeader;
@@ -37,109 +36,126 @@ import spiralcraft.vfs.StreamUtil;
  */
 public final class Response
 {
-	private int status=0;
-	private String reason;
-	private String protocol;
-	private final StringBuffer lineBuffer=new StringBuffer();
-	private MimeHeaderMap headers
-	  =new MimeHeaderMap();
-	private Resource content;
-	
-	
+  private static final ClassLog log=ClassLog.getInstance(Response.class);
+  private int status=0;
+  private String reason;
+  private String protocol;
+  private final StringBuffer lineBuffer=new StringBuffer();
+  private MimeHeaderMap headers=new MimeHeaderMap();
+  private Resource content;
+  
   /**
    * Read the entire response.
    */
-	public void readResponse(InputStream in)
-		throws IOException
-	{ 
-    start(in);
-	}
-	
-	public void start(InputStream in)
+  public void readResponse(InputStream in)
     throws IOException
   { 
-	  
-	  readStatus(in);
-	  for ( MimeHeader header=null; (header=readHeader(in))!=null; )
-	  { headers.add(header.getName(),header);
-	  }
-	  
+    start(in);
+  }
+  
+  public void start(InputStream in)
+    throws IOException
+  { 
+    
+    readStatus(in);
+    for ( MimeHeader header=null; (header=readHeader(in))!=null; )
+    { headers.add(header);
+    }
+    
   }
 
-	
-	public boolean isKeepalive()
-	{
-	  ConnectionHeader hdr
-	    =(ConnectionHeader) headers.getFirst(ConnectionHeader.NAME);
-	  return hdr!=null && hdr.isKeepalive();
-	}
-	
-	public boolean isChunkedTransferCoding()
-	{
-	  MimeHeader hdr=headers.getFirst("Transfer-Encoding");
-	  if (hdr!=null)
-	  { return hdr.getRawValue().equals("chunked");
-	  }
-	  else
-	  { return false;
-	  }
-	}
-	
-	public MimeHeader getHeader(String name)
-	{ return headers.getFirst(name);
-	}
-	
-	public String getContentAsString()
-	  throws IOException
-	{
-	  if (content!=null)
-	  { 
-	    return StreamUtil.readAsciiString
-	      (content.getInputStream(),(int) content.getSize()
-	      );
-	  }
-	  else
-	  { return null;
-	  }
-	}
-	
-	public long getContentLength()
-	{ 
-	  ContentLengthHeader hdr
-	    =(ContentLengthHeader) headers.getFirst(ContentLengthHeader.NAME);
-	  if (hdr!=null)
-	  { return hdr.getLength();
-	  }
-	  else
-	  { return 0;
-	  }
-	}
-	
-	/**
-	 * The destination resource for any content
-	 * 
-	 * @param content
-	 */
-	public void setContent(Resource content)
-	{ this.content=content;
-	}
-	
-	/**
-	 * The destination resource for any content
-	 * 
-	 * @return
-	 */
-	public Resource getContent()
-	{ return content;
-	}
-	
+  
+  public boolean isKeepalive()
+  {
+    ConnectionHeader hdr
+      =(ConnectionHeader) headers.getHeader(ConnectionHeader.NAME);
+    return hdr!=null && hdr.isKeepalive();
+  }
+  
+  public boolean isChunkedTransferCoding()
+  {
+    MimeHeader hdr=headers.getHeader("Transfer-Encoding");
+    if (hdr!=null)
+    { return hdr.getRawValue().equals("chunked");
+    }
+    else
+    { return false;
+    }
+  }
+  
+  public MimeHeader getHeader(String name)
+  { return headers.getHeader(name);
+  }
+  
+  public String getContentAsString()
+    throws IOException
+  {
+    if (content!=null)
+    { 
+      return StreamUtil.readAsciiString
+        (content.getInputStream(),(int) content.getSize()
+        );
+    }
+    else
+    { return null;
+    }
+  }
+  
+  /**
+   * Whether content should be read from the inputStream of a partially completed
+   *   request
+   *  
+   * @return
+   */
+  protected boolean shouldReadContent()
+  {
+    ContentLengthHeader hdr
+      =(ContentLengthHeader) headers.getHeader(ContentLengthHeader.NAME);
+    return hdr==null || hdr.getLength()!=0;
+  }
+  
+  public long getContentLength()
+  { 
+    ContentLengthHeader hdr
+      =(ContentLengthHeader) headers.getHeader(ContentLengthHeader.NAME);
+    if (hdr!=null)
+    { return hdr.getLength();
+    }
+    else
+    { return 0;
+    }
+  }
+  
+  /**
+   * The destination resource for any content
+   * 
+   * @param content
+   */
+  public void setContent(Resource content)
+  { this.content=content;
+  }
+  
+  /**
+   * The destination resource for any content
+   * 
+   * @return
+   */
+  public Resource getContent()
+  { return content;
+  }
+  
   private final void readStatus(InputStream in) 
     throws IOException
   { 
     String statusLine="";
     while (statusLine.isEmpty())
-    { statusLine=InetTextMessages.readHeaderLine(in,lineBuffer);
+    { 
+      statusLine=InetTextMessages.readHeaderLine(in,lineBuffer);
+      if (statusLine.isEmpty())
+      { throw new IOException("Premature end of input");
+      }
     }
+    log.fine("Status line: "+statusLine);
     String[] elements=statusLine.split(" ");
     if (elements.length<3)
     { throw new IOException(new SyntaxException("Bad status line ["+statusLine+"]"));
@@ -160,6 +176,9 @@ public final class Response
     throws IOException
   { 
     String headerLine=InetTextMessages.readHeaderLine(in,lineBuffer);
+    if (headerLine==null)
+    { throw new IOException("Premature end of input");
+    }
     lineBuffer.setLength(0);
     if (headerLine.isEmpty())
     { return null;
@@ -181,45 +200,45 @@ public final class Response
   }
 
 
-	
-	public String getProtocol()
-	{ return protocol;
-	}
-	
-	public int getStatus()
-	{ return status;
-	}
-	
-	public String getReason()
-	{ return reason;
-	}
-	
-	@Override
-	public String toString()
-	{
-	  StringBuffer out=new StringBuffer();
-	  out.append(protocol+" "+status+" "+reason);
-	  out.append("\r\n");
-	  for (List<MimeHeader> headerList: headers.values())
-	  {
-	    for (MimeHeader header: headerList)
-	    {
-	      out.append(header.toString());
+  
+  public String getProtocol()
+  { return protocol;
+  }
+  
+  public int getStatus()
+  { return status;
+  }
+  
+  public String getReason()
+  { return reason;
+  }
+  
+  @Override
+  public String toString()
+  {
+    StringBuffer out=new StringBuffer();
+    out.append(protocol+" "+status+" "+reason);
+    out.append("\r\n");
+    for (List<MimeHeader> headerList: headers.values())
+    {
+      for (MimeHeader header: headerList)
+      {
+        out.append(header.toString());
         out.append("\r\n");
-	    }
-	  }
-	  out.append("\r\n");
-	  if (content!=null)
-	  { 
-	    try
-	    { out.append(getContentAsString());
-	    }
-	    catch (IOException x)
-	    { out.append("ERROR READING CONTENT"+x.toString());
-	    }
-	  }
-	  return out.toString();
-	}
-	
-	
+      }
+    }
+    out.append("\r\n");
+    if (content!=null)
+    { 
+      try
+      { out.append(getContentAsString());
+      }
+      catch (IOException x)
+      { out.append("ERROR READING CONTENT"+x.toString());
+      }
+    }
+    return out.toString();
+  }
+  
+  
 }

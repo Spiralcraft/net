@@ -53,7 +53,7 @@ public class Request
   }
   
   public void setHost(String host)
-  { headers.set(Headers.HOST,new GenericHeader(Headers.HOST,host));
+  { headers.put(new GenericHeader(Headers.HOST,host));
   }
   
   public void setPath(String path)
@@ -67,15 +67,14 @@ public class Request
   
   public String getHost()
   { 
-    MimeHeader header=headers.getFirst(Headers.HOST);
+    MimeHeader header=headers.getHeader(Headers.HOST);
     return header!=null?header.getRawValue():null;
   }
   
   public void setAuthorization(String authorization)
   { 
-    headers.set
-      (Headers.AUTHORIZATION
-      ,new GenericHeader(Headers.AUTHORIZATION,authorization)
+    headers.put
+      (new GenericHeader(Headers.AUTHORIZATION,authorization)
       );
   }
 
@@ -97,11 +96,11 @@ public class Request
   }
   
   public MimeHeader getHeader(String name)
-  { return headers.getFirst(name);
+  { return headers.getHeader(name);
   }
   
   boolean hasHeader(String name)
-  { return headers.containsKey(name);
+  { return headers.containsHeader(name);
   }
   
   

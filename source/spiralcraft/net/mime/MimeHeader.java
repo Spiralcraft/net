@@ -18,7 +18,9 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import spiralcraft.log.ClassLog;
+import spiralcraft.text.CaseInsensitiveString;
 import spiralcraft.util.string.StringConverter;
+import spiralcraft.util.string.StringPool;
 
 
 
@@ -34,11 +36,11 @@ public abstract class MimeHeader
   protected static final ClassLog log
     =ClassLog.getInstance(MimeHeader.class);
   
-  private static final HashMap<String,HeaderFactory> factories
-    =new HashMap<String,HeaderFactory>();
+  private static final HashMap<CaseInsensitiveString,HeaderFactory> factories
+    =new HashMap<>();
   
   protected static void register(String name,HeaderFactory factory)
-  { factories.put(name,factory);
+  { factories.put(MimeHeaderMap.mapCase(name),factory);
   }
   
   public static MimeHeader parse(String header,String quotableChars)
@@ -52,9 +54,9 @@ public abstract class MimeHeader
     String name=header.substring(0,colonPos).trim();
     String value=header.substring(colonPos+1).trim();
     
-    HeaderFactory factory=factories.get(name);
+    HeaderFactory factory=factories.get(MimeHeaderMap.mapCase(name));
     if (factory!=null)
-    { return factory.parse(name.intern(),value,quotableChars);
+    { return factory.parse(StringPool.INSTANCE.get(name),value,quotableChars);
     }
     else
     { return new GenericHeader(name,value);

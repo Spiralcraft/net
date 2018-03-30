@@ -17,7 +17,8 @@ package spiralcraft.net.http.client;
 import java.io.IOException;
 import java.net.URI;
 
-//import spiralcraft.log.ClassLog;
+import spiralcraft.log.ClassLog;
+import spiralcraft.log.Level;
 import spiralcraft.net.http.ConnectionHeader;
 import spiralcraft.net.mime.ContentDispositionHeader;
 import spiralcraft.net.mime.ContentLengthHeader;
@@ -32,8 +33,8 @@ import spiralcraft.vfs.util.ByteArrayResource;
  */
 public class Client
 {
-//  private static final ClassLog log
-//    =ClassLog.getInstance(Client.class);
+  private static final ClassLog log
+      =ClassLog.getInstance(Client.class);
   
   static
   {
@@ -44,11 +45,20 @@ public class Client
   }
 
   private boolean debugStream;
+  private Level logLevel=Level.INFO;
+  
+  public void setLogLevel(Level logLevel)
+  { this.logLevel=logLevel;
+  }
   
   public void setDebugStream(boolean debugStream)
   { this.debugStream=debugStream;
   }
   
+  public Response get(URI uri)
+    throws IOException
+  { return executeRequest("GET",uri,null,null);
+  }
   
   public Response executeRequest(URI uri)
       throws IOException
@@ -89,6 +99,9 @@ public class Client
     (String scheme,String hostName,int port,Request request)
     throws IOException
   {
+    if (logLevel.isFine())
+    { log.fine("Requesting: "+request);
+    }
     
     HttpConnection connection=getConnection(scheme,hostName,port);
     
@@ -98,6 +111,9 @@ public class Client
     Response response=connection.startResponse();
     response.setContent(new ByteArrayResource());
     connection.completeResponse();
+    if (logLevel.isFine())
+    { log.fine("Got response: request: "+request+" response:"+response);
+    }
     return response;
     
   }

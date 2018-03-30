@@ -15,31 +15,52 @@
 package spiralcraft.net.mime;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 
+import spiralcraft.text.CaseInsensitiveString;
 import spiralcraft.util.ListMap;
+import spiralcraft.util.string.StringPool;
 
 public class MimeHeaderMap
-  extends ListMap<String,MimeHeader>
+  extends ListMap<CaseInsensitiveString,MimeHeader>
 {
-  // TODO: Mime headers are case insensitive. Use CaseInsensitiveString and
-  //   canonicalize lookup
   
   @SuppressWarnings("unused")
   private static final long serialVersionUID = 1L;
+  
+  private static final HashMap<String,CaseInsensitiveString> caseMap= 
+    new HashMap<>();
+    
+  protected static final CaseInsensitiveString mapCase(String in)
+  {
+    CaseInsensitiveString ret=caseMap.get(in);
+    if (ret!=null)
+    { return ret;
+    }
+    synchronized(caseMap)
+    {
+      ret=caseMap.get(in);
+      if (ret!=null)
+      { return ret;
+      }
+      ret=new CaseInsensitiveString(in);
+      caseMap.put(in,ret);
+      return ret;
+    }
+  }
   
   public static final String HDR_CONTENT_TYPE="Content-Type";
   public static final String HDR_CONTENT_DISPOSITION="Content-Disposition";
   
   private String quotableChars;
   
-  @SuppressWarnings("unchecked")
   public ContentDispositionHeader getContentDisposition()
-  { return (ContentDispositionHeader) getFirst(HDR_CONTENT_DISPOSITION);
+  { return (ContentDispositionHeader) getFirst(mapCase(HDR_CONTENT_DISPOSITION));
   }
 
-  @SuppressWarnings("unchecked")
   public ContentTypeHeader getContentType()
-  { return (ContentTypeHeader) getFirst(HDR_CONTENT_TYPE);
+  { return (ContentTypeHeader) getFirst(mapCase(HDR_CONTENT_TYPE));
   }
   
   public void setQuotableChars(String quotableChars)
@@ -47,16 +68,28 @@ public class MimeHeaderMap
   }
   
   public void add(MimeHeader header)
-  { add(header.getName(),header);
+  { add(mapCase(header.getName()),header);
   }
   
   public void put(MimeHeader header)
   { 
-    remove(header.getName());
-    add(header.getName(),header);
+    remove(mapCase(header.getName()));
+    add(mapCase(header.getName()),header);
   }
   
-  public void addHeader(String header)
+  public List<MimeHeader> getHeaders(String name)
+  { return get(mapCase(name));
+  }
+  
+  public MimeHeader getHeader(String name)
+  { return getFirst(mapCase(name));
+  }
+  
+  public boolean containsHeader(String name)
+  { return containsKey(mapCase(name));
+  }
+  
+  public void addRawHeader(String header)
     throws IOException
   {
     int colonPos=header.indexOf(":");
@@ -64,21 +97,21 @@ public class MimeHeaderMap
     { throw new IOException("':' in wrong place "+colonPos+" in "+header);
     }
         
-    String name=header.substring(0,colonPos).trim();
+    String name=StringPool.INSTANCE.get(header.substring(0,colonPos).trim());
     String value=header.substring(colonPos+1);
     
     if (name.equals(HDR_CONTENT_TYPE))
-    { add(HDR_CONTENT_TYPE,new ContentTypeHeader(name,value));
+    { add(mapCase(HDR_CONTENT_TYPE),new ContentTypeHeader(name,value));
     }
     else if (name.equals(HDR_CONTENT_DISPOSITION))
     { 
       add
-        (HDR_CONTENT_DISPOSITION
+        (mapCase(HDR_CONTENT_DISPOSITION)
         ,new ContentDispositionHeader(name,value,quotableChars)
         );
     }
     else
-    { add(name.intern(),new GenericHeader(name,value));
+    { add(mapCase(name),new GenericHeader(name,value));
     }
     
   }

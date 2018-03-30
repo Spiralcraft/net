@@ -31,6 +31,7 @@ import spiralcraft.log.ClassLog;
 import spiralcraft.log.Level;
 import spiralcraft.net.mime.ContentLengthHeader;
 import spiralcraft.vfs.StreamUtil;
+import spiralcraft.vfs.util.ByteArrayResource;
 
 
 /**
@@ -234,8 +235,12 @@ public class HttpConnection
   {
     if (response!=null)
     { 
-      if (response.getContent()!=null)
+      if (response.shouldReadContent())
       {
+        if (response.getContent()==null)
+        { response.setContent(new ByteArrayResource());
+        }
+        
         OutputStream contentOut=response.getContent().getOutputStream();
         if (response.isChunkedTransferCoding())
         {
