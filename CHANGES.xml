@@ -15,6 +15,42 @@
     
     <detail>
       <scm:Change>
+        <release>-dev10
+        </release>
+        
+        <notes>
+          <scm:Note>HTTP Client enhancements and fixes
+          </scm:Note>
+          <scm:Note>Add get(URI) method to HTTP Client
+          </scm:Note>
+          <scm:Note>Fix hang when a keepalive connection returns content length 0
+          </scm:Note>
+          <scm:Note>Make MIME header parsing subsystem case-insensitive
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net
+        </path>
+        
+        <resources>
+          <URI>http/client/Client.java
+          </URI>
+          <URI>http/client/HttpConnection.java
+          </URI>
+          <URI>http/client/Request.java
+          </URI>
+          <URI>http/client/Response.java
+          </URI>
+          <URI>mime/MimeHeader.java
+          </URI>
+          <URI>mime/MimeHeaderMap.java
+          </URI>
+          <URI>mime/MultipartParser.java
+          </URI>
+        </resources>
+      </scm:Change>
+
+      <scm:Change>
         <release>-dev9
         </release>
         
