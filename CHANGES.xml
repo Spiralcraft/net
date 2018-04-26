@@ -15,6 +15,26 @@
     
     <detail>
       <scm:Change>
+        <release>-dev12
+        </release>
+        
+        <notes>
+          <scm:Note>HTTP Client logging cleanup
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/http/client
+        </path>
+        
+        <resources>
+          <URI>Client.java
+          </URI>
+          <URI>HttpConnection.java
+          </URI>
+        </resources>
+        
+      </scm:Change>
+      <scm:Change>
         <release>-dev11
         </release>
         
