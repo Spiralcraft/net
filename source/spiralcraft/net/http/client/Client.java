@@ -132,7 +132,11 @@ public class Client
     { throw new IOException("Unsupported protocol "+scheme);
     }
     if (debugStream)
-    { connection.setDebugStream(true);
+    { 
+      if (logLevel.isFine())
+      { log.fine("Debug stream on");
+      }
+      connection.setDebugStream(true);
     }
     return connection;
   }

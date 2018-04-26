@@ -29,6 +29,7 @@ import spiralcraft.io.DebugInputStream;
 import spiralcraft.io.DebugOutputStream;
 import spiralcraft.log.ClassLog;
 import spiralcraft.log.Level;
+import spiralcraft.log.Log;
 import spiralcraft.net.mime.ContentLengthHeader;
 import spiralcraft.vfs.StreamUtil;
 import spiralcraft.vfs.util.ByteArrayResource;
@@ -41,7 +42,8 @@ public class HttpConnection
 {
   private static final ClassLog log
     =ClassLog.getInstance(HttpConnection.class);
-
+  private Level logLevel=Log.INFO;
+  
   private String hostname;
   private int port;
   private InetAddress address;
@@ -81,6 +83,10 @@ public class HttpConnection
 
   public void setDebugStream(boolean debugStream)
   { this.debugStream=debugStream;
+  }
+  
+  public void setLogLevel(Level logLevel)
+  { this.logLevel=logLevel;
   }
   
   public void setReadTimeout(int readTimeout)
@@ -129,7 +135,9 @@ public class HttpConnection
     { request.setHost(hostname+(port!=defaultPort?":"+port:""));
     }
     request.start(outputStream);
-    log.fine("Request committed");
+    if (logLevel.isFine())
+    { log.fine("Request committed");
+    }
     ContentLengthHeader clh
       =(ContentLengthHeader) request.getHeader(ContentLengthHeader.NAME);
     
@@ -207,7 +215,9 @@ public class HttpConnection
     { 
       outputStream.flush();
       request=null;
-      log.fine("Request completed");
+      if (logLevel.isFine())
+      { log.fine("Request completed");
+      }
     }
     else
     { throw new IllegalStateException("Current request already completed");
@@ -222,7 +232,9 @@ public class HttpConnection
     }
     response=new Response();
     response.start(inputStream);
-    log.fine("Response started");
+    if (logLevel.isFine())
+    { log.fine("Response started");
+    }
 
     return response;
     
@@ -269,7 +281,7 @@ public class HttpConnection
       if (lastRequest)
       { close();
       }
-      if (log.canLog(Level.FINE))
+      if (logLevel.isFine())
       { log.fine("Response completed");
       }
     }
