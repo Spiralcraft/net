@@ -23,6 +23,7 @@ import spiralcraft.net.http.ConnectionHeader;
 import spiralcraft.net.mime.ContentDispositionHeader;
 import spiralcraft.net.mime.ContentLengthHeader;
 import spiralcraft.net.mime.ContentTypeHeader;
+import spiralcraft.net.mime.MimeHeaderMap;
 import spiralcraft.vfs.Resource;
 import spiralcraft.vfs.util.ByteArrayResource;
 
@@ -66,6 +67,17 @@ public class Client
   }
   
   public Response executeRequest(String method,URI uri,String contentType,Resource content)
+      throws IOException
+  { return executeRequest(method,uri,contentType,content,null);
+  }
+   
+  public Response executeRequest
+    (String method
+    ,URI uri
+    ,String contentType
+    ,Resource content
+    ,MimeHeaderMap headers
+    )
     throws IOException
   { 
     Request request=new Request();
@@ -81,6 +93,9 @@ public class Client
       request.setContent(content);
       request.setContentType(contentType);
       request.setContentLength(content.getSize());
+    }
+    if (headers!=null)
+    { request.addHeaders(headers);
     }
     
     return executeRequest

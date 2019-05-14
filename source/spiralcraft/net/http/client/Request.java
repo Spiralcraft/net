@@ -18,6 +18,7 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 import spiralcraft.net.http.Headers;
@@ -103,6 +104,18 @@ public class Request
   { return headers.containsHeader(name);
   }
   
+  public void addHeader(MimeHeader header)
+  { headers.add(header);
+  }
+  
+  public void addHeaders(MimeHeaderMap headers)
+  { 
+    ArrayList<MimeHeader> headerList = new ArrayList<>();
+    headers.toValueList(headerList);
+    for (MimeHeader header:headerList)
+    { this.headers.add(header);
+    }
+  }
   
   public final void start(OutputStream out)
   	throws IOException

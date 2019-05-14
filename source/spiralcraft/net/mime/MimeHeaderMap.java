@@ -17,6 +17,7 @@ package spiralcraft.net.mime;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import spiralcraft.text.CaseInsensitiveString;
 import spiralcraft.util.ListMap;
@@ -91,6 +92,22 @@ public class MimeHeaderMap
   
   public List<MimeHeader> removeHeaders(String name)
   { return remove(mapCase(name));
+  }
+
+  /**
+   * Return a map of header names in simple String form to lists of values in
+   *   String form
+   */
+  public Map<String,List<String>> toStringListMap()
+  { 
+    ListMap<String,String> map= new ListMap<>();
+    for (CaseInsensitiveString key: keySet())
+    { 
+      for (MimeHeader header: get(key))
+      { map.add(key.toString(), header.getRawValue());
+      }
+    }
+    return map;
   }
   
   public void addRawHeader(String header)

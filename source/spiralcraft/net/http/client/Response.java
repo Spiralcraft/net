@@ -87,6 +87,10 @@ public final class Response
   { return headers.getHeader(name);
   }
   
+  public MimeHeaderMap getHeaders()
+  { return headers;
+  }
+  
   public String getContentAsString()
     throws IOException
   {
