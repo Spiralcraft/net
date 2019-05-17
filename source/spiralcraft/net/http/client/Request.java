@@ -117,11 +117,17 @@ public class Request
     }
   }
   
+  public String toString()
+  { return super.toString()+": "+requestStartBlock();
+  }
+  
   public final void start(OutputStream out)
-  	throws IOException
-  { 
-    StringWriter writer=new StringWriter();
-    
+      throws IOException
+  { out.write(requestStartBlock().getBytes(ASCII));
+  }
+
+  final void writeRequestLine(StringWriter writer)
+  {
     writer.write(method);
     writer.write(" ");
     writer.write(path);
@@ -132,8 +138,10 @@ public class Request
     }
     writer.write(" ");
     writer.write(protocol);
-    writer.write("\r\n");
-    
+  }
+
+  final void writeHeaders(StringWriter writer)
+  {
     for (List <MimeHeader> headerList : headers.values())
     {
       for (MimeHeader header : headerList)
@@ -144,9 +152,16 @@ public class Request
         writer.write("\r\n");
       }
     }
+  }
+  
+  final String requestStartBlock()
+  { 
+    StringWriter writer=new StringWriter();
+    writeRequestLine(writer);
     writer.write("\r\n");
-    
-    out.write(writer.toString().getBytes(ASCII));
+    writeHeaders(writer);
+    writer.write("\r\n");
+    return writer.toString();
   }
 
   

@@ -146,6 +146,7 @@ public class Client
     else
     { throw new IOException("Unsupported protocol "+scheme);
     }
+    connection.setLogLevel(logLevel);
     if (debugStream)
     { 
       if (logLevel.isFine())

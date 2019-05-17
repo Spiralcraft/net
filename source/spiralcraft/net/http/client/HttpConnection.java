@@ -57,7 +57,7 @@ public class HttpConnection
   private int inputBufferSize=1514;
   private boolean lastRequest;
   private boolean debugStream;
-  private int defaultPort=80;
+  int defaultPort=80;
   
   /**
    * Create a new connection to the specified host/port  
@@ -103,6 +103,9 @@ public class HttpConnection
     socket=getSocketFactory().createSocket();
     socket.setSoTimeout(readTimeout);
     socket.connect(new InetSocketAddress(address,port));
+    if (logLevel.isFine())
+    { log.fine("Connected to "+address+":"+port);
+    }
     outputStream=socket.getOutputStream();
     inputStream=socket.getInputStream();
     if (debugStream)
@@ -160,22 +163,29 @@ public class HttpConnection
     if (clh!=null)
     {
       
-      StreamUtil.copyRaw
+      long len=StreamUtil.copyRaw
         (content
         ,outputStream
         ,outputBufferSize
         ,clh.getLength()
         );
+
+        if (logLevel.isFine())
+        { log.fine("Sent "+len+" bytes of content");
+        }
     }
     else
     {
       // A request with content and no content length header 
-      StreamUtil.copyRaw
+      long len=StreamUtil.copyRaw
         (content
         ,outputStream
         ,outputBufferSize
         ,-1
         );
+        if (logLevel.isFine())
+        { log.fine("Sent "+len+" bytes of content, closing connection");
+        }
       lastRequest=true;
     }
   }
