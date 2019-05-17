@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.List;
 
 import spiralcraft.log.ClassLog;
+import spiralcraft.log.Level;
 import spiralcraft.net.http.ConnectionHeader;
 import spiralcraft.net.mime.ContentLengthHeader;
 import spiralcraft.net.mime.MimeHeader;
@@ -43,6 +44,7 @@ public final class Response
   private final StringBuffer lineBuffer=new StringBuffer();
   private MimeHeaderMap headers=new MimeHeaderMap();
   private Resource content;
+  private Level logLevel=Level.INFO;
   
   /**
    * Read the entire response.
@@ -51,6 +53,10 @@ public final class Response
     throws IOException
   { 
     start(in);
+  }
+
+  public void setLogLevel(Level logLevel)
+  { this.logLevel=logLevel;
   }
   
   public void start(InputStream in)
@@ -159,7 +165,9 @@ public final class Response
       { throw new IOException("Premature end of input");
       }
     }
-    log.fine("Status line: "+statusLine);
+    if (logLevel.isFine())
+    { log.fine(super.toString()+"Status line: "+statusLine);
+    }
     String[] elements=statusLine.split(" ");
     if (elements.length<3)
     { throw new IOException(new SyntaxException("Bad status line ["+statusLine+"]"));

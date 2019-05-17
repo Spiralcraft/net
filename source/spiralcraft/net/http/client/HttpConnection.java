@@ -241,6 +241,7 @@ public class HttpConnection
     { throw new IllegalStateException("Not connected");
     }
     response=new Response();
+    response.setLogLevel(logLevel);
     response.start(inputStream);
     if (logLevel.isFine())
     { log.fine("Response started");
