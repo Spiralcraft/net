@@ -32,7 +32,9 @@ public class HttpsConnection
    */
   public HttpsConnection(String hostname,int port)
     throws UnknownHostException
-  { super(hostname,port);
+  { 
+    super(hostname,port);
+    defaultPort=443;
   }
   
   protected SocketFactory getSocketFactory()
