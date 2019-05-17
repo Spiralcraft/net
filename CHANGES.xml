@@ -19,6 +19,20 @@
         </release>
         
         <notes>
+          <scm:Note>Remove default HTTPS port num from host header
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/http/client/HttpsConnection.java
+        </path>
+        
+        
+      </scm:Change>
+      <scm:Change>
+        <release>-dev12
+        </release>
+        
+        <notes>
           <scm:Note>Support for manipulating headers in bulk for requests
           </scm:Note>
         </notes>
