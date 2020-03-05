@@ -34,15 +34,27 @@ import spiralcraft.util.string.StringUtil;
 public class MultipartParser
 {
 
-  private static final boolean DEBUG=false;
+  private static final boolean DEBUG=true;
   private static final ClassLog log
     =ClassLog.getInstance(MultipartParser.class);
+  
+  private static final byte DASH=45;
+  private static final byte CR=13;
+  private static final byte LF=10;
   
   private MimeHeaderMap _headers;
   private String quotableChars=null;
   private String defaultPartEncoding;
 
-
+  private InputStream _in;
+  private InputStream _partInputStream;
+  private boolean _drained;
+  private boolean _done;
+  private String _contentType;
+  private int _contentLength;
+  private int _count;
+  private String _separator;
+  private byte[] sepBuff=new byte[2];
   
   public MultipartParser(InputStream in,String contentType,int contentLength,String defaultPartEncoding)
     throws IOException
@@ -82,7 +94,7 @@ public class MultipartParser
       (_in,new NullOutputStream(),8192,_contentLength-_count);
     
     if (DEBUG)
-    { log.fine("Separator ("+_count+")");
+    { log.fine("Separator ("+_count+") = "+_separator);
     }
 
   }
@@ -134,19 +146,43 @@ public class MultipartParser
     { 
 
       try
-      { readHeaders();
+      { 
+        int sepCnt=_in.read(sepBuff,0,2);
+        _count+=sepCnt;
+        if (sepCnt<2)
+        { throw new IOException("Read < 2 bytes after multipart separator");
+        }
+        if (sepBuff[0]==DASH && sepBuff[1]==DASH)
+        { _done=true;
+        }
+        else if (sepBuff[0]!=CR || sepBuff[1]!=LF)
+        { throw new IOException("Expected -- or CRLF after separator");
+        }
       }
       catch (IOException x)
-      {
+      { 
         if (DEBUG)
-        { log.log(Level.FINE,"Error reading headers",x);
+        { log.log(Level.FINE,"Error reading multipart boundary",x);
         }
         x.printStackTrace();
         throw x;
       }
       
+     
       if (!_done)
       {
+        try
+        { readHeaders();
+        }
+        catch (IOException x)
+        {
+          if (DEBUG)
+          { log.log(Level.FINE,"Error reading headers",x);
+          }
+          x.printStackTrace();
+          throw x;
+        }
+      
         _partInputStream=new PartInputStream(_in,_separator.length());
         return true;
       }
@@ -211,22 +247,16 @@ public class MultipartParser
   { return _partInputStream;
   }
 
-  private InputStream _in;
-  private InputStream _partInputStream;
-  private boolean _drained;
-  private boolean _done;
-  private String _contentType;
-  private int _contentLength;
-  private int _count;
-  private String _separator;
 
+  /**
+   * Read headers for one part of the multipart content
+   */
   private void readHeaders()
     throws IOException
   {
     _headers=new MimeHeaderMap();
     _headers.setQuotableChars(quotableChars);
     
-    boolean first=true; 
     // Read Headers
     StringBuilder header=new StringBuilder();
     while (true)
@@ -239,26 +269,14 @@ public class MultipartParser
       { log.fine("line ("+(line.length()+2)+"): "+line);
       }
       _count+=line.length()+2;
-      if (line.equals("--"))
-      { 
-        _done=true;
-        return;
-      }
+
       if (line.length()==0)
       {
-        if (first)
-        {
-          // Expect a first CR if not at end
-          first=false;
+        // Last header
+        if (header.length()>0)
+        { _headers.addRawHeader(header.toString());
         }
-        else
-        { 
-          // Last header
-          if (header.length()>0)
-          { _headers.addRawHeader(header.toString());
-          }
-          break;
-        }
+        break;
       }
       else
       { 
