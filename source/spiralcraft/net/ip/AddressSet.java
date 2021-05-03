@@ -90,7 +90,7 @@ public class AddressSet
    * @return Whether any of the subnets contain the IP address
    */
   public boolean contains(String address)
-  { return contains(Subnet.parse(address));
+  { return contains(AddressV4.parse(address));
   }
       
   /**

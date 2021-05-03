@@ -14,10 +14,6 @@
 //
 package spiralcraft.net.ip;
 
-import spiralcraft.util.ByteBuffer;
-
-import java.util.StringTokenizer;
-
 /**
  * <p>An IP address range indicated by a network address and a mask
  * </p>
@@ -43,7 +39,7 @@ public class Subnet
   public static byte[] parseMask(String mask)
   {
     if (mask.contains("."))
-    { return parse(mask);
+    { return AddressV4.parse(mask);
     }
     else
     {
@@ -56,24 +52,7 @@ public class Subnet
       byteMask[full]= (byte) (255 << (8-(num%8)));
       return byteMask;
     }
-  }
-  
-  /**
-   * <p>Parse a string into a raw IP address
-   * </p>
-   * 
-   * @param addr
-   * @return
-   */
-  public static byte[] parse(String addr)
-  {
-    ByteBuffer buf=new ByteBuffer();
-    StringTokenizer tok=new StringTokenizer(addr,".");
-    while (tok.hasMoreTokens())
-    { buf.append((byte) Integer.parseInt(tok.nextToken()));
-    }
-    return buf.toByteArray();
-  }  
+  } 
   
   private byte[] network;
   private byte[] netmask;
@@ -85,11 +64,11 @@ public class Subnet
 
     if (slashPos>-1)
     { 
-      network=parse(address.substring(0,slashPos));
+      network=AddressV4.parse(address.substring(0,slashPos));
       netmask=parseMask(address.substring(slashPos+1));
     }
     else
-    { network=parse(address);
+    { network=AddressV4.parse(address);
     }
     if (netmask!=null)
     {
