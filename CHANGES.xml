@@ -15,6 +15,71 @@
     
     <detail>
       <scm:Change>
+        <release>-dev16
+        </release>
+        
+        <notes>
+          <scm:Note>Follow protocol for closing connection in single request mode
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/http/client
+        </path>
+        
+        <resources>
+          <URI>Client.java
+          </URI>
+          <URI>HttpConnection.java
+          </URI>
+          <URI>Request.java
+          </URI>
+        </resources>
+        
+      </scm:Change>
+
+      <scm:Change>
+        <release>-dev16
+        </release>
+        
+        <notes>
+          <scm:Note>Add static constants for header options
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/http/ConnectionHeader.java
+        </path>
+        
+      </scm:Change>
+
+      <scm:Change>
+        <release>-dev16
+        </release>
+        
+        <notes>
+          <scm:Note>Trim header value after parse
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/mime/MimeHeaderMap.java
+        </path>
+        
+      </scm:Change>
+
+      <scm:Change>
+        <release>-dev16
+        </release>
+        
+        <notes>
+          <scm:Note>Throw exception when EOF is reached before line is properly terminated
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/syntax/InetTextMessages.java
+        </path>
+        
+      </scm:Change>
+
+      <scm:Change>
         <release>-dev15
         </release>
         
