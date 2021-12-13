@@ -119,7 +119,7 @@ public class MimeHeaderMap
     }
         
     String name=StringPool.INSTANCE.get(header.substring(0,colonPos).trim());
-    String value=header.substring(colonPos+1);
+    String value=header.substring(colonPos+1).trim();
     
     if (name.equals(HDR_CONTENT_TYPE))
     { add(mapCase(HDR_CONTENT_TYPE),new ContentTypeHeader(name,value));
