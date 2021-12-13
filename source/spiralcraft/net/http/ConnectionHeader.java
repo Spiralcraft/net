@@ -24,6 +24,10 @@ public class ConnectionHeader
 {
 
   public static final String NAME="Connection";
+  public static final ConnectionHeader KEEP_ALIVE
+    =new ConnectionHeader(NAME,"keep-alive");
+  public static final ConnectionHeader CLOSE
+    =new ConnectionHeader(NAME,"close");
   
   static
   { 
@@ -46,18 +50,25 @@ public class ConnectionHeader
    */
   public static final void init() {};
 
-  private boolean keepalive;
+  private boolean keepAlive;
+  private boolean close;
   
   public boolean isKeepalive()
-  { return keepalive;
+  { return keepAlive;
+  }
+  
+  public boolean isClose()
+  { return close;
   }
   
   public ConnectionHeader(String name,String value)
-    throws IOException
   {
     super(name, value);
-    if (value.equals("keepalive"))
-    { keepalive=true;
+    if (value.equals("keep-alive"))
+    { keepAlive=true;
+    }
+    else if (value.equals("close"))
+    { close=true;
     }
   }
   
