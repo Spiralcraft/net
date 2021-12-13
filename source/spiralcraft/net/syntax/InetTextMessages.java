@@ -369,7 +369,7 @@ public class InetTextMessages
            
       }
     }
-    return buf.toString();
+    throw new IOException("End of stream reached after "+buf.length()+" bytes read");
   }
   
 }
