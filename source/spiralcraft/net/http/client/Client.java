@@ -110,6 +110,17 @@ public class Client
       );
   }
     
+  /**
+   * Execute a request on a new connection, directing the connection to close
+   *   after the request is complete.
+   *   
+   * @param scheme
+   * @param hostName
+   * @param port
+   * @param request
+   * @return
+   * @throws IOException
+   */
   public Response executeRequest
     (String scheme,String hostName,int port,Request request)
     throws IOException
@@ -119,7 +130,8 @@ public class Client
     }
     
     HttpConnection connection=getConnection(scheme,hostName,port);
-    
+    request.addHeader(ConnectionHeader.CLOSE);
+
     connection.startRequest(request);
     connection.completeRequest();
     

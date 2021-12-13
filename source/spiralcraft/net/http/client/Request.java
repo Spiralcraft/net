@@ -96,6 +96,17 @@ public class Request
   { headers.put(new ContentTypeHeader(contentType));
   }
   
+  public String getHeaderValue(String name)
+  {
+    MimeHeader h=getHeader(name);
+    if (h!=null)
+    { return h.getRawValue();
+    }
+    else
+    { return null;
+    }
+  }
+  
   public MimeHeader getHeader(String name)
   { return headers.getHeader(name);
   }

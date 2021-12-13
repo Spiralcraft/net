@@ -102,6 +102,7 @@ public class HttpConnection
     
     socket=getSocketFactory().createSocket();
     socket.setSoTimeout(readTimeout);
+    socket.setReuseAddress(true);
     socket.connect(new InetSocketAddress(address,port));
     if (logLevel.isFine())
     { log.fine("Connected to "+address+":"+port);
@@ -285,7 +286,9 @@ public class HttpConnection
           
       }
 
-      if (!response.isKeepalive())
+      if (!response.isKeepalive() 
+          || "close".equalsIgnoreCase(request.getHeaderValue("Connection"))
+         )
       { lastRequest=true;
       }
       response=null;
