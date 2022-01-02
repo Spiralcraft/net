@@ -16,6 +16,8 @@ package spiralcraft.net.mime;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.BufferedInputStream;
+import spiralcraft.io.CappedInputStream;
 
 import spiralcraft.util.BytePatternMatcher;
 
@@ -44,7 +46,7 @@ public class MultipartInputStream
   { 
     detector=new BytePatternMatcher(separator);
     this.contentLength=contentLength;
-    this.in=in;
+    this.in=new BufferedInputStream(new CappedInputStream(in,contentLength),16384);
   }
 
   @Override

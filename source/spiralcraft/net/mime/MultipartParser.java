@@ -34,7 +34,7 @@ import spiralcraft.util.string.StringUtil;
 public class MultipartParser
 {
 
-  private static final boolean DEBUG=true;
+  private static final boolean DEBUG=false;
   private static final ClassLog log
     =ClassLog.getInstance(MultipartParser.class);
   
