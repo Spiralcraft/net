@@ -15,6 +15,27 @@
     
     <detail>
       <scm:Change>
+        <release>-dev17
+        </release>
+        
+        <notes>
+          <scm:Note>Remove suboptimal stream reading and turn off debug
+          </scm:Note>
+        </notes>
+        
+        <path>source/spiralcraft/net/mime
+        </path>
+        
+        <resources>
+          <URI>MultipartInputStream.java
+          </URI>
+          <URI>MultipartParser.java
+          </URI>
+        </resources>
+        
+      </scm:Change>
+
+      <scm:Change>
         <release>-dev16
         </release>
         
