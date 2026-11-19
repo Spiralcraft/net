@@ -309,13 +309,12 @@ public class HttpConnection
     throws IOException
   {
     int nextChunk=readChunkLen(in);
-    do
+    while (nextChunk > 0)
     { 
       StreamUtil.copyRaw(in, out, 2048, nextChunk);
       readCRLF(in);
       nextChunk=readChunkLen(in);
     }
-    while (nextChunk>0);
     
   }  
   
