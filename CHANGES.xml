@@ -19,13 +19,23 @@
         </release>
         
         <notes>
-          <scm:Note>Behave correctly when first chunk len is 0
+          <scm:Note>Add streaming response mode foundation
           </scm:Note>
         </notes>
         
-        <path>source/spiralcraft/net/http/client/HttpConnection.java
+        <path>source/spiralcraft/net/http/client
         </path>
                 
+        <resources>
+          <URI>Client.java
+          </URI>
+          <URI>HttpConnection.java
+          </URI>
+          <URI>Response.java
+          </URI>
+          <URI>ResponseStream.java
+          </URI>
+        </resources>        
       </scm:Change>
 
       <scm:Change>
