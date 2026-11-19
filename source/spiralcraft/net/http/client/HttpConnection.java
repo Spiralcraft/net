@@ -54,8 +54,8 @@ public class HttpConnection
   private Request request;
   private Response response;
   private int outputBufferSize=1514;
-  private int inputBufferSize=1514;
   private boolean lastRequest;
+  private boolean closeRequested;
   private boolean debugStream;
   int defaultPort=80;
   
@@ -138,6 +138,7 @@ public class HttpConnection
     if (request.getHost()==null && hostname!=null)
     { request.setHost(hostname+(port!=defaultPort?":"+port:""));
     }
+    closeRequested="close".equalsIgnoreCase(request.getHeaderValue("Connection"));
     request.start(outputStream);
     if (logLevel.isFine())
     { log.fine("Request committed");
@@ -190,34 +191,7 @@ public class HttpConnection
       lastRequest=true;
     }
   }
-  
-  public void readContent
-    (OutputStream content
-    ,InputStream in
-    ,ContentLengthHeader clh
-    )
-    throws IOException
-  {
-    if (clh!=null)
-    {
-      
-      StreamUtil.copyRaw
-        (in
-        ,content
-        ,inputBufferSize
-        ,clh.getLength()
-        );
-    }
-    else
-    {
-      StreamUtil.copyRaw
-        (in
-        ,content
-        ,inputBufferSize
-        ,-1
-        );
-    }
-  }  
+   
   
   public void completeRequest()
     throws IOException
@@ -252,7 +226,14 @@ public class HttpConnection
     
   }
   
-
+  public Response startStreamingResponse()
+    throws IOException
+  {
+    
+    Response response = startResponse();
+    response.startStream(new ResponseStream(inputStream,this,response,false));
+    return response;
+  }
   
   public void completeResponse()
     throws IOException
@@ -266,28 +247,14 @@ public class HttpConnection
         }
         
         OutputStream contentOut=response.getContent().getOutputStream();
-        if (response.isChunkedTransferCoding())
-        {
-          readChunkedContent
-            (contentOut
-            ,inputStream
-            );
-        }
-        else
-        {
-          readContent
-            (contentOut
-            ,inputStream
-            ,(ContentLengthHeader) response.getHeader(ContentLengthHeader.NAME)
-            );
-        }
+        InputStream clientStream=new ResponseStream(inputStream,this,response,false);
+        StreamUtil.copyRaw(clientStream, contentOut, 2048, -1);
         contentOut.flush();
-        contentOut.close();
-          
+        contentOut.close();          
       }
-
+      
       if (!response.isKeepalive() 
-          || "close".equalsIgnoreCase(request.getHeaderValue("Connection"))
+          || closeRequested
          )
       { lastRequest=true;
       }
@@ -305,59 +272,7 @@ public class HttpConnection
     
   }
   
-  private final void readChunkedContent(OutputStream out,InputStream in)
-    throws IOException
-  {
-    int nextChunk=readChunkLen(in);
-    while (nextChunk > 0)
-    { 
-      StreamUtil.copyRaw(in, out, 2048, nextChunk);
-      readCRLF(in);
-      nextChunk=readChunkLen(in);
-    }
-    
-  }  
-  
-  private final void readCRLF(InputStream in)
-    throws IOException
-  {
-    int c=in.read();
-    if (c==-1)
-    { throw new IOException("Unexpected EOF");
-    }
-    if (c==13)
-    {
-      if (in.read()!=10)
-      { throw new IOException("Expected LF");
-      }
-      return;
-    }
-    
-  }
-  
-  private final int readChunkLen(InputStream in)
-    throws IOException
-  {
-    StringBuilder hexBuf=new StringBuilder();
-    while (true)
-    {
-      int c=in.read();
-      if (c==-1)
-      { throw new IOException("Unexpected EOF");
-      }
-      if (c==13)
-      {
-        if (in.read()!=10)
-        { throw new IOException("Expected LF");
-        }
-        int chunkLen=Integer.parseInt(hexBuf.toString(),16);
-        return chunkLen;
-      }
-      hexBuf.append((char) c);
-    }
 
-  }
-  
   public void close()
   {
     if (socket!=null)

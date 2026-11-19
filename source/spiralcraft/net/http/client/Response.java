@@ -36,6 +36,7 @@ import spiralcraft.vfs.StreamUtil;
  * Encapsulates an HTTP response at the client side
  */
 public final class Response
+  implements AutoCloseable
 {
   private static final ClassLog log=ClassLog.getInstance(Response.class);
   private int status=0;
@@ -45,6 +46,7 @@ public final class Response
   private MimeHeaderMap headers=new MimeHeaderMap();
   private Resource content;
   private Level logLevel=Level.INFO;
+  private ResponseStream clientStream;
   
   /**
    * Read the entire response.
@@ -80,9 +82,13 @@ public final class Response
   
   public boolean isChunkedTransferCoding()
   {
+        
     MimeHeader hdr=headers.getHeader("Transfer-Encoding");
     if (hdr!=null)
-    { return hdr.getRawValue().equals("chunked");
+    { 
+      String vs=hdr.getRawValue().toLowerCase();
+      String[] va=vs.split(",");      
+      return va.length>0 && va[va.length-1].trim().equals("chunked");
     }
     else
     { return false;
@@ -95,6 +101,20 @@ public final class Response
   
   public MimeHeaderMap getHeaders()
   { return headers;
+  }
+  
+  void startStream(ResponseStream in)
+  { this.clientStream=in;
+  }
+  
+  public ResponseStream getInputStream()
+  { 
+    if (clientStream!=null)
+    { return clientStream;
+    }
+    else
+    { throw new IllegalStateException("Response is not streaming");
+    }
   }
   
   public String getContentAsString()
@@ -132,7 +152,7 @@ public final class Response
     { return hdr.getLength();
     }
     else
-    { return 0;
+    { return -1;
     }
   }
   
@@ -250,6 +270,15 @@ public final class Response
       }
     }
     return out.toString();
+  }
+
+  @Override
+  public void close()
+  { 
+    if (clientStream!=null)
+    { clientStream.close();
+    }
+    
   }
   
   

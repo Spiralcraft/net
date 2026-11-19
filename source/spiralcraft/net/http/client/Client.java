@@ -145,6 +145,54 @@ public class Client
     
   }
   
+  /**
+   * Execute a streaming request on a new connection, returning the unread
+   *   response where getInputStream() streams the response body 
+   *       
+   * @param scheme
+   * @param hostName
+   * @param port
+   * @param request
+   * @return
+   * @throws IOException
+   */
+  public Response executeStreamingRequest
+    (String scheme,String hostName,int port,Request request)
+    throws IOException
+  {
+    if (logLevel.isFine())
+    { log.fine("Requesting: "+request);
+    }
+    
+    HttpConnection connection=getConnection(scheme,hostName,port);
+    try
+    {
+      request.addHeader(ConnectionHeader.CLOSE);
+  
+      connection.startRequest(request);
+      connection.completeRequest();
+    
+      Response response=connection.startStreamingResponse();
+
+      if (logLevel.isFine())
+      { log.fine("Got response: request: "+request+" response:"+response);
+      }
+      return response;
+    }
+    catch (IOException x)
+    { 
+      connection.close();
+      throw x;
+    }
+    catch (RuntimeException x)
+    {
+      connection.close();
+      throw x;
+    }
+    
+    
+  }  
+  
   private HttpConnection getConnection(String scheme,String hostName,int port)
     throws IOException
   { 
