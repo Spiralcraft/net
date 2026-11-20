@@ -47,6 +47,8 @@ public class Client
 
   private boolean debugStream;
   private Level logLevel=Level.INFO;
+  private int connectTimeoutMs;
+  private int readTimeoutMs;
   
   public void setLogLevel(Level logLevel)
   { this.logLevel=logLevel;
@@ -54,6 +56,14 @@ public class Client
   
   public void setDebugStream(boolean debugStream)
   { this.debugStream=debugStream;
+  }
+
+  public void setConnectTimeoutMs(int ms)
+  { connectTimeoutMs=ms;
+  }
+
+  public void setReadTimeoutMs(int ms)
+  { readTimeoutMs=ms;
   }
   
   public Response get(URI uri)
@@ -207,6 +217,8 @@ public class Client
     { throw new IOException("Unsupported protocol "+scheme);
     }
     connection.setLogLevel(logLevel);
+    connection.setConnectTimeoutMs(connectTimeoutMs);
+    connection.setReadTimeoutMs(readTimeoutMs);
     if (debugStream)
     { 
       if (logLevel.isFine())

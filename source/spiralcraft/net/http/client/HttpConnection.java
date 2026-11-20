@@ -50,7 +50,8 @@ public class HttpConnection
   private Socket socket;
   private OutputStream outputStream;
   private InputStream inputStream;
-  private int readTimeout;
+  private int connectTimeoutMs;
+  private int readTimeoutMs;
   private Request request;
   private Response response;
   private int outputBufferSize=1514;
@@ -88,9 +89,13 @@ public class HttpConnection
   public void setLogLevel(Level logLevel)
   { this.logLevel=logLevel;
   }
+
+  public void setConnectTimeoutMs(int connectTimeout)
+  { this.connectTimeoutMs=connectTimeout;
+  }
   
-  public void setReadTimeout(int readTimeout)
-  { this.readTimeout=readTimeout;
+  public void setReadTimeoutMs(int readTimeout)
+  { this.readTimeoutMs=readTimeout;
   }
   
   public void connect()
@@ -101,9 +106,9 @@ public class HttpConnection
     }
     
     socket=getSocketFactory().createSocket();
-    socket.setSoTimeout(readTimeout);
+    socket.setSoTimeout(readTimeoutMs);
     socket.setReuseAddress(true);
-    socket.connect(new InetSocketAddress(address,port));
+    socket.connect(new InetSocketAddress(address,port),connectTimeoutMs);
     if (logLevel.isFine())
     { log.fine("Connected to "+address+":"+port);
     }
