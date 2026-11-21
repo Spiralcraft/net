@@ -331,6 +331,17 @@ public class SseReaderTest
          +"event\ndata: 5\n\n"
         )
       );
+    List<SseEvent> t=events
+      ("event: foo\ndata: 1\n\ndata: 2\n\nevent: message\ndata: 3\n\n"
+       +": c\n"
+      );
+    eq("type of a named event","foo",t.get(0).type());
+    eq("type of an unnamed event","message",t.get(1).type());
+    eq("name of an unnamed event stays null",true,t.get(1).name()==null);
+    eq("type of an explicit message","message",t.get(2).type());
+    eq("name of an explicit message","message",t.get(2).name());
+    eq("type of a comment",true,t.get(3).type()==null);
+    eq("type of the end",true,t.get(4).type()==null);
   }
 
   static void idAndSequence()
