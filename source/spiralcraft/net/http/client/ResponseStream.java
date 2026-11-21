@@ -12,7 +12,7 @@ public class ResponseStream
   enum Mode { NONE, LENGTH, CHUNKED, EOF }
 
   /** Longest chunk-size or trailer line accepted, in bytes */
-  private static final int MAX_LINE_LENGTH=1024 * 1024 * 16;
+  private static final int MAX_LINE_LENGTH=8192;
 
   /** Most trailer lines accepted after the last chunk */
   private static final int MAX_TRAILER_LINES=100;
