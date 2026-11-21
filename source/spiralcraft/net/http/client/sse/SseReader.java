@@ -9,7 +9,7 @@ import java.util.List;
  * Groups the lines of an event stream into events (WHATWG HTML,
  *   "Server-sent events", interpreting an event stream).
  *
- * Each call to next() returns an EVENT, a KEEP_ALIVE for a comment line,
+ * Each call to next() returns an EVENT, a COMMENT for a comment line,
  *   or END, which repeats. The last id seen, its sequence, and the last
  *   valid retry value are carried on every event. A partial event at
  *   the end of the stream is not delivered; the END item carries its
@@ -58,7 +58,7 @@ public class SseReader
           field(line);
           break;
         case COMMENT:
-          return keepAlive(line);
+          return comment(line);
         case BLANK:
         {
           SseEvent event=dispatch();
@@ -135,10 +135,10 @@ public class SseReader
     retryMs=(int) ms;
   }
 
-  private SseEvent keepAlive(SseLine line)
+  private SseEvent comment(SseLine line)
   {
     return new SseEvent
-      (SseEvent.Kind.KEEP_ALIVE,null,null,null,0,-1,line.value()
+      (SseEvent.Kind.COMMENT,null,null,null,0,-1,line.value()
       ,keepLines?List.of(line):List.of()
       );
   }

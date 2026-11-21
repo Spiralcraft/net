@@ -13,5 +13,5 @@ public record SseEvent(
   ,List<SseLine> lines
   )
 {
-  public enum Kind { EVENT, KEEP_ALIVE, END }
+  public enum Kind { EVENT, COMMENT, END }
 }

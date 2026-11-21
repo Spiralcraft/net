@@ -110,8 +110,8 @@ public class SseReaderTest
       (Kind.EVENT,name,data,id,seq,retry,null,List.of());
   }
 
-  static SseEvent ka(String text)
-  { return new SseEvent(Kind.KEEP_ALIVE,null,null,null,0,-1,text,List.of());
+  static SseEvent cm(String text)
+  { return new SseEvent(Kind.COMMENT,null,null,null,0,-1,text,List.of());
   }
 
   static final SseEvent END
@@ -367,7 +367,7 @@ public class SseReaderTest
       ,events("id: z\n\ndata: q\n\n")
       );
     eq("id carried across a comment"
-      ,List.of(ev(null,"1","a",0,-1),ka("c"),ev(null,"2","a",1,-1),END)
+      ,List.of(ev(null,"1","a",0,-1),cm("c"),ev(null,"2","a",1,-1),END)
       ,events("id: a\ndata: 1\n\n: c\ndata: 2\n\n")
       );
   }
@@ -401,13 +401,13 @@ public class SseReaderTest
     throws Exception
   {
     eq("comments"
-      ,List.of(ka("hi"),ev(null,"1\n2",null,0,-1),END)
+      ,List.of(cm("hi"),ev(null,"1\n2",null,0,-1),END)
       ,events(": hi\ndata: 1\n: mid\ndata: 2\n\n").stream()
-        .filter(e -> !(e.kind()==Kind.KEEP_ALIVE && e.text().equals("mid")))
+        .filter(e -> !(e.kind()==Kind.COMMENT && e.text().equals("mid")))
         .toList()
       );
     List<SseEvent> got=all(whole("data: 1\n: mid\ndata: 2\n\n"),false);
-    eq("comment mid-event comes first",ka("mid"),got.get(0));
+    eq("comment mid-event comes first",cm("mid"),got.get(0));
     eq("event survives the comment",ev(null,"1\n2",null,0,-1),got.get(1));
 
     List<SseEvent> k=all(whole

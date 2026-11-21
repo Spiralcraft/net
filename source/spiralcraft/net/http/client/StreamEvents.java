@@ -14,7 +14,7 @@ import spiralcraft.net.http.client.sse.SseReader;
 
 /**
  * Requests a URI that streams server-sent events, publishes each item (event,
- *   keep-alive and end) into the focus chain, found by type, and runs the
+ *   comment and end) into the focus chain, found by type, and runs the
  *   chain once for each. A response that is not a successful event stream
  *   fails the task. stop() closes the connection at once.
  */
