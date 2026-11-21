@@ -144,8 +144,6 @@ public class Client
     }
     if (content!=null)
     { 
-      request.setContent(content);
-      request.setContentType(contentType);
       long size=content.getSize();
       if (size<0)
       { 
@@ -157,6 +155,8 @@ public class Client
         content=new ByteArrayResource(bytes);
         size=bytes.length;        
       }
+      request.setContent(content);
+      request.setContentType(contentType);
       request.setContentLength(size);
     }
     if (headers!=null)

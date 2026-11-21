@@ -53,6 +53,10 @@ public class Request
   public Request()
   {
   }
+
+  public void setLogLevel(Level level)
+  { this.logLevel=level;
+  }
   
   public void setMethod(String method)
   { this.method=method;
@@ -70,7 +74,7 @@ public class Request
   { this.query=query;
   }
  
-  
+ 
   public String getHost()
   { 
     MimeHeader header=headers.getHeader(Headers.HOST);

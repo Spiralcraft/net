@@ -168,7 +168,7 @@ public abstract class ClientPlan<Tcontext,Tresult>
       { return Resolver.getInstance().resolve(contentURI);
       }
       catch (UnresolvableURIException x)
-      { throw new IllegalArgumentException("Content URI could not be resolved: "+uri);
+      { throw new IllegalArgumentException("Content URI could not be resolved: "+contentURI);
       }
     }
     return null;
