@@ -23,17 +23,35 @@
           </scm:Note>
         </notes>
         
-        <path>source/spiralcraft/net/http/client
+        <path>source/spiralcraft/net/
         </path>
                 
         <resources>
-          <URI>Client.java
+          <URI>http/client/Client.java
           </URI>
-          <URI>HttpConnection.java
+          <URI>http/client/ClientPlan.java
           </URI>
-          <URI>Response.java
+          <URI>http/client/Fetch.java
           </URI>
-          <URI>ResponseStream.java
+          <URI>http/client/HttpConnection.java
+          </URI>
+          <URI>http/client/Request.java
+          </URI>
+          <URI>http/client/Response.java
+          </URI>
+          <URI>http/client/ResponseStream.java
+          </URI>
+          <URI>http/client/StreamEvents.java
+          </URI>
+          <URI>http/client/sse/SseEvent.java
+          </URI>
+          <URI>http/client/sse/SseLine.java
+          </URI>
+          <URI>http/client/sse/SseLineReader.java
+          </URI>
+          <URI>http/client/sse/SseReader.java
+          </URI>
+          <URI>mime/MimeHeaderMap.java
           </URI>
         </resources>        
       </scm:Change>
