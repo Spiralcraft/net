@@ -25,6 +25,7 @@ import spiralcraft.net.mime.ContentLengthHeader;
 import spiralcraft.net.mime.ContentTypeHeader;
 import spiralcraft.net.mime.MimeHeaderMap;
 import spiralcraft.vfs.Resource;
+import spiralcraft.vfs.StreamUtil;
 import spiralcraft.vfs.util.ByteArrayResource;
 
 
@@ -90,6 +91,49 @@ public class Client
     )
     throws IOException
   { 
+    return executeRequest
+      (uri.getScheme(),uri.getHost(),portOf(uri)
+      ,createRequest(method,uri,contentType,content,headers)
+      );
+  }
+
+  /**
+   * Execute a streaming request on a new connection, returning the unread
+   *   response where getInputStream() streams the response body.
+   */
+  public Response executeStreamingRequest
+    (String method
+    ,URI uri
+    ,String contentType
+    ,Resource content
+    ,MimeHeaderMap headers
+    )
+    throws IOException
+  { 
+    return executeStreamingRequest
+      (uri.getScheme(),uri.getHost(),portOf(uri)
+      ,createRequest(method,uri,contentType,content,headers)
+      );
+  }
+
+  private int portOf(URI uri)
+  {
+    return uri.getPort()>0
+      ?uri.getPort()
+      :uri.getScheme().equalsIgnoreCase("https")
+      ?443
+      :80;
+  }
+
+  private Request createRequest
+    (String method
+    ,URI uri
+    ,String contentType
+    ,Resource content
+    ,MimeHeaderMap headers
+    )
+    throws IOException
+  { 
     Request request=new Request();
     request.setMethod(method);
     if (uri.getPath()!=null && !uri.getPath().isEmpty())
@@ -102,22 +146,23 @@ public class Client
     { 
       request.setContent(content);
       request.setContentType(contentType);
-      request.setContentLength(content.getSize());
+      long size=content.getSize();
+      if (size<0)
+      { 
+        if (logLevel.isInfo())
+        { log.info("Resource "+content.getURI()+" reported unknown size");
+        }
+        // Size not known: read it so the length can be sent
+        byte[] bytes=StreamUtil.readBytes(content.getInputStream());
+        content=new ByteArrayResource(bytes);
+        size=bytes.length;        
+      }
+      request.setContentLength(size);
     }
     if (headers!=null)
     { request.addHeaders(headers);
     }
-    
-    return executeRequest
-      (uri.getScheme()
-      ,uri.getHost()
-      ,uri.getPort()>0
-        ?uri.getPort()
-        :uri.getScheme().equalsIgnoreCase("https")
-        ?443
-        :80
-      ,request
-      );
+    return request;
   }
     
   /**

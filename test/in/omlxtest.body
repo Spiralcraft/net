@@ -1,0 +1,6 @@
+{
+  "model": "Mistral-Small-4-119B-2603-4bit",
+  "messages": [{"role": "user", "content": "Say hello in five words."}],
+  "max_tokens": 32,
+  "stream": true
+}

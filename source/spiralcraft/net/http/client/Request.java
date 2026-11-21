@@ -21,6 +21,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import spiralcraft.log.ClassLog;
+import spiralcraft.log.Level;
 import spiralcraft.net.http.Headers;
 import spiralcraft.net.mime.ContentLengthHeader;
 import spiralcraft.net.mime.ContentTypeHeader;
@@ -36,7 +38,10 @@ import spiralcraft.vfs.Resource;
 public class Request
 {
   private static final Charset ASCII=Charset.forName("US-ASCII");
-	
+  private static final ClassLog log=ClassLog.getInstance(Request.class);
+  
+  private Level logLevel=Level.INFO;
+  
   private String method="GET";
   private String path="/";
   private String query;
@@ -172,6 +177,9 @@ public class Request
     writer.write("\r\n");
     writeHeaders(writer);
     writer.write("\r\n");
+    if (logLevel.isFine())
+    { log.fine("Request head: "+writer.toString());
+    }
     return writer.toString();
   }
 

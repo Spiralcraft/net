@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+# file-url — convert paths to file:// URLs.
+#
+# Handles Unix paths, Windows drive-letter paths (S:/x or S:\x),
+# UNC paths (\\server\share), and relative paths (resolved against $PWD).
+#
+# Usage:
+#   file-url [-r] PATH...
+#   some-cmd | file-url [-r]        # one path per line on stdin
+#
+#   -r   raw: skip percent-encoding
+#   -h   help
+
+set -euo pipefail
+
+raw=0
+
+usage() { sed -n '2,13p' "$0" | sed 's/^# \{0,1\}//'; }
+
+# Make a path absolute, normalized, with forward slashes.
+resolve() {
+  local p=${1//\\//}
+  case $p in
+    //*)          printf '%s\n' "$p"; return ;;   # UNC: leave as-is
+    [A-Za-z]:/*)  printf '%s\n' "$p"; return ;;   # drive letter: already absolute
+  esac
+  if command -v cygpath >/dev/null 2>&1; then     # Git Bash / Cygwin / MSYS
+    cygpath -am -- "$p"
+  elif realpath -m / >/dev/null 2>&1; then        # GNU: allow nonexistent paths
+    realpath -m -- "$p"
+  else                                             # BSD/macOS: path must exist
+    realpath -- "$p"
+  fi
+}
+
+# Percent-encode everything outside the unreserved set plus / and :.
+encode() {
+  local s=$1 out= c i LC_ALL=C
+  for ((i = 0; i < ${#s}; i++)); do
+    c=${s:i:1}
+    case $c in
+      [a-zA-Z0-9/._~:-]) out+=$c ;;
+      *) printf -v c '%%%02X' "'$c"; out+=$c ;;
+    esac
+  done
+  printf '%s' "$out"
+}
+
+to_url() {
+  local p rest
+  p=$(resolve "$1")
+  if [[ $p == //* ]]; then
+    rest=${p#//}                                   # server/share/...
+    (( raw )) || rest=$(encode "$rest")
+    printf 'file://%s\n' "$rest"
+  else
+    rest=${p#/}
+    (( raw )) || rest=$(encode "$rest")
+    printf 'file:///%s\n' "$rest"
+  fi
+}
+
+while getopts ':rh' opt; do
+  case $opt in
+    r) raw=1 ;;
+    h) usage; exit 0 ;;
+    *) usage >&2; exit 2 ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+if (( $# )); then
+  for p in "$@"; do to_url "$p"; done
+else
+  while IFS= read -r p || [[ -n $p ]]; do
+    [[ -n $p ]] && to_url "$p"
+  done
+fi

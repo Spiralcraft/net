@@ -1,7 +1,8 @@
 build.number
-bin
 out
 *.local
 test-out
 .git
 build-local.properties
+/.env
+/.astereshet.hdr

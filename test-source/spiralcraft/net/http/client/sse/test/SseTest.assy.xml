@@ -1,0 +1,118 @@
+<test:TestGroup
+  xmlns:test="class:/spiralcraft/test/"
+  xmlns:sset="class:/spiralcraft/net/http/client/sse/test/"
+  >
+  <name>spiralcraft.net.http.client.sse.test
+  </name>
+
+  <sequence>
+    <test:Assertion>
+      <name>line forms: field, comment, blank, end
+      </name>
+      <subjectX>[@sset:SseReaderTest].@group("lineForms")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+
+    <test:Assertion>
+      <name>line endings: LF, CR, CRLF
+      </name>
+      <subjectX>[@sset:SseReaderTest].@group("lineEndings")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+
+    <test:Assertion>
+      <name>byte order mark and UTF-8
+      </name>
+      <subjectX>[@sset:SseReaderTest].@group("bomAndUtf8")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+
+    <test:Assertion>
+      <name>fields and event grouping
+      </name>
+      <subjectX>[@sset:SseReaderTest].@group("fieldsAndGrouping")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+
+    <test:Assertion>
+      <name>event names
+      </name>
+      <subjectX>[@sset:SseReaderTest].@group("names")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+
+    <test:Assertion>
+      <name>id and sequence
+      </name>
+      <subjectX>[@sset:SseReaderTest].@group("idAndSequence")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+
+    <test:Assertion>
+      <name>retry
+      </name>
+      <subjectX>[@sset:SseReaderTest].@group("retry")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+
+    <test:Assertion>
+      <name>comments and kept lines
+      </name>
+      <subjectX>[@sset:SseReaderTest].@group("commentsAndKeepLines")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+
+    <test:Assertion>
+      <name>end of stream leftovers
+      </name>
+      <subjectX>[@sset:SseReaderTest].@group("endOfStream")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+
+    <test:Assertion>
+      <name>line cap
+      </name>
+      <subjectX>[@sset:SseReaderTest].@group("lineCap")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+
+    <test:Assertion>
+      <name>no read after a dispatch
+      </name>
+      <subjectX>[@sset:SseReaderTest].@group("noReadAfterDispatch")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+
+    <test:Assertion>
+      <name>failures and close
+      </name>
+      <subjectX>[@sset:SseReaderTest].@group("failuresAndClose")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+  </sequence>
+
+</test:TestGroup>

@@ -14,7 +14,11 @@
 //
 package spiralcraft.net.mime;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +26,8 @@ import java.util.Map;
 import spiralcraft.text.CaseInsensitiveString;
 import spiralcraft.util.ListMap;
 import spiralcraft.util.string.StringPool;
+
+import spiralcraft.vfs.Resource;
 
 public class MimeHeaderMap
   extends ListMap<CaseInsensitiveString,MimeHeader>
@@ -50,11 +56,43 @@ public class MimeHeaderMap
       return ret;
     }
   }
-  
+
+  /**
+   * Read a map from a Resource holding one "Name: value" header per line,
+   *   as UTF-8. Blank lines are skipped.
+   */
+  public static MimeHeaderMap read(Resource resource,MimeHeaderMap map)
+    throws IOException
+  {
+    if (map==null)
+    { map=new MimeHeaderMap();
+    }
+    
+    try 
+      (BufferedReader in
+        =new BufferedReader
+          (new InputStreamReader
+            (resource.getInputStream(),StandardCharsets.UTF_8)
+          )
+      )
+    {
+      String line;
+      while ((line=in.readLine())!=null)
+      { 
+        if (!line.isBlank())
+        { 
+          map.addRawHeader(line);
+        }
+      }
+    }
+    return map;
+  }
+      
   public static final String HDR_CONTENT_TYPE="Content-Type";
   public static final String HDR_CONTENT_DISPOSITION="Content-Disposition";
   
   private String quotableChars;
+
   
   public ContentDispositionHeader getContentDisposition()
   { return (ContentDispositionHeader) getFirst(mapCase(HDR_CONTENT_DISPOSITION));
@@ -108,6 +146,10 @@ public class MimeHeaderMap
       }
     }
     return map;
+  }
+  
+  public String toString()
+  { return toStringListMap().toString();
   }
   
   public void addRawHeader(String header)

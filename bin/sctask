@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
+
+java  -jar ${SDK}/build/lib/spiralcraft.jar --codebase ${PROJECT_ROOT} task $@
