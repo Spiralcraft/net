@@ -22,10 +22,11 @@ import spiralcraft.vfs.util.ByteArrayResource;
  *   cancel, told from a failure by isClosed().
  *
  * An exchange ends one of two ways. It is released when the body has been
- *   read to its end (or there is none): the connection goes back to the
- *   Client for the next exchange. It is aborted when it is closed before
- *   that, or fails: the connection is closed, which is also how a blocked
- *   read in another thread is interrupted.
+ *   read to its end (or there is none): the connection ends the exchange
+ *   and stays open for the next one, unless either side asked to close. It
+ *   is aborted when it is closed before that, or fails: the connection is
+ *   closed, which is also how a blocked read in another thread is
+ *   interrupted, so a cancel also loses a connection the caller holds.
  */
 public class Exchange
   implements AutoCloseable
@@ -80,8 +81,18 @@ public class Exchange
     started=true;
     checkClosed();
     try
+    { connection.claim();
+    }
+    catch (IOException | RuntimeException x)
     {
-      connection.startRequest(request);
+      // Not claimed: end this exchange, leave the connection alone
+      closed=true;
+      finished.set(true);
+      throw x;
+    }
+    try
+    {
+      connection.sendRequest(request);
       connection.completeRequest();
 
       Response response=connection.startStreamingResponse(this::bodyEnded);
@@ -157,7 +168,7 @@ public class Exchange
     if (finished.compareAndSet(false,true))
     {
       if (ended)
-      { client.release(connection);
+      { connection.endResponse(response);
       }
       else
       { 

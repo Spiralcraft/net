@@ -64,11 +64,16 @@ public class ConnectionHeader
   public ConnectionHeader(String name,String value)
   {
     super(name, value);
-    if (value.equals("keep-alive"))
-    { keepAlive=true;
-    }
-    else if (value.equals("close"))
-    { close=true;
+    // A comma-separated list of options, case-insensitive (RFC 9110 7.6.1)
+    for (String token: value.split(","))
+    {
+      String option=token.trim();
+      if (option.equalsIgnoreCase("keep-alive"))
+      { keepAlive=true;
+      }
+      else if (option.equalsIgnoreCase("close"))
+      { close=true;
+      }
     }
   }
   

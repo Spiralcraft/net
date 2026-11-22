@@ -37,6 +37,8 @@
           </URI>
           <URI>http/client/HttpConnection.java
           </URI>
+          <URI>http/client/HttpsConnection.java
+          </URI>
           <URI>http/client/Request.java
           </URI>
           <URI>http/client/Response.java

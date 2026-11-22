@@ -209,6 +209,22 @@ public class Client
   }
 
   /**
+   * Open an exchange for a request on a connection the caller holds, which
+   *   stays open after the exchange for the next one unless either side
+   *   asks to close; a cancel (Exchange.close() before the end of the body)
+   *   closes it. Does no network I/O; the connection connects on the first
+   *   exchange.
+   */
+  public Exchange open(HttpConnection connection,Request request)
+  {
+    if (logLevel.isFine())
+    { log.fine("Requesting: "+request);
+    }
+    addCookies(request);
+    return new Exchange(this,connection,request,logLevel);
+  }
+
+  /**
    * Execute a request on a new connection, directing the connection to close
    *   after the request is complete.
    *   
@@ -242,16 +258,6 @@ public class Client
   { return open(scheme,hostName,port,request).start();
   }  
   
-  /**
-   * Take back the connection of an exchange that was released, its body
-   *   read to the end. Every request is sent with Connection: close for
-   *   now, so the connection is closed; a pool will keep it for the next
-   *   exchange to the same endpoint.
-   */
-  void release(HttpConnection connection)
-  { connection.close();
-  }
-
   /**
    * Called by open() with each request before it is sent; add cookies
    *   here. Does nothing by default.

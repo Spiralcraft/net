@@ -161,6 +161,11 @@ public class ResponseStream
   { return done;
   }
 
+  /** Whether the body ends only where the connection closes */
+  boolean isEofDelimited()
+  { return mode==Mode.EOF;
+  }
+
   public boolean isClosed()
   { return closed;
   }

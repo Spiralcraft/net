@@ -74,11 +74,45 @@ public final class Response
   }
 
   
+  /**
+   * Whether the connection persists after this response (RFC 9112 9.3):
+   *   not if a Connection header has the close option; otherwise yes for
+   *   HTTP/1.1 and later, and for HTTP/1.0 only with keep-alive.
+   */
   public boolean isKeepalive()
   {
-    ConnectionHeader hdr
-      =(ConnectionHeader) headers.getHeader(ConnectionHeader.NAME);
-    return hdr!=null && hdr.isKeepalive();
+    boolean keepAlive=false;
+    List<MimeHeader> list=headers.getHeaders(ConnectionHeader.NAME);
+    if (list!=null)
+    {
+      for (MimeHeader header: list)
+      {
+        ConnectionHeader hdr=(ConnectionHeader) header;
+        if (hdr.isClose())
+        { return false;
+        }
+        keepAlive=keepAlive || hdr.isKeepalive();
+      }
+    }
+    return keepAlive || isHttp11OrLater();
+  }
+
+  /** Whether the status line names HTTP/1.1 or a later version */
+  private boolean isHttp11OrLater()
+  {
+    if (protocol==null || !protocol.startsWith("HTTP/"))
+    { return false;
+    }
+    String[] version=protocol.substring(5).split("\\.");
+    try
+    {
+      int major=Integer.parseInt(version[0]);
+      int minor=version.length>1?Integer.parseInt(version[1]):0;
+      return major>1 || (major==1 && minor>=1);
+    }
+    catch (NumberFormatException x)
+    { return false;
+    }
   }
   
   public boolean isChunkedTransferCoding()

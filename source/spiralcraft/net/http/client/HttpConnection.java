@@ -21,6 +21,7 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.net.SocketFactory;
 
@@ -34,7 +35,9 @@ import spiralcraft.vfs.StreamUtil;
 
 
 /**
- * An HTTP connection
+ * An HTTP connection, made standalone or by a Client, and reused for one
+ *   exchange after another: a request and its response, the next one
+ *   starting only after the previous response ended.
  */
 public class HttpConnection
 {
@@ -47,6 +50,7 @@ public class HttpConnection
   private InetAddress address;
   private volatile Socket socket;
   private volatile boolean closed;
+  private final AtomicBoolean busy=new AtomicBoolean();
   private OutputStream outputStream;
   private InputStream inputStream;
   private int connectTimeoutMs;
@@ -149,11 +153,35 @@ public class HttpConnection
   public void startRequest(Request request)
     throws IOException
   {
+    claim();
+    sendRequest(request);
+  }
+
+  /**
+   * Claim the connection for a new exchange; fails, leaving the connection
+   *   as it was, if it is closed, will take no more requests, or the
+   *   previous exchange has not ended.
+   */
+  void claim()
+    throws IOException
+  {
+    checkClosed();
     if (lastRequest)
     { 
       throw new IllegalStateException
         ("No more requests can be sent on this connection");
     }
+    if (!busy.compareAndSet(false,true))
+    { 
+      throw new IllegalStateException
+        ("The previous exchange on this connection has not ended");
+    }
+  }
+
+  /** Send the request of an exchange that has claimed the connection */
+  void sendRequest(Request request)
+    throws IOException
+  {
     ensureConnected();
     this.request=request;
     if (request.getHost()==null && hostname!=null)
@@ -252,6 +280,39 @@ public class HttpConnection
     return response;
   }
   
+
+  /**
+   * End the exchange in progress once its response body was read to its
+   *   end. The connection stays open for the next exchange, unless the
+   *   request or the response asked to close or the body ran to the end of
+   *   the connection; then it is closed.
+   */
+  public void endResponse(Response response)
+  {
+    if (!response.isKeepalive()
+        || closeRequested
+        || response.getInputStream().isEofDelimited()
+       )
+    { lastRequest=true;
+    }
+    busy.set(false);
+    if (lastRequest)
+    { close();
+    }
+    else if (logLevel.isFine())
+    { log.fine("Response ended, connection kept open");
+    }
+  }
+
+  /**
+   * Whether another exchange can start on this connection: not closed, no
+   *   exchange in progress, and neither side asked to close. A server may
+   *   still have closed an idle connection; that shows as a failure of the
+   *   next exchange.
+   */
+  public boolean isReusable()
+  { return !closed && !lastRequest && !busy.get();
+  }
 
   /**
    * Close the connection, from any thread and in any phase; a connect or
