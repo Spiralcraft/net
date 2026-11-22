@@ -233,7 +233,14 @@ public final class Response
     { throw new IOException(new SyntaxException("Bad status line ["+statusLine+"]"));
     }
     protocol=elements[0];
-    status=Integer.parseInt(elements[1]);
+    try
+    { status=Integer.parseInt(elements[1]);
+    }
+    catch (NumberFormatException x)
+    { 
+      throw new IOException
+        (new SyntaxException("Bad status code in status line ["+statusLine+"]"));
+    }
     reason=elements.length==3?elements[2]:"";
     lineBuffer.setLength(0);
   }

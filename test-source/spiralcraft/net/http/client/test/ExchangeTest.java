@@ -553,6 +553,21 @@ public class ExchangeTest
     catch (IOException x)
     { ok("a line with no status code is refused",true);
     }
+
+    for (String line : new String[] { "HTTP/1.1 abc OK","HTTP/1.1  OK" })
+    {
+      try
+      { 
+        head(line+"\r\n\r\n");
+        ok("a status code that is not a number is refused: ["+line+"]",false);
+      }
+      catch (IOException x)
+      { 
+        ok("a status code that is not a number is an IOException: ["+line+"]"
+          ,x.getCause() instanceof spiralcraft.net.syntax.SyntaxException
+          );
+      }
+    }
   }
 
   /** Run plan's task; stop it from another thread first if stop */
