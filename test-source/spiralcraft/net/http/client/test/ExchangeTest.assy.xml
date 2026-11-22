@@ -70,6 +70,15 @@
     </test:Assertion>
 
     <test:Assertion>
+      <name>the status line accepts an empty or missing reason
+      </name>
+      <subjectX>[@hct:ExchangeTest].@group("status")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+
+    <test:Assertion>
       <name>stop cancels Fetch and StreamEvents
       </name>
       <subjectX>[@hct:ExchangeTest].@group("taskStop")

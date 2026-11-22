@@ -242,7 +242,7 @@ public class ExchangeTest
 
   static final String[] GROUPS=
     { "complete","stream","cancelHead","cancelBody","reuse","guard"
-    , "keepalive","taskStop"
+    , "keepalive","status","taskStop"
     };
 
   /**
@@ -262,6 +262,7 @@ public class ExchangeTest
       case "reuse": reuse(); break;
       case "guard": guard(); break;
       case "keepalive": keepalive(); break;
+      case "status": status(); break;
       case "taskStop": taskStop(); break;
       default: throw new IllegalArgumentException("No such group: "+name);
     }
@@ -517,6 +518,41 @@ public class ExchangeTest
     ok("HTTP/1.0 keep-alive"
       ,head("HTTP/1.0 200 OK\r\nConnection: Keep-Alive\r\n\r\n").isKeepalive()
       );
+  }
+
+  /** The status line: the reason may be empty or missing */
+  static void status()
+    throws Exception
+  {
+    Response response=head("HTTP/1.1 200 OK\r\n\r\n");
+    eq("status",200,response.getStatus());
+    eq("reason","OK",response.getReason());
+    eq("protocol","HTTP/1.1",response.getProtocol());
+
+    response=head("HTTP/1.1 404 Not Found\r\n\r\n");
+    eq("a reason of two words","Not Found",response.getReason());
+    eq("its status",404,response.getStatus());
+
+    response=head("HTTP/1.1 200 \r\n\r\n");
+    eq("empty reason, space kept: status",200,response.getStatus());
+    eq("empty reason, space kept: reason","",response.getReason());
+
+    response=head("HTTP/1.1 204\r\n\r\n");
+    eq("no reason, no space: status",204,response.getStatus());
+    eq("no reason, no space: reason","",response.getReason());
+
+    response=head("HTTP/1.1 200 \r\nX-Test: yes\r\n\r\n");
+    eq("headers after an empty reason","yes"
+      ,response.getHeader("X-Test").getRawValue());
+
+    try
+    { 
+      head("HTTP/1.1\r\n\r\n");
+      ok("a line with no status code is refused",false);
+    }
+    catch (IOException x)
+    { ok("a line with no status code is refused",true);
+    }
   }
 
   /** Run plan's task; stop it from another thread first if stop */

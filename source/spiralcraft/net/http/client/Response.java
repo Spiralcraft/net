@@ -27,8 +27,6 @@ import spiralcraft.net.mime.MimeHeader;
 import spiralcraft.net.mime.MimeHeaderMap;
 import spiralcraft.net.syntax.InetTextMessages;
 import spiralcraft.net.syntax.SyntaxException;
-import spiralcraft.util.ArrayUtil;
-import spiralcraft.util.string.StringUtil;
 import spiralcraft.vfs.Resource;
 import spiralcraft.vfs.StreamUtil;
 
@@ -227,18 +225,16 @@ public final class Response
     if (logLevel.isFine())
     { log.fine(super.toString()+"Status line: "+statusLine);
     }
-    String[] elements=statusLine.split(" ");
-    if (elements.length<3)
+    // The reason phrase may be empty, and some servers leave out the
+    //   space before it (RFC 9112 4); the limit keeps an empty last element
+    //   and the rest of the line as the reason.
+    String[] elements=statusLine.split(" ",3);
+    if (elements.length<2)
     { throw new IOException(new SyntaxException("Bad status line ["+statusLine+"]"));
     }
     protocol=elements[0];
     status=Integer.parseInt(elements[1]);
-    if (elements.length==3)
-    { reason=elements[2];
-    }
-    else
-    { reason=StringUtil.implode(' ',' ', ArrayUtil.tail(elements,2));
-    }
+    reason=elements.length==3?elements[2]:"";
     lineBuffer.setLength(0);
   }
   

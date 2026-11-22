@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+WD="$(dirname "${BASH_SOURCE[0]}")"
+source "$WD/lib/common.sh"
+
+$WD/ant build release-module
+

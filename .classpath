@@ -8,5 +8,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/spiralcraft-core.jar" sourcepath="/spiralcraft-modules-core/source"/>
-	<classpathentry kind="output" path="out"/>
+	<classpathentry kind="output" path="javac-out"/>
 </classpath>

@@ -6,3 +6,4 @@ test-out
 build-local.properties
 /.env
 /.astereshet.hdr
+/javac-out/
