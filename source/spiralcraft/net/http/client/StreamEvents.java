@@ -57,6 +57,7 @@ public class StreamEvents
     extends ChainTask
   {
     private volatile Response response;
+    private URI uri;
 
     @Override
     public void stop()
@@ -75,8 +76,9 @@ public class StreamEvents
       Response r=null;
       try
       {
+        uri=uri();
         r=newClient().executeStreamingRequest
-          (method(),uri(),contentType(),content(),headers());
+          (method(),uri,contentType(),content(),headers());
         response=r;
         if (isStopRequested())
         { return;
@@ -100,7 +102,7 @@ public class StreamEvents
         { 
           addException
             (new ContextualException
-              ("Error streaming "+uri(),getDeclarationInfo(),x)
+              ("Error streaming "+uri,getDeclarationInfo(),x)
             );
         }
       }
@@ -116,7 +118,6 @@ public class StreamEvents
     private void run(Response r)
       throws IOException,InterruptedException
     {
-      URI uri=uri();
       try (SseReader reader=new SseReader(r.getInputStream(),keepLines))
       {
         while (!isStopRequested() && exception==null)

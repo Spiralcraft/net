@@ -1,6 +1,7 @@
 package spiralcraft.net.http.client;
 
 import java.io.IOException;
+import java.net.URI;
 
 import spiralcraft.common.ContextualException;
 import spiralcraft.lang.Focus;
@@ -46,17 +47,18 @@ public class Fetch
       throws InterruptedException
     {
       Response response;
+      URI uri=uri();
       try
       { 
         response
           =newClient().executeRequest
-            (method(),uri(),contentType(),content(),headers());
+            (method(),uri,contentType(),content(),headers());
       }
       catch (IOException x)
       { 
         addException
           (new ContextualException
-            ("Error fetching "+uri(),getDeclarationInfo(),x)
+            ("Error fetching "+uri,getDeclarationInfo(),x)
           );
         return;
       }
@@ -65,7 +67,7 @@ public class Fetch
       try
       { 
         if (logResponse)
-        { log.info("Response from "+uri()+": "+response);
+        { log.info("Response from "+uri+": "+response);
         }
         super.work();
       }

@@ -15,6 +15,7 @@
 package spiralcraft.net.http.client;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 
 import spiralcraft.log.ClassLog;
@@ -150,10 +151,13 @@ public class Client
         if (logLevel.isInfo())
         { log.info("Resource "+content.getURI()+" reported unknown size");
         }
-        // Size not known: read it so the length can be sent
-        byte[] bytes=StreamUtil.readBytes(content.getInputStream());
-        content=new ByteArrayResource(bytes);
-        size=bytes.length;        
+        try (InputStream in=content.getInputStream())
+        {
+          // Size not known: read it so the length can be sent
+          byte[] bytes=StreamUtil.readBytes(in);
+          content=new ByteArrayResource(bytes);
+          size=bytes.length;        
+        }
       }
       request.setContent(content);
       request.setContentType(contentType);
