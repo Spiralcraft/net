@@ -2,6 +2,7 @@ package spiralcraft.net.http.client;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import spiralcraft.log.ClassLog;
 import spiralcraft.log.Level;
@@ -19,6 +20,12 @@ import spiralcraft.vfs.util.ByteArrayResource;
  *   called from any thread, in any phase, more than once: it cancels the
  *   exchange, and the IOException that a blocked call then throws is the
  *   cancel, told from a failure by isClosed().
+ *
+ * An exchange ends one of two ways. It is released when the body has been
+ *   read to its end (or there is none): the connection goes back to the
+ *   Client for the next exchange. It is aborted when it is closed before
+ *   that, or fails: the connection is closed, which is also how a blocked
+ *   read in another thread is interrupted.
  */
 public class Exchange
   implements AutoCloseable
@@ -32,6 +39,8 @@ public class Exchange
   private final Level logLevel;
   private volatile Response response;
   private volatile boolean closed;
+  private volatile boolean ended;
+  private final AtomicBoolean finished=new AtomicBoolean();
   private boolean started;
   private boolean completed;
 
@@ -75,10 +84,13 @@ public class Exchange
       connection.startRequest(request);
       connection.completeRequest();
 
-      Response response=connection.startStreamingResponse();
+      Response response=connection.startStreamingResponse(this::bodyEnded);
       response.setExchange(this);
       this.response=response;
       client.takeCookies(response);
+      if (response.getInputStream().isDone())
+      { bodyEnded(); // no body
+      }
 
       if (logLevel.isFine())
       { log.fine("Got response: request: "+request+" response:"+response);
@@ -94,9 +106,10 @@ public class Exchange
 
   /**
    * Start the exchange if not yet started, then read the whole body into
-   *   Response.getContent(), which stays usable after the exchange closes.
-   *   The exchange is closed when this returns. Refused after the body was
-   *   read as a stream.
+   *   Response.getContent(), which stays usable after the exchange closes,
+   *   also through getResponse(). The exchange is closed when this returns:
+   *   released, or aborted on a failure. Runs once; refused after the body
+   *   was read as a stream.
    */
   public Response complete()
     throws IOException
@@ -132,18 +145,36 @@ public class Exchange
   }
 
   /**
-   * Cancel or finish the exchange: closes the response stream and the
-   *   connection. Safe from any thread, in any phase, more than once.
+   * Close the exchange: released if the body was read to its end, otherwise
+   *   aborted, which closes the response stream and the connection and is
+   *   the cancel. Safe from any thread, in any phase, more than once; the
+   *   first call decides.
    */
   @Override
   public void close()
   {
     closed=true;
-    Response response=this.response;
-    if (response!=null)
-    { response.closeStream();
+    if (finished.compareAndSet(false,true))
+    {
+      if (ended)
+      { client.release(connection);
+      }
+      else
+      { 
+        Response response=this.response;
+        if (response!=null)
+        { response.closeStream();
+        }
+        connection.close();
+      }
     }
-    connection.close();
+  }
+
+  /** The body was read to its end, or there is none: release */
+  private void bodyEnded()
+  {
+    ended=true;
+    close();
   }
 
   /** Whether close() was called: an IOException after it is the cancel */

@@ -243,6 +243,16 @@ public class Client
   }  
   
   /**
+   * Take back the connection of an exchange that was released, its body
+   *   read to the end. Every request is sent with Connection: close for
+   *   now, so the connection is closed; a pool will keep it for the next
+   *   exchange to the same endpoint.
+   */
+  void release(HttpConnection connection)
+  { connection.close();
+  }
+
+  /**
    * Called by open() with each request before it is sent; add cookies
    *   here. Does nothing by default.
    */

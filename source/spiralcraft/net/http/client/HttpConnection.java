@@ -31,7 +31,6 @@ import spiralcraft.log.Level;
 import spiralcraft.log.Log;
 import spiralcraft.net.mime.ContentLengthHeader;
 import spiralcraft.vfs.StreamUtil;
-import spiralcraft.vfs.util.ByteArrayResource;
 
 
 /**
@@ -53,7 +52,6 @@ public class HttpConnection
   private int connectTimeoutMs;
   private int readTimeoutMs;
   private Request request;
-  private Response response;
   private int outputBufferSize=1514;
   private boolean lastRequest;
   private boolean closeRequested;
@@ -232,67 +230,26 @@ public class HttpConnection
     }
   }
   
-  public Response startResponse()
+  /**
+   * Read the response head. The body then streams from the response's
+   *   getInputStream(), and onEnd runs when the body has been read to its
+   *   end; the connection stays open for the caller to reuse or close.
+   */
+  public Response startStreamingResponse(Runnable onEnd)
     throws IOException
   {
     if (inputStream==null)
     { throw new IllegalStateException("Not connected");
     }
-    response=new Response();
+    Response response=new Response();
     response.setLogLevel(logLevel);
     response.start(inputStream);
     if (logLevel.isFine())
     { log.fine("Response started");
     }
-
+    response.startStream
+      (new ResponseStream(inputStream,this,response,false,onEnd));
     return response;
-    
-  }
-  
-  public Response startStreamingResponse()
-    throws IOException
-  {
-    
-    Response response = startResponse();
-    response.startStream(new ResponseStream(inputStream,this,response,false));
-    return response;
-  }
-  
-  public void completeResponse()
-    throws IOException
-  {
-    if (response!=null)
-    { 
-      if (response.shouldReadContent())
-      {
-        if (response.getContent()==null)
-        { response.setContent(new ByteArrayResource());
-        }
-        
-        OutputStream contentOut=response.getContent().getOutputStream();
-        InputStream clientStream=new ResponseStream(inputStream,this,response,false);
-        StreamUtil.copyRaw(clientStream, contentOut, 2048, -1);
-        contentOut.flush();
-        contentOut.close();          
-      }
-      
-      if (!response.isKeepalive() 
-          || closeRequested
-         )
-      { lastRequest=true;
-      }
-      response=null;
-      if (lastRequest)
-      { close();
-      }
-      if (logLevel.isFine())
-      { log.fine("Response completed");
-      }
-    }
-    else
-    { throw new IllegalStateException("Current response already completed");
-    }
-    
   }
   
 

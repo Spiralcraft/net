@@ -23,6 +23,7 @@ public class ResponseStream
   private final InputStream in;
   private final HttpConnection connection;
   private final Mode mode;
+  private final Runnable onEnd;
   private long remaining;
   private boolean firstChunk=true;
   private boolean done;
@@ -32,11 +33,12 @@ public class ResponseStream
 
   ResponseStream
     (InputStream in,HttpConnection connection,Response response
-    ,boolean headRequest
+    ,boolean headRequest,Runnable onEnd
     )
   { 
     this.in=in;
     this.connection=connection;
+    this.onEnd=onEnd;
     long contentLength=response.getContentLength();
     
     int status=response.getStatus();
@@ -129,16 +131,34 @@ public class ResponseStream
     return true;
   }
 
+  /** The body was read to its end: the connection is left to onEnd */
   private void finish()
-  { done=true; connection.close(); // Connection: close
+  {
+    done=true;
+    if (onEnd!=null)
+    { onEnd.run();
+    }
   }
 
+  /**
+   * Close the stream. Before the end of the body this closes the
+   *   connection, without draining: it is also the cancel.
+   */
   @Override
   public void close()
   {
     if (!closed)
-    { closed=true; connection.close(); // no drain; also the cancel
+    {
+      closed=true;
+      if (!done)
+      { connection.close();
+      }
     }
+  }
+
+  /** Whether the body was read to its end, or has none */
+  boolean isDone()
+  { return done;
   }
 
   public boolean isClosed()
