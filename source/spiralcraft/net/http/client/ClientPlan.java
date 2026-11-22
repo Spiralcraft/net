@@ -175,7 +175,7 @@ public abstract class ClientPlan<Tcontext,Tresult>
     
   }
 
-  /** The headers as a map, or null if there are none. */
+  /** The headers as a map, which is empty if there are none. */
   protected MimeHeaderMap headers()
   {
     MimeHeaderMap map=new MimeHeaderMap();
