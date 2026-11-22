@@ -1,0 +1,82 @@
+<test:TestGroup
+  xmlns:test="class:/spiralcraft/test/"
+  xmlns:hct="class:/spiralcraft/net/http/client/test/"
+  >
+  <name>spiralcraft.net.http.client.test
+  </name>
+
+  <sequence>
+    <test:Assertion>
+      <name>complete buffers; content outlives the exchange
+      </name>
+      <subjectX>[@hct:ExchangeTest].@group("complete")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+
+    <test:Assertion>
+      <name>start streams; reading to the end releases
+      </name>
+      <subjectX>[@hct:ExchangeTest].@group("stream")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+
+    <test:Assertion>
+      <name>cancel while waiting for the head
+      </name>
+      <subjectX>[@hct:ExchangeTest].@group("cancelHead")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+
+    <test:Assertion>
+      <name>cancel while the body is read
+      </name>
+      <subjectX>[@hct:ExchangeTest].@group("cancelBody")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+
+    <test:Assertion>
+      <name>exchanges one after another on one connection
+      </name>
+      <subjectX>[@hct:ExchangeTest].@group("reuse")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+
+    <test:Assertion>
+      <name>one exchange at a time on a connection
+      </name>
+      <subjectX>[@hct:ExchangeTest].@group("guard")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+
+    <test:Assertion>
+      <name>keep-alive by the protocol
+      </name>
+      <subjectX>[@hct:ExchangeTest].@group("keepalive")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+
+    <test:Assertion>
+      <name>stop cancels Fetch and StreamEvents
+      </name>
+      <subjectX>[@hct:ExchangeTest].@group("taskStop")
+      </subjectX>
+      <testX>.isEmpty()
+      </testX>
+    </test:Assertion>
+  </sequence>
+
+</test:TestGroup>

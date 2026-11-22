@@ -12,6 +12,9 @@
     <sse:SseTest
       xmlns:sse="class:/spiralcraft/net/http/client/sse/test/"
     />
+    <hct:ExchangeTest
+      xmlns:hct="class:/spiralcraft/net/http/client/test/"
+    />
 
     <SMTP.test/>
     <SMTP.bcc.test/>
