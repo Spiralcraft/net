@@ -54,32 +54,20 @@ public class StreamEvents
   }
 
   protected class StreamEventsTask
-    extends ChainTask
+    extends ExchangeTask
   {
-    private volatile Response response;
     private URI uri;
-
-    @Override
-    public void stop()
-    { 
-      super.stop();
-      Response r=response;
-      if (r!=null)
-      { r.close();
-      }
-    }
 
     @Override
     protected void work()
       throws InterruptedException
     {
-      Response r=null;
+      Exchange exchange=null;
       try
       {
         uri=uri();
-        r=newClient().executeStreamingRequest
-          (method(),uri,contentType(),content(),headers());
-        response=r;
+        exchange=openExchange(uri);
+        Response r=exchange.start();
         if (isStopRequested())
         { return;
         }
@@ -98,7 +86,7 @@ public class StreamEvents
       }
       catch (IOException x)
       { 
-        if (r==null || !r.getInputStream().isClosed())
+        if (!isCancelled())
         { 
           addException
             (new ContextualException
@@ -108,9 +96,8 @@ public class StreamEvents
       }
       finally
       { 
-        response=null;
-        if (r!=null)
-        { r.close();
+        if (exchange!=null)
+        { exchange.close();
         }
       }
     }

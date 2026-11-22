@@ -11,7 +11,8 @@ import spiralcraft.lang.spi.ThreadLocalChannel;
 /**
  * Requests a URI and publishes the Response into the focus chain, found by
  *   type, for the chain to run once. The response is buffered. A status
- *   outside 2xx is data in the Response, not an error.
+ *   outside 2xx is data in the Response, not an error. stop() cancels the
+ *   request in any phase.
  */
 public class Fetch
   extends ClientPlan<Void,Void>
@@ -40,7 +41,7 @@ public class Fetch
   }
 
   protected class FetchTask
-    extends ChainTask
+    extends ExchangeTask
   {
     @Override
     protected void work()
@@ -49,17 +50,17 @@ public class Fetch
       Response response;
       URI uri=uri();
       try
-      { 
-        response
-          =newClient().executeRequest
-            (method(),uri,contentType(),content(),headers());
+      { response=openExchange(uri).complete();
       }
       catch (IOException x)
       { 
-        addException
-          (new ContextualException
-            ("Error fetching "+uri,getDeclarationInfo(),x)
-          );
+        if (!isCancelled())
+        {
+          addException
+            (new ContextualException
+              ("Error fetching "+uri,getDeclarationInfo(),x)
+            );
+        }
         return;
       }
 

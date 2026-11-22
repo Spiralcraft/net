@@ -139,6 +139,65 @@ public abstract class ClientPlan<Tcontext,Tresult>
     return client;
   }
 
+  /**
+   * Open an exchange for this plan's request to uri, with a new Client.
+   *   Does no network I/O.
+   */
+  protected Exchange open(URI uri)
+    throws IOException
+  { return newClient().open(method(),uri,contentType(),content(),headers());
+  }
+
+  /**
+   * A task that runs one Exchange, which stop() closes from any thread and
+   *   in any phase: the cancel. A failure after a cancel is not an error.
+   */
+  protected abstract class ExchangeTask
+    extends ChainTask
+  {
+    private volatile Exchange exchange;
+    private volatile boolean stopped;
+
+    @Override
+    public void stop()
+    {
+      stopped=true;
+      super.stop();
+      Exchange exchange=this.exchange;
+      if (exchange!=null)
+      { exchange.close();
+      }
+    }
+
+    /**
+     * Open the exchange for the request to uri and hold it for stop().
+     *   A stop() that came while the request was being built closes it at
+     *   once, so the exchange fails as cancelled when it starts.
+     */
+    protected Exchange openExchange(URI uri)
+      throws IOException
+    {
+      Exchange exchange=open(uri);
+      this.exchange=exchange;
+      // stop() sets stopped before it reads exchange, and this reads
+      //   stopped after it sets exchange, so one of the two closes it
+      if (stopped)
+      { exchange.close();
+      }
+      return exchange;
+    }
+
+    /**
+     * Whether the exchange was cancelled: a stop was requested and the
+     *   exchange is closed. A failure then is the cancel, not an error.
+     */
+    protected boolean isCancelled()
+    {
+      Exchange exchange=this.exchange;
+      return stopped && exchange!=null && exchange.isClosed();
+    }
+  }
+
   protected URI uri()
   { 
     return uriX!=null?uriX.get():uri;
