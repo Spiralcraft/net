@@ -170,6 +170,45 @@ public class Client
   }
     
   /**
+   * Open an exchange for a request: builds the Request and the connection
+   *   without network I/O. Exchange.start() or Exchange.complete() runs it,
+   *   and Exchange.close() cancels it from any thread.
+   */
+  public Exchange open
+    (String method
+    ,URI uri
+    ,String contentType
+    ,Resource content
+    ,MimeHeaderMap headers
+    )
+    throws IOException
+  { 
+    return open
+      (uri.getScheme(),uri.getHost(),portOf(uri)
+      ,createRequest(method,uri,contentType,content,headers)
+      );
+  }
+
+  /**
+   * Open an exchange for a request on a new connection, directing the
+   *   connection to close after the request is complete. Does no network
+   *   I/O.
+   */
+  public Exchange open
+    (String scheme,String hostName,int port,Request request)
+    throws IOException
+  {
+    if (logLevel.isFine())
+    { log.fine("Requesting: "+request);
+    }
+    
+    HttpConnection connection=getConnection(scheme,hostName,port);
+    request.addHeader(ConnectionHeader.CLOSE);
+    addCookies(request);
+    return new Exchange(this,connection,request,logLevel);
+  }
+
+  /**
    * Execute a request on a new connection, directing the connection to close
    *   after the request is complete.
    *   
@@ -183,25 +222,7 @@ public class Client
   public Response executeRequest
     (String scheme,String hostName,int port,Request request)
     throws IOException
-  {
-    if (logLevel.isFine())
-    { log.fine("Requesting: "+request);
-    }
-    
-    HttpConnection connection=getConnection(scheme,hostName,port);
-    request.addHeader(ConnectionHeader.CLOSE);
-
-    connection.startRequest(request);
-    connection.completeRequest();
-    
-    Response response=connection.startResponse();
-    response.setContent(new ByteArrayResource());
-    connection.completeResponse();
-    if (logLevel.isFine())
-    { log.fine("Got response: request: "+request+" response:"+response);
-    }
-    return response;
-    
+  { return open(scheme,hostName,port,request).complete();
   }
   
   /**
@@ -218,39 +239,25 @@ public class Client
   public Response executeStreamingRequest
     (String scheme,String hostName,int port,Request request)
     throws IOException
-  {
-    if (logLevel.isFine())
-    { log.fine("Requesting: "+request);
-    }
-    
-    HttpConnection connection=getConnection(scheme,hostName,port);
-    try
-    {
-      request.addHeader(ConnectionHeader.CLOSE);
-  
-      connection.startRequest(request);
-      connection.completeRequest();
-    
-      Response response=connection.startStreamingResponse();
-
-      if (logLevel.isFine())
-      { log.fine("Got response: request: "+request+" response:"+response);
-      }
-      return response;
-    }
-    catch (IOException x)
-    { 
-      connection.close();
-      throw x;
-    }
-    catch (RuntimeException x)
-    {
-      connection.close();
-      throw x;
-    }
-    
-    
+  { return open(scheme,hostName,port,request).start();
   }  
+  
+  /**
+   * Called by open() with each request before it is sent; add cookies
+   *   here. Does nothing by default.
+   */
+  protected void addCookies(Request request)
+  {
+  }
+
+  /**
+   * Called by Exchange.start() with each response once its head is read;
+   *   take cookies here. May be called by exchanges on different threads.
+   *   Does nothing by default.
+   */
+  protected void takeCookies(Response response)
+  {
+  }
   
   private HttpConnection getConnection(String scheme,String hostName,int port)
     throws IOException

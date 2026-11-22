@@ -14,7 +14,6 @@
 //
 package spiralcraft.net.http.client;
 
-import java.net.UnknownHostException;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLSocketFactory;
@@ -31,7 +30,6 @@ public class HttpsConnection
    * @param socket
    */
   public HttpsConnection(String hostname,int port)
-    throws UnknownHostException
   { 
     super(hostname,port);
     defaultPort=443;

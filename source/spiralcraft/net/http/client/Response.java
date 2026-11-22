@@ -47,6 +47,7 @@ public final class Response
   private Resource content;
   private Level logLevel=Level.INFO;
   private ResponseStream clientStream;
+  private Exchange exchange;
   
   /**
    * Read the entire response.
@@ -105,6 +106,10 @@ public final class Response
   
   void startStream(ResponseStream in)
   { this.clientStream=in;
+  }
+
+  void setExchange(Exchange exchange)
+  { this.exchange=exchange;
   }
   
   public ResponseStream getInputStream()
@@ -272,13 +277,26 @@ public final class Response
     return out.toString();
   }
 
+  /**
+   * Close the Exchange this response came from, or the stream if there is
+   *   none. Buffered content stays usable.
+   */
   @Override
   public void close()
   { 
+    if (exchange!=null)
+    { exchange.close();
+    }
+    else
+    { closeStream();
+    }
+  }
+
+  void closeStream()
+  {
     if (clientStream!=null)
     { clientStream.close();
     }
-    
   }
   
   

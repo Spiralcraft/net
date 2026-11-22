@@ -27,6 +27,7 @@ public class ResponseStream
   private boolean firstChunk=true;
   private boolean done;
   private volatile boolean closed;
+  private boolean read;
   private byte[] buff1=new byte[1];
 
   ResponseStream
@@ -85,6 +86,7 @@ public class ResponseStream
     if (closed)
     { throw new IOException("Stream closed");
     }
+    read=true;
     if (done || len==0)
     { return done?-1:0;
     }
@@ -141,6 +143,11 @@ public class ResponseStream
 
   public boolean isClosed()
   { return closed;
+  }
+
+  /** Whether read() was called */
+  boolean wasRead()
+  { return read;
   }
   
   /**

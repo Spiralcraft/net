@@ -21,7 +21,6 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import javax.net.SocketFactory;
 
@@ -47,7 +46,8 @@ public class HttpConnection
   private String hostname;
   private int port;
   private InetAddress address;
-  private Socket socket;
+  private volatile Socket socket;
+  private volatile boolean closed;
   private OutputStream outputStream;
   private InputStream inputStream;
   private int connectTimeoutMs;
@@ -61,15 +61,13 @@ public class HttpConnection
   int defaultPort=80;
   
   /**
-   * Create a new connection to the specified host/port  
-   * @param socket
+   * Create a new connection to the specified host/port. The host name is
+   *   resolved by connect(), so the constructor does no network I/O.
    */
   public HttpConnection(String hostname,int port)
-    throws UnknownHostException
   { 
     this.hostname=hostname;
     this.port=port;
-    this.address=InetAddress.getByName(hostname);
   }
 
   /**
@@ -98,14 +96,34 @@ public class HttpConnection
   { this.readTimeoutMs=readTimeout;
   }
   
+  /**
+   * Resolve the host name, if not yet resolved, and connect. A close() from
+   *   another thread aborts the connect; the IOException that results is
+   *   the cancel, and isClosed() is true.
+   */
   public void connect()
     throws IOException
   {
     if (socket!=null)
     { throw new IllegalStateException("Cannot be connected multiple times");
     }
+    checkClosed();
+    if (address==null)
+    { 
+      // Not interruptible: a close() during the lookup takes effect after it
+      address=InetAddress.getByName(hostname);
+      checkClosed();
+    }
     
-    socket=getSocketFactory().createSocket();
+    Socket socket=getSocketFactory().createSocket();
+    this.socket=socket;
+    // close() sets closed before it reads socket, and this reads closed
+    //   after it sets socket, so one of the two closes the new socket
+    if (closed)
+    { 
+      closeQuietly(socket);
+      checkClosed();
+    }
     socket.setSoTimeout(readTimeoutMs);
     socket.setReuseAddress(true);
     socket.connect(new InetSocketAddress(address,port),connectTimeoutMs);
@@ -278,16 +296,40 @@ public class HttpConnection
   }
   
 
+  /**
+   * Close the connection, from any thread and in any phase; a connect or
+   *   read blocked in another thread fails with an IOException. Safe to call
+   *   more than once.
+   */
   public void close()
   {
+    closed=true;
+    Socket socket=this.socket;
     if (socket!=null)
+    { closeQuietly(socket);
+    }
+  }
+
+  /** Whether close() was called */
+  public boolean isClosed()
+  { return closed;
+  }
+
+  private void checkClosed()
+    throws IOException
+  {
+    if (closed)
+    { throw new IOException("Connection closed");
+    }
+  }
+
+  private static void closeQuietly(Socket socket)
+  {
+    try
+    { socket.close();
+    }
+    catch (IOException x)
     {
-      try
-      { socket.close();
-      }
-      catch (IOException x)
-      {
-      }
     }
   }
     

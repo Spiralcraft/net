@@ -31,6 +31,8 @@
           </URI>
           <URI>http/client/ClientPlan.java
           </URI>
+          <URI>http/client/Exchange.java
+          </URI>
           <URI>http/client/Fetch.java
           </URI>
           <URI>http/client/HttpConnection.java
